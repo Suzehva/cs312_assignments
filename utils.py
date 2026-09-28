@@ -35,6 +35,7 @@ def _present(value):
     return value is not None and value != ""
 
 
+
 def config_value(name, *env_names, default=None):
     for env_name in env_names:
         value = os.environ.get(env_name)
