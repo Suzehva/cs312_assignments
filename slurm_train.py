@@ -15,9 +15,10 @@ from pathlib import Path
 
 from slurm_launch import common_template_fields, staged_file_name, submit_script
 
-# Problem 3 wants two GPU types: pass gpu="a100" (sphinx1-8) or gpu="h200".
+# gpu: "h100", "a100", "h200", "hopper" (any H100/H200), or None (any GPU).
+# Problem 3 wants two GPU types, e.g. gpu="h100" and gpu="a100".
 DEFAULT_QUEUE = "sphinx"
-DEFAULT_GPU = "h100"
+DEFAULT_GPU = "hopper"
 DEFAULT_TIME_LIMIT = "04:00:00"  # a default d8 run is 10-15 min on H100
 
 TEMPLATE = """#!/bin/bash
@@ -80,8 +81,8 @@ def launch_training_jobs(
 ):
     """Submit one Slurm array task per TrainConfig. Returns the Slurm job id.
 
-    `gpu` is a Slurm GPU type ("h100", "a100", "h200") or None for any GPU on
-    the queue. `queue` is a key of `slurm_launch.QUEUE_CONFIGS`.
+    `gpu` is a Slurm GPU type ("h100", "a100", "h200"), the alias "hopper"
+    (any H100/H200), or None for any GPU. `queue` keys `slurm_launch.QUEUE_CONFIGS`.
     """
     assert isinstance(configs, list), "pass a list[TrainConfig]; use [config] for one job."
     from metric_logging import importable_metric_loggers

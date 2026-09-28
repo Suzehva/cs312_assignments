@@ -41,7 +41,7 @@ tail -f /nlp/scr/suzeva/dl_alchemy/slurmjobs/<jobid>_<task>.out
 ```
 
 `launch_training_jobs(RUNS, gpu="h100", queue="sphinx", max_parallel_runs=8)`
-picks the GPU type (`"h100"`, `"a100"`, `"h200"`, or `None` for any), the queue,
+picks the GPU type (`"hopper"` = any H100/H200, `"h100"`, `"a100"`, `"h200"`, or `None`), the queue,
 and the array concurrency. Preempted tasks are requeued and resume from the
 latest checkpoint.
 

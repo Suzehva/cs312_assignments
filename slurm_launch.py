@@ -37,17 +37,21 @@ LOCAL_SLURM_CONFIG = {
 #   miso-lo    : same nodes, preemptible.
 #
 # `gpu_types` lists the `--gpus-per-task=<type>:N` names Slurm accepts for the
-# partition. Set it to None to skip validation.
+# partition. Set it to None to skip validation. `gpu_aliases` map a friendly
+# name to (gpu_type, exclude_nodes): "hopper" = any H100/H200, i.e. any sphinx
+# GPU except the A100 nodes.
 QUEUE_CONFIGS = {
     "sphinx": {
         "account": "miso",
         "partition": "sphinx",
         "gpu_types": ("a100", "h100", "h200"),
+        "gpu_aliases": {"hopper": (None, "sphinx[1-8]")},
     },
     "sphinx-lo": {
         "account": "miso",
         "partition": "sphinx-lo",
         "gpu_types": ("a100", "h100", "h200"),
+        "gpu_aliases": {"hopper": (None, "sphinx[1-8]")},
     },
     "miso": {"account": "miso", "partition": "miso", "gpu_types": ("h200",)},
     "miso-lo": {"account": "miso", "partition": "miso-lo", "gpu_types": ("h200",)},
@@ -56,6 +60,7 @@ QUEUE_CONFIGS = {
         "account": "nlp",
         "partition": "sphinx",
         "gpu_types": ("a100", "h100", "h200"),
+        "gpu_aliases": {"hopper": (None, "sphinx[1-8]")},
     },
     "jag": {"account": "nlp", "partition": "jag-standard", "gpu_types": None},
     # Example for another cluster:
@@ -213,18 +218,27 @@ def queue_info(queue):
     )
 
 
-def validate_gpu_type(queue, gpu_type):
-    """Check that `gpu_type` (e.g. 'h100') exists on the queue's nodes."""
+def resolve_gpu_type(queue, gpu_type):
+    """Return (slurm_gpu_type, exclude_nodes) for a GPU type or alias.
+
+    `gpu_type` may be a Slurm GRES type ('h100'), an alias from the queue's
+    `gpu_aliases` ('hopper'), or None for any GPU on the queue.
+    """
     if gpu_type is None:
-        return None
+        return None, None
     gpu_type = str(gpu_type).lower()
-    allowed = QUEUE_CONFIGS[queue].get("gpu_types")
+    queue_config = QUEUE_CONFIGS[queue]
+    alias = queue_config.get("gpu_aliases", {}).get(gpu_type)
+    if alias is not None:
+        return alias
+    allowed = queue_config.get("gpu_types")
     if allowed is not None and gpu_type not in allowed:
         raise ValueError(
             f"GPU type {gpu_type!r} is not available on queue {queue!r}; "
-            f"choose one of {list(allowed)} or a different queue."
+            f"choose one of {list(allowed) + list(queue_config.get('gpu_aliases', {}))} "
+            "or a different queue."
         )
-    return gpu_type
+    return gpu_type, None
 
 
 def account_directive(account):
@@ -284,10 +298,10 @@ def staged_file_name(label, hash_input, suffix):
     return _script_name(label, hash_input, suffix=suffix)
 
 
-def exclude_directive():
-    exclude = slurm_config_value("slurm_exclude")
-    if exclude:
-        return f"#SBATCH --exclude={exclude}"
+def exclude_directive(extra_exclude=None):
+    excludes = [e for e in (slurm_config_value("slurm_exclude"), extra_exclude) if e]
+    if excludes:
+        return f"#SBATCH --exclude={','.join(excludes)}"
     return ""
 
 
@@ -315,7 +329,7 @@ def submit_script(script):
 
 def common_template_fields(queue, gpus, gpu_type, mem, cpus, time_limit, dependency):
     account, partition, gpu_request = queue_info(queue)
-    gpu_type = validate_gpu_type(queue, gpu_type)
+    gpu_type, extra_exclude = resolve_gpu_type(queue, gpu_type)
     return dict(
         account_directive=account_directive(account),
         partition_directive=partition_directive(partition),
@@ -332,7 +346,7 @@ def common_template_fields(queue, gpus, gpu_type, mem, cpus, time_limit, depende
         repo_dir=slurm_config_value("repo_dir"),
         env_setup_commands=ENV_SETUP_COMMANDS,
         dependency_directive=dependency_directive(dependency),
-        exclude_directive=exclude_directive(),
+        exclude_directive=exclude_directive(extra_exclude),
         user=get_user(),
     )
 
