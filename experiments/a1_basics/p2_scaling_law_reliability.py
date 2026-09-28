@@ -1,4 +1,4 @@
-from modal_train import launch_training_jobs
+from slurm_train import launch_training_jobs
 from model_config import depth_model_config
 from train import TrainConfig
 

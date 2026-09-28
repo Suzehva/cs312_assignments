@@ -1,4 +1,4 @@
-from modal_train import launch_training_jobs
+from slurm_train import launch_training_jobs
 from train import TrainConfig
 
 
@@ -16,7 +16,9 @@ RUNS = [
 
 # TODO: Vary model_seed and data_seed separately and together.
 # For hardware nondeterminism, run the same config on at least two GPU
-# types by passing `gpu=...` to launch_training_jobs from a local experiment.
+# types, e.g. launch_training_jobs(RUNS, gpu="h100") and
+# launch_training_jobs(RUNS, gpu="a100"). On the sphinx queue the GPU types
+# are a100 (sphinx1-8), h100 (sphinx9), and h200 (sphinx10-11).
 
 
 def main():

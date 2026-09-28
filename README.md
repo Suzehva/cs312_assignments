@@ -10,6 +10,41 @@ For the model, data, optimizer, loss, and checkpointing details, read
 For running on your own CUDA GPU or a non-course Slurm cluster without Modal, read
 [gpu/README.md](gpu/README.md).
 
+## Stanford NLP Slurm (this checkout)
+
+This checkout runs on the Stanford NLP Slurm cluster instead of Modal. The
+experiment files are unchanged except that they import `launch_training_jobs`
+from `slurm_train.py`, which submits one Slurm array task per `TrainConfig`.
+
+One-time setup on `sc`:
+
+```bash
+uv python install 3.10
+uv sync
+uv run wandb login            # skip if ~/.netrc already has api.wandb.ai
+ssh scdt                       # data transfers belong on the transfer node
+cd /nlp/scr/suzeva/projects/cs312_assignments && uv run python -m download_data
+```
+
+Paths live in `utils.py` (`CONFIG_SCRATCH_ROOT=/nlp/scr/suzeva/dl_alchemy`) and
+`slurm_launch.py` (`LOCAL_SLURM_CONFIG`, `QUEUE_CONFIGS`). Jobs are submitted
+under the `miso` account. Queues: `sphinx` (A100/H100/H200, 16-GPU cap),
+`sphinx-lo` (preemptible), `miso` and `miso-lo` (H200 only).
+
+Launch a smoke run, then the assignment experiments, from the repo root:
+
+```bash
+uv run python -m experiments.smoke.slurm_smoke_train
+uv run python -m experiments.a1_basics.p1_hyperparameters
+squeue -u $USER
+tail -f /nlp/scr/suzeva/dl_alchemy/slurmjobs/<jobid>_<task>.out
+```
+
+`launch_training_jobs(RUNS, gpu="h100", queue="sphinx", max_parallel_runs=8)`
+picks the GPU type (`"h100"`, `"a100"`, `"h200"`, or `None` for any), the queue,
+and the array concurrency. Preempted tasks are requeued and resume from the
+latest checkpoint.
+
 Course handouts are distributed separately.
 
 This release includes only the default-run and LR-tuning examples below. The

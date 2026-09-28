@@ -21,7 +21,8 @@ CONFIG_WANDB_PROJECT = "assignments"
 
 # Non-Modal users only: advanced local path overrides.
 # Leave these as None to use the default local directories.
-CONFIG_SCRATCH_ROOT = None
+# Stanford NLP cluster: keep data/checkpoints on scratch, not the 20 GB home.
+CONFIG_SCRATCH_ROOT = "/nlp/scr/suzeva/dl_alchemy"
 CONFIG_MODEL_DIR = None
 CONFIG_DATA_DIR = None
 
