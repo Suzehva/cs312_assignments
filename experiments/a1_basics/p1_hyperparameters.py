@@ -87,7 +87,28 @@ PART_C = SCHED_X_LR + SCHED_X_WARMUP + WSD_FRACTION + SCHED_X_WD + STACK
 # below 16 once gradient noise dominates? Batch 8 = 75k steps, ~25 min.
 EXTRA_A = [run(warmup_percent=0.6), run(batch_size=8)]
 
-RUNS = EXTRA_A
+# (b) follow-up: the base-3 LR grid cannot resolve a ~2x shift of the optimum
+# with batch size (parabola fits put it at 0.0018 for bs16, 0.0037 for bs64).
+# Fill in factor-1.5 LR steps around the default at batch 16 and 64.
+FINE_LR = (0.0015, 0.002, 0.0045, 0.006)
+FINE_LR_X_BATCH = [run(learning_rate=lr, batch_size=bs) for bs in (16, 64) for lr in FINE_LR]
+
+# (b) follow-up 2: one fine LR point in the batch 32 and 128 rows (does the
+# tilt become an argmin shift?), and bracketing the LR optimum under long
+# warmup (at warmup 0.1 the loss was still falling at lr 0.009).
+FILL_B = [
+    run(learning_rate=0.002, batch_size=32),
+    run(learning_rate=0.0045, batch_size=128),
+    run(learning_rate=0.027, warmup_percent=0.1),
+    run(learning_rate=0.009, warmup_percent=0.3),
+]
+
+# (c) follow-up: complete the left side of each schedule's LR bowl. Only
+# linear had points below 0.003; if schedules that hold the peak longer prefer
+# a lower LR, their minima may sit at 0.001.
+FILL_C = [run(lr_schedule=sc, learning_rate=0.001) for sc in ("cos", "wsd0.2", "wsd0.5", "constant")]
+
+RUNS = FILL_C
 
 
 def main():

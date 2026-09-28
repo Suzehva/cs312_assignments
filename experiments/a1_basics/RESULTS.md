@@ -78,6 +78,7 @@ Status: **complete** (17/17, all on H200). Plot: `plots/p1a_single_axis.pdf`.
 | lr | 0.001 | 2.9772 | +0.050 |
 | lr | 0.009 | 2.9501 | +0.023 |
 | lr | 0.027 | 3.0111 | +0.084 |
+| batch | 8 (added later) | 2.9580 | +0.031 |
 | batch | 16 | 2.9276 | +0.000 |
 | batch | 32 | **2.9200** | −0.007 |
 | batch | 128 | 2.9500 | +0.023 |
@@ -90,20 +91,27 @@ Status: **complete** (17/17, all on H200). Plot: `plots/p1a_single_axis.pdf`.
 | warmup | 0.003 | 2.9396 | +0.012 |
 | warmup | 0.03 | 2.9251 | −0.002 |
 | warmup | 0.1 | **2.9200** | −0.008 |
+| warmup | 0.3 (added later) | 2.9193 | −0.008 |
+| warmup | 0.6 (added later) | 2.9360 | +0.009 |
 
 Reading (pre-plot):
 - **LR** is the most sensitive axis: convex in log-LR, minimum at the default
   0.003. Asymmetric: 3x too low costs 0.05, 3x too high costs 0.023, 9x too
   high 0.084, 10x too low 0.22. Too-low LR hurts more than too-high here.
 - **Batch** (tokens fixed): 32 is best; 16 ties 64; 128/256 degrade steeply
-  (+0.023, +0.086). At fixed LR, large batches take 2-4x fewer steps and are
-  under-trained -> strong hint that batch and LR co-vary (test in (b)).
+  (+0.023, +0.086); batch 8 (added later, 75k steps, 25 min) turns up sharply
+  (+0.031), so below 16 the gradient noise outweighs the extra steps. The
+  curve is a bowl with its minimum at 32. At fixed LR, large batches take
+  2-4x fewer steps and are under-trained -> strong hint that batch and LR
+  co-vary (test in (b)).
 - **Weight decay**: 0.3 beats 0.1; both lower and 1.0 are worse. Plausibly the
   relevant quantity is lr*wd (AdamW decay per step) -> test lr x wd in (b).
 - **Warmup**: none at all is bad (+0.106); loss improves monotonically with
-  warmup length across 0 → 0.003 → 0.01 → 0.03 → 0.1. The default 1% is not
-  optimal; 10% warmup is worth −0.008 at lr 0.003. Open question for (b):
-  does this keep going (0.3?) and is it an LR effect in disguise?
+  warmup length across 0 → 0.003 → 0.01 → 0.03 → 0.1, plateaus at 0.1–0.3
+  (2.920, 2.919), and turns back up at 0.6 (2.936, +0.009): spending 60% of
+  the run below peak LR under-trains. The default 1% is not optimal; 10–30%
+  warmup is worth −0.008 at lr 0.003. (b) asks whether this is an LR effect in
+  disguise.
 - Noise floor from P3 so far is ~0.003, so every effect above except batch 16
   vs 64 and warmup 0.03 vs 0.01 is real.
 - Ranking of sensitivity (max |Δ| across the 9x range tested):
@@ -253,6 +261,8 @@ Interpretation:
 - **Constant LR bends**: its gap to baseline grows with scale (0.13 at d4 →
   0.24 at d9). Skipping the decay costs more the larger the model, so a
   scaling law fit on small constant-LR models would over-predict big ones.
+  (Caveat: the codebase's constant schedule also skips warmup, so this ladder
+  is "no decay, no warmup"; see the 1(c) note.)
 - **LR 0.03 also bends but less than expected**: gap 0.03 (d4) → 0.09 (d8/d9),
   i.e. large models are hurt more by a too-high LR, consistent with the usual
   "optimal LR shrinks with width" story, but the d9 run still improved 0.048
@@ -287,12 +297,55 @@ Partial results, 12/15 of the first grid (03:50):
 | 128 | pending | **2.9500** | 2.9930 | 3.0209 | |
 | 256 | pending | **3.0132** | 3.1187 | 3.1159 | 3.1479 |
 
-Hypothesis 1 **falsified**: the LR optimum does not shift upward with batch
-size. 0.003 wins in every row, and at batch 256 every larger LR is 0.10–0.13
-worse. Compute-matched large batches are step-starved (2,344 steps at 256 vs
-9,375 at 64), and no LR recovers that. Small batches tolerate a lower LR better
-than large ones do (bs16: 0.001 costs +0.003; bs64: +0.050), consistent with
-"more steps ⇒ less LR needed", but the optimum itself stays put.
+Hypothesis 1: **partly right, and my first reading of it was too strong.**
+The *argmin* stays in the 0.003 column for every batch size, and at batch 256
+every larger LR is 0.10–0.13 worse; compute-matched large batches are
+step-starved (2,344 steps at 256 vs 9,375 at 64) and no LR recovers that.
+But the *shape* of each row differs systematically. Penalty for 3x lower vs
+3x higher LR: bs16 +0.003 / +0.053, bs32 +0.023 / +0.033, bs64 +0.050 /
++0.023, bs128 +0.074 / +0.043. The asymmetry flips between 32 and 64, so the
+true optimum sits below 0.003 for small batches and above it for large ones.
+A parabola through each row's three points in log-LR puts the optimum at
+0.0018 (bs16), 0.0027 (bs32), 0.0037 (bs64), 0.0035 (bs128), 0.0029 (bs256):
+**a 2x shift for a 4x batch increase from 16 to 64, i.e. sqrt-scaling**, which
+a base-3 grid cannot resolve in the argmin. Above 64 the estimate flattens,
+but those rows are step-starved and three coarse points fit poorly there.
+Corrected conclusion: LR and batch size *do* co-vary (≈ lr ∝ sqrt(batch)) in
+the regime where the batch is not step-starved; the effect is small enough
+(2x over 4x) that a factor-3 grid hides it. Revised 12:05 after re-reading
+the table.
+
+**Fine LR grid — job 17645386, 8 runs (12:10).** lr ∈ {0.0015, 0.002, 0.0045,
+0.006} at batch 16 and 64, filling factor-1.5 steps between the existing
+0.001 / 0.003 / 0.009 points. Prediction (from the parabola fits): batch 16
+minimum near 0.002 (≈2.921), batch 64 minimum near 0.0045 (≈2.925), i.e. the
+argmin moves one fine step to each side of 0.003. If the two rows' minima
+separate by ≥2 fine steps the sqrt-scaling reading is confirmed; if both
+stay at 0.003 the co-variation is below the 1.5x resolution.
+
+**Result (12:40) — confirmed.** Full rows at factor-1.5 resolution:
+
+| lr | 0.001 | 0.0015 | 0.002 | 0.003 | 0.0045 | 0.006 | 0.009 |
+|---|---|---|---|---|---|---|---|
+| batch 16 | 2.9309 | **2.9226** | **2.9227** | 2.9276 | 2.9432 | 2.9547 | 2.9808 |
+| batch 64 | 2.9772 | 2.9482 | 2.9370 | **2.9275** | 2.9304 | 2.9376 | 2.9501 |
+
+Batch 16 bottoms out at 0.0015–0.002 and batch 64 at 0.003–0.0045: the
+argmins separate by two fine steps. Parabola fits over all seven points give
+optimal lr **0.0018 at batch 16** and **0.0036 at batch 64**, a
+**2.0x shift for a 4x batch increase** — matching the sqrt-scaling rule
+(2x) and far from linear scaling (4x). The tuned minima are 2.9226 (bs16) vs
+2.9275 (bs64): once each batch gets its own LR, batch 16 is 0.005 *better*
+than 64, not equal, and close to batch 32's 2.920. Prediction from the
+parabola fits (0.002 / 0.0045) was right for batch 16 and one step high for
+batch 64.
+
+Final reading of lr × batch: **they co-vary as lr ∝ sqrt(batch)** in the
+regime where the batch is not step-starved (≤64); the effect is only 2x over
+this range, so a factor-3 grid hides it. Two lessons: (1) a null result on a
+coarse grid bounds the effect size, it does not exclude the effect; (2) the
+row *shape* (which side of the argmin is cheaper) carries the information the
+argmin cannot. Batch 32/128 fine rows could pin the exponent further; not run.
 
 **lr × wd**
 
@@ -398,7 +451,12 @@ Results (complete). Plot: `plots/p1c_schedules.pdf`.
   schedule at the default LR (−0.007 vs linear). Prediction 3 was half right:
   wsd0.2 is *not* ≈ wsd0.5; a 20% decay under-anneals.
 - Never skipping the decay: the constant schedule costs 0.25 at d8 (and P2
-  shows the cost grows with model size).
+  shows the cost grows with model size). **Caveat found later (13:50):**
+  `ConstantScheduler` in `lr_schedules.py` ignores `warmup_percent`, so every
+  "constant" run has *no warmup* as well as no decay. (a) showed no warmup
+  alone costs ≈0.1 at lr 0.003, so the 0.25 penalty is "no decay + no warmup",
+  not "no decay" alone. `lr_schedule="wsd0.0"` (hold at peak after warmup,
+  zero decay) would isolate the decay effect; not yet run.
 
 **schedule × warmup at lr 0.009**
 
@@ -990,3 +1048,34 @@ steps.
 - The transient peak decays ≈exponentially with the perturbation time
   (4–5x per 3000 steps); training becomes a contraction once the LR has
   decayed. The early phase is where all the "chaos" lives.
+
+**Fill-in runs — job 17646661, 4 runs (13:20).** Predictions first:
+- lr 0.002 at batch 32: the row tilts toward lower LR (0.001: +0.023 vs
+  0.009: +0.033), so 0.002 should be ≈ 0.003 or slightly better (2.918–2.921).
+  sqrt scaling from batch 16's 0.0018 predicts an optimum near 0.0025.
+- lr 0.0045 at batch 128: the row tilts toward higher LR; sqrt scaling from
+  batch 64's 0.0036 predicts an optimum near 0.005, so 0.0045 should beat
+  0.003 (≈ 2.945 vs 2.950).
+- lr 0.027 at warmup 0.1: brackets the LR optimum under long warmup. At 1%
+  warmup, 0.027 costs +0.084 over 0.003; with 10% warmup I expect it to
+  recover most of that but still lose to 0.009: ≈ 2.94.
+- lr 0.009 at warmup 0.3: at lr 0.003 warmup 0.1 ≈ 0.3; at higher LR a longer
+  warmup should help a little more: ≈ 2.912, i.e. within noise of 2.914.
+
+Fill-in result 1/4 (14:05): lr 0.002 at batch 32 → **2.9251**, worse than
+lr 0.003 (2.9200) by 0.005. The batch-32 row's minimum stays at 0.003; the
+parabola estimate of 0.0027 was too low. Combined with batch 16 (optimum
+≈0.0018) and 64 (≈0.0036), the optimum is not moving smoothly with batch:
+16 → 32 is a big jump, 32 → 64 none. Either the sqrt rule is only a rough
+average over this range, or batch-32's true optimum is between 0.002 and
+0.003 (a factor-1.5 grid cannot say). Remaining: lr 0.0045 at batch 128, and
+the two warmup points.
+
+### 1(c) follow-up — job 17647098, 4 runs (14:05)
+
+cos, wsd0.2, wsd0.5 and constant at lr 0.001, to complete the left side of
+each schedule's LR bowl (only linear had points below 0.003). Prediction: the
+schedules that hold the peak longer prefer a lower LR, so wsd0.2 at 0.001
+should land near its 0.003 value (≈2.94) rather than 0.05 above it as linear
+does; cos ≈2.96; wsd0.5 ≈2.95; constant improves a lot (≈3.08) but stays far
+behind because it also has no warmup.

@@ -17,7 +17,7 @@ AXES = ("learning_rate", "batch_size", "weight_decay", "warmup_percent")
 
 
 DEFAULTS = {"learning_rate": 0.003, "batch_size": 64, "weight_decay": 0.1, "warmup_percent": 0.01}
-GRID = {"learning_rate": (0.0003, 0.001, 0.003, 0.009, 0.027),
+GRID = {"learning_rate": (0.0003, 0.001, 0.0015, 0.002, 0.003, 0.0045, 0.006, 0.009, 0.027),
         "batch_size": (8, 16, 32, 64, 128, 256),
         "weight_decay": (0.011, 0.033, 0.1, 0.3, 1.0),
         "warmup_percent": (0.0, 0.003, 0.01, 0.03, 0.1, 0.3, 0.6)}
@@ -37,15 +37,18 @@ def plot_part_a(runs):
         d = DEFAULTS[key]
         ax.scatter([d], [y[np.isclose(x, d)][0]], s=160, facecolors="none", edgecolors="C3",
                    linewidths=2, zorder=4, label=f"default = {d:g}")
-        for xi, yi in zip(x, y):
-            ax.annotate(f"{yi:.3f}", (xi, yi), textcoords="offset points", xytext=(0, 8),
-                        ha="center", fontsize=8, color="0.35")
+        dense = len(x) > 6
+        for i, (xi, yi) in enumerate(zip(x, y)):
+            up = (i % 2 == 0) or not dense  # alternate above/below on crowded axes
+            ax.annotate(f"{yi:.3f}", (xi, yi), textcoords="offset points",
+                        xytext=(0, 8 if up else -14), ha="center", fontsize=8, color="0.35")
         if key == "warmup_percent":
             ax.set_xscale("symlog", linthresh=0.003)
         else:
             ax.set_xscale("log")
         ax.set_xticks(x)
-        ax.set_xticklabels([f"{v:g}" for v in x])
+        ax.set_xticklabels([f"{v:g}" for v in x], rotation=45 if dense else 0,
+                           ha="right" if dense else "center")
         ax.xaxis.set_minor_formatter(plt.NullFormatter())
         ax.set_xlabel(LABELS[key])
         ax.grid(alpha=0.3)
@@ -59,32 +62,48 @@ def plot_part_a(runs):
     return out
 
 
-def heatmap(ax, runs, row_key, col_key, title):
-    pts = [r for r in runs if is_default(r, row_key, col_key)]
+COARSE_LR = (0.0003, 0.001, 0.003, 0.009, 0.027)
+FINE_LR = (0.0003, 0.001, 0.0015, 0.002, 0.003, 0.0045, 0.006, 0.009, 0.027, 0.081)
+
+
+def heatmap(ax, runs, row_key, col_key, title, cols):
+    pts = [r for r in runs if is_default(r, row_key, col_key)
+           and any(np.isclose(r.get(col_key), c) for c in cols)]
     rows = sorted({r.get(row_key) for r in pts})
-    cols = sorted({r.get(col_key) for r in pts})
+    cols = [c for c in cols if any(np.isclose(r.get(col_key), c) for r in pts)]
     grid = np.full((len(rows), len(cols)), np.nan)
     for r in pts:
-        grid[rows.index(r.get(row_key)), cols.index(r.get(col_key))] = r.val_loss
+        grid[rows.index(r.get(row_key)), int(np.argmin(np.abs(np.array(cols) - r.get(col_key))))] = r.val_loss
     im = ax.imshow(grid, origin="lower", cmap="viridis_r", vmin=2.91, vmax=3.05)
     ax.set_xticks(range(len(cols)), [f"{c:g}" for c in cols])
     ax.set_yticks(range(len(rows)), [f"{v:g}" for v in rows])
     ax.set_xlabel(col_key)
     ax.set_ylabel(row_key)
-    ax.set_title(title)
     for i in range(len(rows)):
         for j in range(len(cols)):
             if np.isfinite(grid[i, j]):
-                ax.text(j, i, f"{grid[i, j]:.3f}", ha="center", va="center", fontsize=7.5,
+                ax.text(j, i, f"{grid[i, j]:.3f}", ha="center", va="center",
+                        fontsize=6.5 if len(cols) > 6 else 7.5,
                         color="w" if grid[i, j] > 2.95 else "k")
+    # outline the best cell in each row (best column value for that row) ...
+    for i in range(len(rows)):
+        if np.isfinite(grid[i]).any():
+            j = int(np.nanargmin(grid[i]))
+            ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, ec="C3", lw=2))
+    # ... and in each column (best row value for that LR), dashed
+    for j in range(len(cols)):
+        if np.isfinite(grid[:, j]).any():
+            i = int(np.nanargmin(grid[:, j]))
+            ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, ec="w", lw=1.2, ls="--"))
+    ax.set_title(title + "\n(red box: best LR per row; dashed: best row per LR)", fontsize=10)
     return im
 
 
 def plot_part_b(runs):
-    fig, axs = plt.subplots(1, 3, figsize=(16, 4.6))
-    heatmap(axs[0], runs, "batch_size", "learning_rate", "lr x batch (tokens fixed)")
-    heatmap(axs[1], runs, "weight_decay", "learning_rate", "lr x weight decay")
-    im = heatmap(axs[2], runs, "warmup_percent", "learning_rate", "lr x warmup")
+    fig, axs = plt.subplots(1, 3, figsize=(20, 5), gridspec_kw={"width_ratios": [2, 1, 1]})
+    heatmap(axs[0], runs, "batch_size", "learning_rate", "lr x batch (tokens fixed)", FINE_LR)
+    heatmap(axs[1], runs, "weight_decay", "learning_rate", "lr x weight decay", COARSE_LR)
+    im = heatmap(axs[2], runs, "warmup_percent", "learning_rate", "lr x warmup", COARSE_LR)
     fig.colorbar(im, ax=axs, label="final val loss (clipped at 3.05)", fraction=0.02)
     out = PLOT_DIR / "p1b_pairs.pdf"
     fig.savefig(out, bbox_inches="tight")
@@ -92,16 +111,33 @@ def plot_part_b(runs):
 
 
 def plot_part_c(runs):
-    fig, ax = plt.subplots(figsize=(6.5, 4.2))
     pts = [r for r in runs if is_default(r, "learning_rate", "lr_schedule")]
-    for sched in sorted({r.get("lr_schedule") for r in pts}):
+    scheds = sorted({r.get("lr_schedule") for r in pts})
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12, 4.4), gridspec_kw={"width_ratios": [1.5, 1]})
+    best = {}
+    for sched in scheds:
         xy = sorted((r.get("learning_rate"), r.val_loss) for r in pts if r.get("lr_schedule") == sched)
         ax.plot(*zip(*xy), "o-", label=sched)
+        best[sched] = min(xy, key=lambda t: t[1])
     ax.set_xscale("log")
-    ax.set_xlabel("learning_rate")
-    ax.set_ylabel("final val loss")
+    ax.set_xlabel("learning rate")
+    ax.set_ylabel("final validation loss")
+    ax.set_title("Loss vs learning rate, per schedule")
     ax.legend()
     ax.grid(alpha=0.3)
+
+    order = sorted(best, key=lambda k: best[k][1])
+    for i, sched in enumerate(order):
+        lr, loss = best[sched]
+        ax2.scatter([loss], [i], s=70, color=f"C{scheds.index(sched)}", zorder=3)
+        ax2.annotate(f"{loss:.4f}  (lr {lr:g})", (loss, i), textcoords="offset points",
+                     xytext=(8, -3), fontsize=8.5)
+    ax2.set_yticks(range(len(order)), order)
+    ax2.invert_yaxis()
+    ax2.set_xlabel("lowest final validation loss found")
+    ax2.set_title("Best loss per schedule (over tested LRs)")
+    ax2.grid(alpha=0.3, axis="x")
+    ax2.margins(x=0.35)
     fig.tight_layout()
     out = PLOT_DIR / "p1c_schedules.pdf"
     fig.savefig(out)
