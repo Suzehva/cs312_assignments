@@ -15,6 +15,9 @@ from model_config import validate_precision
 REPO_ROOT = Path(__file__).resolve().parent
 
 # Student-facing configuration. Most students only edit these three lines.
+# Launcher: True -> Modal (modal_train.py), False -> Slurm (slurm_train.py).
+# Override per shell with DL_ALCHEMY_USE_MODAL=1 / 0.
+CONFIG_USE_MODAL = False
 CONFIG_MODAL_ENVIRONMENT = "cs312-suzeva"
 CONFIG_WANDB_ENTITY = "suzevana"
 CONFIG_WANDB_PROJECT = "assignments"
@@ -211,6 +214,8 @@ def get_user_config(user=None):
         ),
     )
 
+
+USE_MODAL = str(config_value("CONFIG_USE_MODAL", "DL_ALCHEMY_USE_MODAL", default=False)).lower() in ("1", "true", "yes")
 
 USER_CONFIG = get_user_config()
 WANDB_ENTITY = USER_CONFIG.wandb_entity

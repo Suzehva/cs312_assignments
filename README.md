@@ -12,9 +12,13 @@ For running on your own CUDA GPU or a non-course Slurm cluster without Modal, re
 
 ## Stanford NLP Slurm (this checkout)
 
-This checkout runs on the Stanford NLP Slurm cluster instead of Modal. The
-experiment files are unchanged except that they import `launch_training_jobs`
-from `slurm_train.py`, which submits one Slurm array task per `TrainConfig`.
+This checkout runs on the Stanford NLP Slurm cluster by default, and can still
+use Modal. The experiment files import `launch_training_jobs` from `launch.py`,
+which forwards to `modal_train.py` when `CONFIG_USE_MODAL = True` in `utils.py`
+(or `DL_ALCHEMY_USE_MODAL=1` in the shell) and to `slurm_train.py` otherwise.
+The Slurm launcher submits one array task per `TrainConfig`. Slurm-only
+arguments (`queue`, `time_limit`, ...) are ignored with a note on Modal, and
+Slurm GPU names (`"h100"`, `"hopper"`, ...) are mapped to Modal's (`"H100"`).
 
 One-time setup on `sc`:
 
@@ -34,7 +38,7 @@ under the `miso` account. Queues: `sphinx` (A100/H100/H200, 16-GPU cap),
 Launch a smoke run, then the assignment experiments, from the repo root:
 
 ```bash
-uv run python -m experiments.smoke.slurm_smoke_train
+uv run python -m experiments.smoke.smoke_train
 uv run python -m experiments.a1_basics.p1_hyperparameters
 squeue -u $USER
 tail -f /nlp/scr/suzeva/dl_alchemy/slurmjobs/<jobid>_<task>.out

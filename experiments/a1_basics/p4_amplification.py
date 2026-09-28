@@ -1,4 +1,4 @@
-from slurm_train import launch_training_jobs
+from launch import launch_training_jobs
 from train import TrainConfig
 
 

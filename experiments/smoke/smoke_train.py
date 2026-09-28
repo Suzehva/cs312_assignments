@@ -1,11 +1,11 @@
-"""Submit one default d8 run to Slurm. Same recipe as modal_smoke_train."""
+"""Submit one default d8 run through whichever launcher utils.CONFIG_USE_MODAL selects."""
 
-from slurm_train import launch_training_jobs
+from launch import launch_training_jobs
 from train import TrainConfig
 
 
 TRAIN_CONFIG = TrainConfig(
-    run_name_suffix="slurm",
+    run_name_suffix="smoke",
     force_run=True,
 )
 
