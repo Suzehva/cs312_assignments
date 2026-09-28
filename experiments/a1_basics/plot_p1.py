@@ -18,7 +18,7 @@ AXES = ("learning_rate", "batch_size", "weight_decay", "warmup_percent")
 
 DEFAULTS = {"learning_rate": 0.003, "batch_size": 64, "weight_decay": 0.1, "warmup_percent": 0.01}
 GRID = {"learning_rate": (0.0003, 0.001, 0.003, 0.009, 0.027),
-        "batch_size": (16, 32, 64, 128, 256),
+        "batch_size": (8, 16, 32, 64, 128, 256),
         "weight_decay": (0.011, 0.033, 0.1, 0.3, 1.0),
         "warmup_percent": (0.0, 0.003, 0.01, 0.03, 0.1, 0.3, 0.6)}
 LABELS = {"learning_rate": "learning rate", "batch_size": "batch size (tokens fixed)",

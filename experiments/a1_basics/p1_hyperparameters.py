@@ -82,8 +82,10 @@ SCHED_X_WD = [run(lr_schedule="constant", weight_decay=wd) for wd in (0.033, 0.3
 STACK = [run(learning_rate=0.009, warmup_percent=0.1, batch_size=32)]
 PART_C = SCHED_X_LR + SCHED_X_WARMUP + WSD_FRACTION + SCHED_X_WD + STACK
 
-# Extra (a) point: warmup 0.1 -> 0.3 was flat (2.920 -> 2.919); does it turn up?
-EXTRA_A = [run(warmup_percent=0.6)]
+# Extra (a) points: warmup 0.1 -> 0.3 was flat (2.920 -> 2.919); does it turn
+# up? And does the batch curve (16: 2.928, 32: 2.920, 64: 2.928) rise steeply
+# below 16 once gradient noise dominates? Batch 8 = 75k steps, ~25 min.
+EXTRA_A = [run(warmup_percent=0.6), run(batch_size=8)]
 
 RUNS = EXTRA_A
 
