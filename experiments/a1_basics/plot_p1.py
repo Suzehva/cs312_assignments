@@ -144,6 +144,44 @@ def plot_part_c(runs):
     return out
 
 
+def plot_part_c_interactions(runs):
+    """Schedule x warmup at lr 0.009, and schedule x weight decay at lr 0.003."""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.2))
+    # left: warmup sweep per schedule at lr 0.009 (everything else default)
+    pts = [r for r in runs if is_default(r, "learning_rate", "lr_schedule", "warmup_percent")
+           and np.isclose(r.get("learning_rate"), 0.009)]
+    for sched in sorted({r.get("lr_schedule") for r in pts}):
+        xy = sorted((r.get("warmup_percent"), r.val_loss) for r in pts if r.get("lr_schedule") == sched)
+        if len(xy) > 1:
+            ax1.plot(*zip(*xy), "o-", label=sched)
+            for x, y in xy:
+                ax1.annotate(f"{y:.3f}", (x, y), textcoords="offset points", xytext=(0, 7), ha="center", fontsize=8)
+    ax1.set_xscale("symlog", linthresh=0.01)
+    ax1.set_xticks([0, 0.01, 0.1, 0.3], ["0", "0.01", "0.1", "0.3"])
+    ax1.set_xlabel("warmup fraction")
+    ax1.set_ylabel("final validation loss")
+    ax1.set_title("Schedule x warmup at lr 0.009")
+    ax1.legend()
+    ax1.grid(alpha=0.3)
+    # right: weight-decay sweep per schedule at lr 0.003
+    pts = [r for r in runs if is_default(r, "lr_schedule", "weight_decay")]
+    for sched in sorted({r.get("lr_schedule") for r in pts}):
+        xy = sorted((r.get("weight_decay"), r.val_loss) for r in pts if r.get("lr_schedule") == sched)
+        if len(xy) > 1:
+            ax2.plot(*zip(*xy), "o-", label=sched)
+            for x, y in xy:
+                ax2.annotate(f"{y:.3f}", (x, y), textcoords="offset points", xytext=(0, 7), ha="center", fontsize=8)
+    ax2.set_xscale("log")
+    ax2.set_xlabel("weight decay")
+    ax2.set_title("Schedule x weight decay at lr 0.003")
+    ax2.legend()
+    ax2.grid(alpha=0.3)
+    fig.tight_layout()
+    out = PLOT_DIR / "p1c_interactions.pdf"
+    fig.savefig(out)
+    return out
+
+
 def main():
     PLOT_DIR.mkdir(exist_ok=True)
     # Some d8 grid points were first trained under other problems' tags
@@ -159,6 +197,7 @@ def main():
     print(plot_part_b(runs))
     if any(r.get("lr_schedule") != "linear" for r in runs):
         print(plot_part_c(runs))
+        print(plot_part_c_interactions(runs))
 
 
 if __name__ == "__main__":

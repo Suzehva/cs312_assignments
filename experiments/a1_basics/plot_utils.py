@@ -130,3 +130,31 @@ def running_mean(x, window=51):
     lo = np.clip(np.arange(n) - half, 0, n)
     hi = np.clip(np.arange(n) + half + 1, 0, n)
     return (csum[hi] - csum[lo]) / (hi - lo)
+
+
+def _eps_profile(x, y, n_grid=400):
+    """For each candidate eps: best (a, alpha) and the max residual of that fit."""
+    x, y = np.asarray(x, float), np.asarray(y, float)
+    out = []
+    for eps in np.linspace(0.0, y.min() * 0.999, n_grid):
+        slope, intercept = np.polyfit(np.log(x), np.log(y - eps), 1)
+        resid = np.abs(eps + np.exp(intercept) * x ** slope - y).max()
+        out.append((resid, eps, np.exp(intercept), -slope))
+    return out
+
+
+def fit_power_law_eps(x, y, n_grid=400):
+    """Fit y = a * x^(-alpha) + eps (the handout's form) by a grid over eps and a
+    log-log line fit for the rest. Returns (a, alpha, eps, predict)."""
+    _, eps, a, alpha = min(_eps_profile(x, y, n_grid))
+    return a, alpha, eps, (lambda x_new: eps + a * np.asarray(x_new, float) ** (-alpha))
+
+
+def power_law_eps_band(x, y, x_new, tolerance=0.005, n_grid=400):
+    """Range of predictions at x_new over all (eps, a, alpha) whose max residual
+    is within `tolerance` of the best fit's -- i.e. fits the data cannot tell
+    apart at the run-to-run noise level. Returns (low, high, n_compatible)."""
+    prof = _eps_profile(x, y, n_grid)
+    best = min(r for r, *_ in prof)
+    preds = [eps + a * x_new ** (-alpha) for r, eps, a, alpha in prof if r <= best + tolerance]
+    return min(preds), max(preds), len(preds)

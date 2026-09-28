@@ -18,7 +18,8 @@
 | 6 activation / gradient norms (+3 levers) | done | 3 | p6a_*.pdf, p6b_*.pdf, p6c_levers.pdf |
 | 7 | skipped by instruction | 0 | |
 
-Total ≈ 161 training runs (handout suggests ≈170). All on the `sphinx` queue;
+Total 187 training runs after the follow-ups requested on 28 Sep afternoon
+(handout suggests ≈170; hard cap 200). All on the `sphinx` queue;
 comparison sweeps on H100/H200, variance measurements pinned to H100.
 
 Headline numbers to remember (d8, 614M tokens):
@@ -1079,3 +1080,83 @@ schedules that hold the peak longer prefer a lower LR, so wsd0.2 at 0.001
 should land near its 0.003 value (≈2.94) rather than 0.05 above it as linear
 does; cos ≈2.96; wsd0.5 ≈2.95; constant improves a lot (≈3.08) but stays far
 behind because it also has no warmup.
+
+**Results (15:53):**
+
+| schedule | 0.001 | 0.003 | 0.009 | Δ going 3x lower | Δ going 3x higher |
+|---|---|---|---|---|---|
+| linear | 2.9772 | **2.9275** | 2.9501 | +0.050 | +0.023 |
+| cos | 2.9831 | **2.9351** | 2.9552 | +0.048 | +0.020 |
+| wsd0.5 | 2.9478 | **2.9202** | 2.9589 | +0.028 | +0.039 |
+| wsd0.2 | 2.9492 | **2.9359** | 2.9914 | +0.013 | +0.055 |
+| constant | **3.0665** | 3.1762 | 3.2841 | −0.110 | +0.108 |
+
+Scorecard: wsd0.2 (pred 2.94, obs 2.949) and constant (pred 3.08, obs 3.067)
+right; cos (pred 2.96, obs 2.983) and wsd0.5 (pred 2.95, obs 2.948) close.
+Reading: every decaying schedule keeps its argmin at 0.003, but the bowls tilt
+exactly as hypothesised — the more time at peak, the cheaper it is to go low
+and the dearer to go high (Δlow/Δhigh: linear 2.2, cos 2.4, wsd0.5 0.7,
+wsd0.2 0.2). So the optima of wsd0.5 and wsd0.2 lie between 0.001 and 0.003,
+below linear's; a factor-3 grid cannot separate them. Constant's optimum is
+below 0.001 (bowl unbracketed on the left); with no decay *and* no warmup it
+wants a much smaller peak. Hypothesis 1 confirmed in direction; resolution
+insufficient to quote the shifted optima.
+
+**1(c) complete, 22 runs.** Problem 1 total: 17+3 (a) + 35 (b) + 22 (c) = 77.
+
+Fill-in results 2–3/4 (15:10):
+- lr 0.0045 at batch 128 → **2.9538**, worse than lr 0.003 (2.9500) by 0.004.
+  Prediction (0.0045 beats 0.003) **wrong**. The batch-128 optimum stays at
+  0.003.
+- lr 0.027 at warmup 0.1 → **2.9591**, 0.045 above lr 0.009 (2.9136).
+  Prediction (≈2.94) too optimistic. The LR optimum under 10% warmup is now
+  bracketed: 0.003 → 2.920, 0.009 → 2.914, 0.027 → 2.959, so it sits near
+  0.009 (with the base-3 spacing, somewhere in 0.005–0.015).
+
+Revised lr × batch reading: the optimum is ≈0.0018 at batch 16 and ≈0.003
+(0.003–0.0036) at batch 32, 64 and 128. The shift happens between 16 and 32
+and then stops. Square-root scaling fits the 16→64 pair (2x for 4x) but not
+the range as a whole; above 32 the optimum is flat and above 64 the rows are
+step-starved regardless of LR. Honest statement: "the LR optimum moves down
+for small batches (≤16); for batch 32–128 at fixed tokens it stays at 0.003".
+
+Fill-in result 4/4 (15:25): lr 0.009 at warmup 0.3 → **2.9175**, +0.004 vs
+warmup 0.1 (2.9136), i.e. within noise. Prediction (≈2.912) slightly
+optimistic but the reading holds: the *optimal warmup fraction* does not move
+with LR (≈10% at 0.003 and at 0.009); what grows with LR is the *cost of too
+little* warmup. Final warmup statement: use ≈10%; more matters at higher LR,
+but past 10–30% there is nothing to gain and by 60% it hurts.
+
+**1(b) complete, 35 runs** (20 first grid + 15 follow-ups you requested).
+
+### 2(a) plot convention (updated 15:50)
+
+The handout fits L = a·C^−α + ε with C the "6ND body-compute proxy relative to
+d8 at the same token horizon". At fixed tokens that is C = N/N_d8 = (depth/8)³,
+so the earlier N-axis differed only by a constant. `p2a_ladders.pdf` now uses C
+on the x-axis and the handout's fit form (ε found by a grid search, the rest by
+a log-log line fit), with the ε = 0 pure power law shown dotted on the right
+panel as the no-floor alternative. All losses are final validation losses on
+the fixed 1,000-sequence validation set.
+
+### 2(a) fit uncertainty (16:05) — ε form only, per user
+
+With three parameters and 4–6 points over one decade of C, ε and α trade off.
+To show what the data can and cannot pin down, the d20 marker now carries a
+bar spanning the predictions of every (ε, a, α) whose max residual is within
+0.005 (the run-to-run noise) of the best fit's:
+
+| ladder | best ε, α (d4–d9) | d20 best | d20 range compatible with noise |
+|---|---|---|---|
+| baseline | 2.41, 0.26 | 2.667 | 2.63–2.70 |
+| constant LR | 2.68, 0.20 | 2.959 | 2.90–3.03 |
+| dropout 0.2 | 0.00, 0.06 | 2.616 | 2.62–2.70 |
+| lr 0.03 | 2.69, 0.33 | 2.822 | 2.77–2.85 |
+
+Reading: the baseline's d20 forecast is 2.63–2.70, tighter than I expected;
+the held-out check (d8, d9 predicted to 0.001) and the stability of ε when
+d8/d9 are added both say its floor is genuinely identified. Constant LR's
+range is 3x wider (ε moved 2.84 → 2.68 when two points were added), and
+dropout's best fit sits on the ε = 0 boundary, so for those two the floor is
+not identified and only the range should be quoted. The pure power law
+(ε = 0) is no longer plotted; it is one end of these ranges for dropout only.
