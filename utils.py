@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parent
 
 # Student-facing configuration. Most students only edit these three lines.
 CONFIG_MODAL_ENVIRONMENT = "cs312-suzeva"
-CONFIG_WANDB_ENTITY = "suzeva"
+CONFIG_WANDB_ENTITY = "suzevana"
 CONFIG_WANDB_PROJECT = "assignments"
 
 # Non-Modal users only: advanced local path overrides.
