@@ -68,6 +68,11 @@ class TrainConfig:
     tie_word_embeddings: bool = False
     deterministic: bool = False
     perturb_one_token: bool = False
+    # Problem 4(b): where/how big the perturbation is. Defaults reproduce the
+    # original one-token change (row 0, position 100 -> token 17).
+    perturb_step: int = 0          # the optimizer step whose batch holds the perturbed row(s)
+    perturb_num_tokens: int = 1    # tokens changed per row, positions 100, 101, ...
+    perturb_num_rows: int = 1      # rows changed, starting at perturb_step * batch_size
     wandb_tags: tuple[str, ...] = field(default_factory=tuple)
     wandb_online: bool = True
     force_run: bool = False
@@ -158,7 +163,13 @@ def training_run_name(config):
     if config.deterministic != TrainConfig.deterministic:
         run_name += "-deterministic"
     if config.perturb_one_token != TrainConfig.perturb_one_token:
-        run_name += "-perturb1tok"
+        if (config.perturb_step, config.perturb_num_tokens, config.perturb_num_rows) == (0, 1, 1):
+            run_name += "-perturb1tok"
+        else:
+            run_name += (
+                f"-perturb{config.perturb_num_rows}x{config.perturb_num_tokens}tok"
+                f"@{config.perturb_step}"
+            )
     if config.data_seed != TrainConfig.data_seed:
         if config.data_seed is None:
             run_name += "-dsnone"
@@ -401,9 +412,21 @@ def train(config):
     if config.data_seed is not None:
         train_dataset = train_dataset.shuffle(seed=config.data_seed)
     if config.perturb_one_token:
-        first_input_ids = train_dataset[0]["input_ids"]
-        assert int(first_input_ids[100]) != 17
-        first_input_ids[100] = 17
+        first_row = config.perturb_step * config.batch_size
+        positions = range(100, 100 + config.perturb_num_tokens)
+        for row in range(first_row, first_row + config.perturb_num_rows):
+            input_ids = train_dataset[row]["input_ids"]
+            for pos in positions:
+                # Change the token to 17, or 18 where it already is 17, so every
+                # targeted position really changes.
+                input_ids[pos] = 18 if int(input_ids[pos]) == 17 else 17
+        if (config.perturb_step, config.perturb_num_tokens, config.perturb_num_rows) == (0, 1, 1):
+            assert int(train_dataset[0]["input_ids"][100]) == 17
+        print(
+            f"Perturbed {config.perturb_num_rows} row(s) x {config.perturb_num_tokens} token(s) "
+            f"starting at row {first_row} (optimizer step {config.perturb_step}).",
+            flush=True,
+        )
     effective_train_sequences = len(train_dataset)
     seq_len = len(train_dataset[0]["input_ids"])
     train_tokens = effective_train_sequences * seq_len

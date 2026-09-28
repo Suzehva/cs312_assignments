@@ -2,27 +2,66 @@ from slurm_train import launch_training_jobs
 from train import TrainConfig
 
 
-RUNS = [
-    TrainConfig(
-        deterministic=True,
-        run_name_suffix="deterministic-reference-1",
-    ),
-    TrainConfig(
-        deterministic=True,
-        run_name_suffix="deterministic-reference-2",
-    ),
+TAG = "a1-p3"
+
+
+def run(**overrides):
+    return TrainConfig(wandb_tags=(TAG,), **overrides)
+
+
+# Reproducibility on a fixed GPU type: two identical deterministic runs.
+REFERENCE = [
+    run(deterministic=True, run_name_suffix="deterministic-reference-1"),
+    run(deterministic=True, run_name_suffix="deterministic-reference-2"),
 ]
 
+# (a) All three natural sources at once: new init, new data order, and
+# non-deterministic kernels. Seeds are paired so each run is a fresh draw.
+PART_A = [run(model_seed=s, data_seed=s, run_name_suffix="allvar") for s in (1, 2, 3)]
 
-# TODO: Vary model_seed and data_seed separately and together.
-# For hardware nondeterminism, run the same config on at least two GPU
-# types, e.g. launch_training_jobs(RUNS, gpu="h100") and
-# launch_training_jobs(RUNS, gpu="a100"). On the sphinx queue the GPU types
-# are a100 (sphinx1-8), h100 (sphinx9), and h200 (sphinx10-11).
+# (b) One source at a time, everything else deterministic and pinned to H100.
+INIT_ONLY = [run(deterministic=True, model_seed=s) for s in (1, 2, 3)]
+DATA_ONLY = [run(deterministic=True, data_seed=s) for s in (1, 2, 3)]
+KERNELS_ONLY = [run(run_name_suffix=f"nondet-rep{i}") for i in (1, 2, 3)]
+PART_B = INIT_ONLY + DATA_ONLY + KERNELS_ONLY
+
+# Hardware: the deterministic reference config on other GPU types. The H200 run
+# also tells us whether mixing H100/H200 within a sweep is safe.
+CROSS_GPU_A100 = [run(deterministic=True, run_name_suffix="deterministic-a100")]
+CROSS_GPU_H200 = [run(deterministic=True, run_name_suffix="deterministic-h200")]
+
+# (c) Does the run-to-run spread depend on hyperparameters / capability?
+# Three "all sources" seeds per setting (compare with PART_A's d8 default
+# spread). Runs on any Hopper GPU: P3(b) showed H100 and H200 are bit-identical
+# in deterministic mode, so kernel noise is the same population.
+from model_config import depth_model_config
+
+SEEDS = (1, 2, 3)
+
+
+def seeds(**overrides):
+    return [run(model_seed=s, data_seed=s, run_name_suffix="allvar", **overrides) for s in SEEDS]
+
+
+PART_C = (
+    seeds(learning_rate=0.009)                         # higher LR
+    + seeds(batch_size=16)                             # noisier gradients, 4x steps
+    + seeds(warmup_percent=0.0)                        # unstable start
+    + seeds(model_config=depth_model_config(4))        # smaller / less capable
+    + seeds(num_train_sequences=1_200_000)             # longer training, lower loss
+)
+
+RUNS = PART_C  # REFERENCE + PART_A + PART_B already launched
 
 
 def main():
-    launch_training_jobs(RUNS)
+    if RUNS is PART_C:
+        launch_training_jobs(RUNS, max_parallel_runs=8)
+        return
+    # Fixed GPU type so reproducibility is tested on one hardware kind.
+    launch_training_jobs(RUNS, gpu="h100", max_parallel_runs=8, time_limit="02:30:00")
+    launch_training_jobs(CROSS_GPU_A100, gpu="a100", time_limit="03:00:00")
+    launch_training_jobs(CROSS_GPU_H200, gpu="h200", time_limit="02:30:00")
 
 
 if __name__ == "__main__":

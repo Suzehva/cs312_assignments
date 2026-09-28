@@ -19,7 +19,7 @@ from slurm_launch import common_template_fields, staged_file_name, submit_script
 # Problem 3 wants two GPU types, e.g. gpu="h100" and gpu="a100".
 DEFAULT_QUEUE = "sphinx"
 DEFAULT_GPU = "hopper"
-DEFAULT_TIME_LIMIT = "04:00:00"  # a default d8 run is 10-15 min on H100
+DEFAULT_TIME_LIMIT = "01:30:00"  # a default d8 run is ~12 min on H100; short limits backfill sooner
 
 TEMPLATE = """#!/bin/bash
 #SBATCH --job-name={job_name}
@@ -58,13 +58,18 @@ exec {uv_path} run python -m slurm_train --configs "{configs_path}"
 """
 
 
+def _run_name(config) -> str:
+    from train import checked_train_config, training_run_name
+
+    return training_run_name(checked_train_config(config))
+
+
 def _finished(config) -> bool:
     if config.force_run or not config.save_model:
         return False
     from model_io import CONFIG_FILENAME, WEIGHTS_FILENAME
-    from train import checked_train_config, training_run_name
 
-    run_dir = Path(config.model_dir) / training_run_name(checked_train_config(config))
+    run_dir = Path(config.model_dir) / _run_name(config)
     return (run_dir / CONFIG_FILENAME).is_file() and (run_dir / WEIGHTS_FILENAME).is_file()
 
 
@@ -90,7 +95,7 @@ def launch_training_jobs(
     pending = []
     for config in configs:
         if _finished(config):
-            print(f"skipping finished run: {config.run_name_suffix or config}")
+            print(f"skipping finished run: {_run_name(config)}")
         else:
             pending.append(config)
     if not pending:
