@@ -45,8 +45,8 @@ def main():
     ax.grid(alpha=0.3, which="both")
     ax.legend(fontsize=8)
     fig.tight_layout()
-    out = PLOT_DIR / "p4_amplification.png"
-    fig.savefig(out, dpi=200)
+    out = PLOT_DIR / "p4_amplification.pdf"
+    fig.savefig(out)
     print(out)
 
 

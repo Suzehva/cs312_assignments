@@ -4,18 +4,18 @@
 
 | problem | status | runs | plots |
 |---|---|---|---|
-| 1(a) single-axis sweeps | done | 17 | p1a_single_axis.png |
-| 1(b) paired sweeps | done | 23 | p1b_pairs.png |
-| 1(c) schedules | done | 18 | p1c_schedules.png |
-| 2(a) four d4–d9 ladders, pre-registered d8/d9 | done | 24 | p2a_ladders.png |
-| 2(b) slope bending (wd, data, low LR) | done | 10 | p2b_model_ladders.png, p2b_data_ladder.png |
-| 2(c) breaking (bs256, 77M tokens, SGD, hot) | done | 19 | p2c_breakers.png |
-| 3 refs + (a) + (b) + cross-GPU | done | 17 | p3_variation.png |
-| 3(c) variability vs hyperparameters | done | 15 | p3_variation.png |
-| 4(a) one-token perturbation | done | 2 | p4_amplification.png |
-| 4(b) perturbation timing & magnitude | done | 10 | p4_amplification.png |
-| 5 loss-curve augury (+ beta1 sweep) | done | 3 | p5_loss_curves.png |
-| 6 activation / gradient norms (+3 levers) | done | 3 | p6a_*.png, p6b_*.png, p6c_levers.png |
+| 1(a) single-axis sweeps | done | 17 | p1a_single_axis.pdf |
+| 1(b) paired sweeps | done | 23 | p1b_pairs.pdf |
+| 1(c) schedules | done | 18 | p1c_schedules.pdf |
+| 2(a) four d4–d9 ladders, pre-registered d8/d9 | done | 24 | p2a_ladders.pdf |
+| 2(b) slope bending (wd, data, low LR) | done | 10 | p2b_model_ladders.pdf, p2b_data_ladder.pdf |
+| 2(c) breaking (bs256, 77M tokens, SGD, hot) | done | 19 | p2c_breakers.pdf |
+| 3 refs + (a) + (b) + cross-GPU | done | 17 | p3_variation.pdf |
+| 3(c) variability vs hyperparameters | done | 15 | p3_variation.pdf |
+| 4(a) one-token perturbation | done | 2 | p4_amplification.pdf |
+| 4(b) perturbation timing & magnitude | done | 10 | p4_amplification.pdf |
+| 5 loss-curve augury (+ beta1 sweep) | done | 3 | p5_loss_curves.pdf |
+| 6 activation / gradient norms (+3 levers) | done | 3 | p6a_*.pdf, p6b_*.pdf, p6c_levers.pdf |
 | 7 | skipped by instruction | 0 | |
 
 Total ≈ 161 training runs (handout suggests ≈170). All on the `sphinx` queue;
@@ -69,7 +69,7 @@ at 614M (compute-matched; batch size changes step count only).
 - weight decay: 0.011, 0.033, 0.1, 0.3, 1.0
 - warmup: 0, 0.003, 0.01, 0.03, 0.1
 
-Status: **complete** (17/17, all on H200). Plot: `plots/p1a_single_axis.png`.
+Status: **complete** (17/17, all on H200). Plot: `plots/p1a_single_axis.pdf`.
 
 | axis | value | final val loss | vs baseline |
 |---|---|---|---|
@@ -124,7 +124,7 @@ Launched in parallel with 1(a) because they are independent.
 - cross-GPU: deterministic reference on A100 and on H200 (the H200 run also
   tests whether mixing H100/H200 inside a sweep is safe)
 
-Status: **complete** (14 H100 + A100 + H200 runs). Plot: `plots/p3_variation.png`.
+Status: **complete** (14 H100 + A100 + H200 runs). Plot: `plots/p3_variation.pdf`.
 
 | source of variation | runs | final val losses | std | range |
 |---|---|---|---|---|
@@ -164,7 +164,7 @@ below ~0.005 between two single runs is not evidence of anything.
 
 Starter pair: deterministic baseline vs. deterministic + one token changed
 (row 0, position 100 → token 17). Both on H100. **Complete.**
-Plot: `plots/p4_amplification.png` (|val-loss difference| vs step, log-log).
+Plot: `plots/p4_amplification.pdf` (|val-loss difference| vs step, log-log).
 
 | run | final val loss |
 |---|---|
@@ -228,7 +228,7 @@ true power laws; constant LR and high LR are bending toward a floor already at
 ### 2(a) stage 2 (d8, d9) — job 17643065, 7 runs (d8 baseline reused from P1)
 
 Launched 2026-09-28 03:34 after the predictions above were written.
-**Complete.** Plot: `plots/p2a_ladders.png` (fits on d4–d7, dashed; d8/d9 observed).
+**Complete.** Plot: `plots/p2a_ladders.pdf` (fits on d4–d7, dashed; d8/d9 observed).
 
 | ladder | d8 pred | d8 obs | err | d9 pred | d9 obs | err |
 |---|---|---|---|---|---|---|
@@ -330,7 +330,7 @@ warmup gain saturates by ~10%); lr 0.001 × batch 128 = 3.0244 and × batch 256
 0.003 from both sides); lr 0.001 × wd 3.0 = 2.9897 (worse than wd 1.0, so the
 lr·wd product rule peaks at ≈1e-3 rather than "more is better").
 
-**1(b) complete** (23 runs incl. probes). Plot: `plots/p1b_pairs.png` (TODO).
+**1(b) complete** (23 runs incl. probes). Plot: `plots/p1b_pairs.pdf` (TODO).
 
 Summary of (b): three pairs, three different behaviours —
 1. lr × batch: **no** co-variation of the optimum (steps, not LR, limit large batches);
@@ -372,7 +372,7 @@ lr 0.027; wsd0.2 × lr 0.009 × warmup {0, 0.1}; cos × lr 0.009 × warmup 0.1;
 wsd0.1, wsd0.8 at defaults; constant × wd {0.033, 0.3}; lr 0.009 + warmup
 0.1 + batch 32.
 
-Results (complete). Plot: `plots/p1c_schedules.png`.
+Results (complete). Plot: `plots/p1c_schedules.pdf`.
 
 **schedule × LR** (1% warmup, wd 0.1)
 
@@ -463,7 +463,7 @@ steps but 4x as many of them); d4 spread ≈ default in absolute terms; 1.2M
 sequences (lower loss) has *smaller* spread (≈0.001) because longer training
 averages out data-order effects.
 
-Results (**complete**, 15/15). Plot: `plots/p3_variation.png` (left panel now
+Results (**complete**, 15/15). Plot: `plots/p3_variation.pdf` (left panel now
 shows each group relative to its own mean, std annotated).
 
 | setting (3 all-sources seeds) | final val losses | mean | std | range |
@@ -590,7 +590,7 @@ roughly like 1/sqrt(batch) and grows with LR; beta1 barely changes the
 per-step residual (it acts on the update, the residual is dominated by
 per-batch loss variance).
 
-#### Results — plot `plots/p5_loss_curves.png` (top: 51-step running mean of
+#### Results — plot `plots/p5_loss_curves.pdf` (top: 51-step running mean of
 train loss, log-log; bottom: residual around that mean, steps 6000–6300)
 
 **5(a) macro shape.** All curves share one template: init at 8.8 (= ln 4096
@@ -656,7 +656,7 @@ every 100 steps that every run already logs (118 modules). (c) adds three
 levers not covered by P1: no gradient clipping, no QK-norm, tied embeddings.
 Launched 04:23. Analysis script: `plot_p6.py`.
 
-#### 6(a) default d8 run — plots `p6a_depth_profile.png`, `p6a_residual_stream.png`
+#### 6(a) default d8 run — plots `p6a_depth_profile.pdf`, `p6a_residual_stream.pdf`
 
 Statistics at step 100 ("start"), step ≈4700 ("middle") and step 9300
 ("end"), per layer, for q_proj, o_proj, up_proj, down_proj and the input
@@ -731,7 +731,7 @@ Reading:
   wd; to make gradient norms larger, do the opposite. Warmup only touches the
   start.
 
-#### 6(c) the three extra levers — plot `p6c_levers.png`
+#### 6(c) the three extra levers — plot `p6c_levers.pdf`
 
 | run | final val loss | end param RMS | end act RMS | end grad RMS | grad RMS @ step 0 / 100 |
 |---|---|---|---|---|---|
@@ -793,7 +793,7 @@ rather than following one power law. Data scaling for a fixed d8 is the
 clearest "bend" so far. Update: 307M → 3.0537 (local exponent 154M→307M:
 0.081; 307M→614M: 0.061), confirming the steady flattening.
 
-**2(b) complete** (10/10). Plots: `p2b_model_ladders.png`, `p2b_data_ladder.png`.
+**2(b) complete** (10/10). Plots: `p2b_model_ladders.pdf`, `p2b_data_ladder.pdf`.
 
 Data ladder, d8, final:
 
@@ -848,7 +848,7 @@ d6: removing warmup and clipping on top of lr 0.03 costs only ≈0.01 more
 than lr 0.03 alone, so the instability I predicted (spikes/divergence at
 d7–d8) has not appeared yet in this 8-layer-max regime.
 
-**2(c) complete** (19 new runs + 1 reused). Plot: `plots/p2c_breakers.png`.
+**2(c) complete** (19 new runs + 1 reused). Plot: `plots/p2c_breakers.pdf`.
 
 Break test — fit a power law on d4–d6 only and predict d8 (a miss > 0.05 =
 "broken"):
@@ -904,7 +904,7 @@ than a growing one, so a small-model fit would still extrapolate to d8 within
 0.015. Step starvation shifts; data starvation bends.
 
 **Complete** (10/10, 07:10). |Δ| = |final val loss − deterministic baseline 2.927720|.
-Plot: `plots/p4_amplification.png` (|val-loss difference| vs step, all 11 perturbed runs).
+Plot: `plots/p4_amplification.pdf` (|val-loss difference| vs step, all 11 perturbed runs).
 
 **Timing** (1 token changed in one row of the batch at step T)
 

@@ -16,22 +16,46 @@ PLOT_DIR = Path(__file__).resolve().parent / "plots"
 AXES = ("learning_rate", "batch_size", "weight_decay", "warmup_percent")
 
 
+DEFAULTS = {"learning_rate": 0.003, "batch_size": 64, "weight_decay": 0.1, "warmup_percent": 0.01}
+GRID = {"learning_rate": (0.0003, 0.001, 0.003, 0.009, 0.027),
+        "batch_size": (16, 32, 64, 128, 256),
+        "weight_decay": (0.011, 0.033, 0.1, 0.3, 1.0),
+        "warmup_percent": (0.0, 0.003, 0.01, 0.03, 0.1, 0.3, 0.6)}
+LABELS = {"learning_rate": "learning rate", "batch_size": "batch size (tokens fixed)",
+          "weight_decay": "weight decay", "warmup_percent": "warmup fraction"}
+
+
 def plot_part_a(runs):
-    fig, axs = plt.subplots(1, 4, figsize=(16, 3.8))
+    fig, axs = plt.subplots(1, 4, figsize=(16, 4), sharey=True)
     for ax, key in zip(axs, AXES):
-        pts = sorted((r.get(key), r.val_loss) for r in runs if is_default(r, key))
+        pts = sorted((r.get(key), r.val_loss) for r in runs
+                     if is_default(r, key) and any(np.isclose(r.get(key), g) for g in GRID[key]))
         if not pts:
             continue
-        x, y = zip(*pts)
-        ax.plot(x, y, "o-")
-        if key != "warmup_percent":
+        x, y = map(np.array, zip(*pts))
+        ax.plot(x, y, "o-", color="C0", zorder=3)
+        d = DEFAULTS[key]
+        ax.scatter([d], [y[np.isclose(x, d)][0]], s=160, facecolors="none", edgecolors="C3",
+                   linewidths=2, zorder=4, label=f"default = {d:g}")
+        for xi, yi in zip(x, y):
+            ax.annotate(f"{yi:.3f}", (xi, yi), textcoords="offset points", xytext=(0, 8),
+                        ha="center", fontsize=8, color="0.35")
+        if key == "warmup_percent":
+            ax.set_xscale("symlog", linthresh=0.003)
+        else:
             ax.set_xscale("log")
-        ax.set_xlabel(key)
-        ax.set_ylabel("final val loss")
+        ax.set_xticks(x)
+        ax.set_xticklabels([f"{v:g}" for v in x])
+        ax.xaxis.set_minor_formatter(plt.NullFormatter())
+        ax.set_xlabel(LABELS[key])
         ax.grid(alpha=0.3)
+        ax.legend(frameon=False, fontsize=9, loc="upper center")
+    axs[0].set_ylabel("final validation loss")
+    axs[0].set_ylim(2.90, 3.17)
+    fig.suptitle("Problem 1(a): one hyperparameter at a time, d8, 614M tokens")
     fig.tight_layout()
-    out = PLOT_DIR / "p1a_single_axis.png"
-    fig.savefig(out, dpi=200)
+    out = PLOT_DIR / "p1a_single_axis.pdf"
+    fig.savefig(out)
     return out
 
 
@@ -62,8 +86,8 @@ def plot_part_b(runs):
     heatmap(axs[1], runs, "weight_decay", "learning_rate", "lr x weight decay")
     im = heatmap(axs[2], runs, "warmup_percent", "learning_rate", "lr x warmup")
     fig.colorbar(im, ax=axs, label="final val loss (clipped at 3.05)", fraction=0.02)
-    out = PLOT_DIR / "p1b_pairs.png"
-    fig.savefig(out, dpi=200, bbox_inches="tight")
+    out = PLOT_DIR / "p1b_pairs.pdf"
+    fig.savefig(out, bbox_inches="tight")
     return out
 
 
@@ -79,8 +103,8 @@ def plot_part_c(runs):
     ax.legend()
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    out = PLOT_DIR / "p1c_schedules.png"
-    fig.savefig(out, dpi=200)
+    out = PLOT_DIR / "p1c_schedules.pdf"
+    fig.savefig(out)
     return out
 
 

@@ -62,8 +62,8 @@ def plot_depth_profile(run):
     axs[0, 0].legend(fontsize=8)
     fig.suptitle(f"{run.name}: RMS across depth at three stages")
     fig.tight_layout()
-    out = PLOT_DIR / "p6a_depth_profile.png"
-    fig.savefig(out, dpi=170)
+    out = PLOT_DIR / "p6a_depth_profile.pdf"
+    fig.savefig(out)
     return out, steps, keys, all_vals
 
 
@@ -81,8 +81,8 @@ def plot_residual_stream(run):
     ax.grid(alpha=0.3, which="both")
     ax.legend()
     fig.tight_layout()
-    out = PLOT_DIR / "p6a_residual_stream.png"
-    fig.savefig(out, dpi=170)
+    out = PLOT_DIR / "p6a_residual_stream.pdf"
+    fig.savefig(out)
     print(out)
     for label, idx in {"start": 1, "middle": len(steps) // 2, "end": len(steps) - 1}.items():
         print(f"  residual RMS {label:6s}: " + " ".join(f"{vals[k][idx]:.3g}" for k in keys))
@@ -106,7 +106,7 @@ def plot_global_trajectories(runs, filename, title):
     fig.suptitle(title)
     fig.tight_layout()
     out = PLOT_DIR / filename
-    fig.savefig(out, dpi=170)
+    fig.savefig(out)
     return out
 
 
@@ -127,10 +127,10 @@ def main():
                 print(f"  {label:6s}: " + " ".join(f"{v[idx]:.3g}" if v is not None else "-" for v in row))
 
     groups = {
-        "p6b_lr.png": ("learning rate", [n for n in runs if re.fullmatch(r"model-d8-lr[0-9.]+-tok614M", n)]),
-        "p6b_wd.png": ("weight decay", [BASELINE] + [n for n in runs if re.fullmatch(r"model-d8-lr0.003-tok614M-wd[0-9.]+", n)]),
-        "p6b_warmup.png": ("warmup", [BASELINE] + [n for n in runs if re.fullmatch(r"model-d8-lr0.003-tok614M-warmup[0-9.]+", n)]),
-        "p6c_levers.png": ("P6(c) levers", [BASELINE] + [n for n in runs if any(t in n for t in ("nogradclip", "noqknorm", "tiedemb"))]),
+        "p6b_lr.pdf": ("learning rate", [n for n in runs if re.fullmatch(r"model-d8-lr[0-9.]+-tok614M", n)]),
+        "p6b_wd.pdf": ("weight decay", [BASELINE] + [n for n in runs if re.fullmatch(r"model-d8-lr0.003-tok614M-wd[0-9.]+", n)]),
+        "p6b_warmup.pdf": ("warmup", [BASELINE] + [n for n in runs if re.fullmatch(r"model-d8-lr0.003-tok614M-warmup[0-9.]+", n)]),
+        "p6c_levers.pdf": ("P6(c) levers", [BASELINE] + [n for n in runs if any(t in n for t in ("nogradclip", "noqknorm", "tiedemb"))]),
     }
     for filename, (title, names) in groups.items():
         rs = [runs[n] for n in sorted(names) if n in runs]

@@ -61,7 +61,7 @@ def plot_ladders(runs, ladders, filename):
     ax.grid(alpha=0.3, which="both")
     fig.tight_layout()
     out = PLOT_DIR / filename
-    fig.savefig(out, dpi=200)
+    fig.savefig(out)
     return out
 
 
@@ -87,19 +87,19 @@ def plot_data_ladder(runs):
     ax.legend()
     ax.grid(alpha=0.3, which="both")
     fig.tight_layout()
-    out = PLOT_DIR / "p2b_data_ladder.png"
-    fig.savefig(out, dpi=200)
+    out = PLOT_DIR / "p2b_data_ladder.pdf"
+    fig.savefig(out)
     return out
 
 
 def main():
     PLOT_DIR.mkdir(exist_ok=True)
     runs = fetch_runs([TAG, "a1-p1"], curves=False)  # the d8 baseline carries the P1 tag
-    print(plot_ladders(runs, LADDERS, "p2a_ladders.png"))
+    print(plot_ladders(runs, LADDERS, "p2a_ladders.pdf"))
     print(plot_ladders(runs, {"baseline": {}, "wd 0.3": dict(weight_decay=0.3),
-                              "lr 0.001": dict(learning_rate=0.001)}, "p2b_model_ladders.png"))
+                              "lr 0.001": dict(learning_rate=0.001)}, "p2b_model_ladders.pdf"))
     print(plot_data_ladder(runs))
-    print(plot_ladders(runs, {"baseline": {}, **BREAKERS}, "p2c_breakers.png"))
+    print(plot_ladders(runs, {"baseline": {}, **BREAKERS}, "p2c_breakers.pdf"))
 
 
 if __name__ == "__main__":

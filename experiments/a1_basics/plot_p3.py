@@ -69,8 +69,8 @@ def plot(rows):
     ax2.legend(fontsize=8)
     ax2.grid(alpha=0.3, which="both")
     fig.tight_layout()
-    out = PLOT_DIR / "p3_variation.png"
-    fig.savefig(out, dpi=200)
+    out = PLOT_DIR / "p3_variation.pdf"
+    fig.savefig(out)
     return out
 
 

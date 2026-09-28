@@ -82,7 +82,10 @@ SCHED_X_WD = [run(lr_schedule="constant", weight_decay=wd) for wd in (0.033, 0.3
 STACK = [run(learning_rate=0.009, warmup_percent=0.1, batch_size=32)]
 PART_C = SCHED_X_LR + SCHED_X_WARMUP + WSD_FRACTION + SCHED_X_WD + STACK
 
-RUNS = PART_C
+# Extra (a) point: warmup 0.1 -> 0.3 was flat (2.920 -> 2.919); does it turn up?
+EXTRA_A = [run(warmup_percent=0.6)]
+
+RUNS = EXTRA_A
 
 
 def main():

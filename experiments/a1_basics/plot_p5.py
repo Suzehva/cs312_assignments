@@ -77,8 +77,8 @@ def main():
         axs[1, col].set_ylabel("loss − running mean")
         axs[1, col].grid(alpha=0.3)
     fig.tight_layout()
-    out = PLOT_DIR / "p5_loss_curves.png"
-    fig.savefig(out, dpi=170)
+    out = PLOT_DIR / "p5_loss_curves.pdf"
+    fig.savefig(out)
     print(out)
     print("\nmicro-structure: std of residual around 51-step mean, second half of training")
     for title, lab, sm, last in stats:
