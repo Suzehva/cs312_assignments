@@ -16,7 +16,7 @@ def build_runs():
 
 
 def main() -> None:
-    from modal_train import launch_training_jobs
+    from slurm_train import launch_training_jobs
 
     launch_training_jobs(build_runs())
 
