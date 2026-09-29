@@ -45,7 +45,21 @@ BREAKERS = {
 }
 PART_C = [run(d, **kw) for kw in BREAKERS.values() for d in range(4, 9)]
 
-RUNS = PART_C  # (a), (b) launched; predictions and results in RESULTS.md
+# (b) follow-up: complete the lr 0.001 ladder (d5, d7, d8 exist) so its slope
+# can be fitted rather than asserted.
+LOW_LR_FILL = [run(d, learning_rate=0.001) for d in (4, 6, 9)]
+
+# (b)/(c) data-axis intervention: lr 0.009 along the d8 data ladder (614M
+# exists from P1). The LR optimum depends on the step count, so a hotter LR
+# should help short horizons and hurt long ones, tilting the data-axis slope.
+DATA_LADDER_LR009 = [run(8, learning_rate=0.009, num_train_sequences=n) for n in (75_000, 150_000, 1_200_000)]
+
+# (c) data-axis breaker: scale tokens by *repeating* 75k sequences for 2, 4, 8
+# epochs (154M/307M/614M tokens seen) instead of adding fresh data. The
+# single-epoch 77M run is the shared starting point.
+REPEATED_DATA = [run(8, num_train_sequences=75_000, num_epochs=e) for e in (2.0, 4.0, 8.0)]
+
+RUNS = REPEATED_DATA
 
 
 def main():

@@ -46,7 +46,8 @@ def ladder_runs(runs, spec):
     )
 
 
-def _fit_and_draw(ax, rs, fit_depths, name, color, x_max_depth, predict_depths=(), show_pure=False):
+def _fit_and_draw(ax, rs, fit_depths, name, color, x_max_depth, predict_depths=(), show_pure=False,
+                  show_slope=False):
     fit = [r for r in rs if r.depth in fit_depths]
     held = [r for r in rs if r.depth not in fit_depths]
     xs_fit, ys_fit = [C_of(r) for r in fit], [r.val_loss for r in fit]
@@ -54,6 +55,9 @@ def _fit_and_draw(ax, rs, fit_depths, name, color, x_max_depth, predict_depths=(
     if len(fit) >= 3:
         a, alpha, eps, predict = fit_power_law_eps(xs_fit, ys_fit)
         label = f"{name}:  L = {a:.2f}·C^-{alpha:.2f} + {eps:.2f}"
+        if show_slope:  # plain log-log slope (no floor), the "scaling slope" of part (b)
+            _, slope, _ = fit_power_law(xs_fit, ys_fit)
+            label += f"   [log-log slope {slope:.3f}]"
         res = (alpha, eps, predict)
     ax.plot(xs_fit, ys_fit, "o", color=color, label=label)
     if held:
@@ -75,19 +79,20 @@ def _fit_and_draw(ax, rs, fit_depths, name, color, x_max_depth, predict_depths=(
     return alpha, eps, predict
 
 
-def plot_ladders(runs, ladders, filename):
+def plot_ladders(runs, ladders, filename, show_slope=False):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.4))
     for i, (name, spec) in enumerate(ladders.items()):
         rs = ladder_runs(runs, spec)
         if not rs:
             continue
         color = f"C{i}"
-        res = _fit_and_draw(ax1, rs, FIT_DEPTHS, name, color, x_max_depth=9)
+        res = _fit_and_draw(ax1, rs, FIT_DEPTHS, name, color, x_max_depth=9, show_slope=show_slope)
         if res:
             alpha, eps, predict = res
             print(f"{name:12s} fit d4-d7: alpha={alpha:.3f} eps={eps:.2f}  " + "  ".join(
                 f"d{r.depth} obs={r.val_loss:.4f} pred={predict(C_of(r)):.4f}" for r in rs if r.depth not in FIT_DEPTHS))
-        res = _fit_and_draw(ax2, rs, range(4, 10), name, color, x_max_depth=20, predict_depths=(20,), show_pure=True)
+        res = _fit_and_draw(ax2, rs, range(4, 10), name, color, x_max_depth=20, predict_depths=(20,),
+                            show_pure=True, show_slope=show_slope)
         if res:
             alpha, eps, predict = res
             lo, hi, n = power_law_eps_band([C_of(r) for r in rs], [r.val_loss for r in rs], compute_at(20))
@@ -115,37 +120,52 @@ def plot_ladders(runs, ladders, filename):
 
 
 def plot_data_ladder(runs):
-    """d8 at 77M–1.23B tokens: C = 6ND relative to d8 at 614M, i.e. D / 614M."""
-    rs = sorted((r for r in runs if r.depth == 8 and all(
-        r.get(k) == v for k, v in DEFAULTS.items() if k != "num_train_sequences")
-        and not r.get("deterministic") and r.get("model_seed") == 42),
-        key=lambda r: r.get("train_tokens"))
-    if len(rs) < 3:
-        return None
-    x = np.array([r.get("train_tokens") for r in rs], float) / 614_400_000
-    y = np.array([r.val_loss for r in rs])
-    a, alpha, eps, predict = fit_power_law_eps(x, y)
-    local = -np.diff(np.log(y)) / np.diff(np.log(x))
-    print(f"data ladder (d8): eps={eps:.2f} alpha={alpha:.3f}; local exponents between points: "
-          + ", ".join(f"{v:.3f}" for v in local))
-    fig, ax = plt.subplots(figsize=(7, 4.6))
-    ax.plot(x, y, "o", color="C0", label=f"d8, tokens varied:  L = {a:.2f}·C^-{alpha:.2f} + {eps:.2f}")
-    xs = np.logspace(np.log10(x.min()), np.log10(x.max() * 8), 60)
-    ax.plot(xs, predict(xs), "--", color="C0", alpha=0.75)
-    lo, hi, _ = power_law_eps_band(x, y, x.max() * 8)
-    ax.plot([x.max() * 8] * 2, [lo, hi], "-", color="C0", alpha=0.5, lw=3)
-    ax.plot([x.max() * 8], [predict(x.max() * 8)], "D", mfc="none", mec="C0")
-    ax.annotate(f"{predict(x.max() * 8):.2f}", (x.max() * 8, predict(x.max() * 8)),
-                textcoords="offset points", xytext=(6, 0), fontsize=8, va="center")
-    for xi, yi, e in zip(x[:-1], y[:-1], local):
-        ax.annotate(f"slope {e:.2f}", ((xi * x[list(x).index(xi) + 1]) ** 0.5, yi), fontsize=7,
-                    color="0.4", ha="center", textcoords="offset points", xytext=(0, -14))
+    """d8 at 77M–1.23B tokens: C = 6ND relative to d8 at 614M, i.e. D / 614M.
+    One curve per intervention (baseline recipe, and any lr/wd variant with ≥3 points)."""
+    def tokens_seen(r):
+        return float(r.get("train_tokens")) * float(r.get("num_epochs", 1.0))
+
+    def data_runs(spec, repeated=False):
+        want = {**DEFAULTS, **spec}
+        rs = [r for r in runs if r.depth == 8
+              and all(r.get(k) == v for k, v in want.items() if k != "num_train_sequences")
+              and not r.get("deterministic") and r.get("model_seed") == 42]
+        if repeated:   # the 75k-sequence runs at 1, 2, 4, 8 epochs
+            rs = [r for r in rs if r.get("num_train_sequences") == 75_000]
+        else:          # fresh data: one epoch each
+            rs = [r for r in rs if float(r.get("num_epochs", 1.0)) == 1.0]
+        return sorted(rs, key=tokens_seen)
+    ladders = {"baseline (fresh data)": ({}, False),
+               "lr 0.009 (fresh data)": (dict(learning_rate=0.009), False),
+               "75k sequences repeated (1, 2, 4, 8 epochs)": ({}, True)}
+    fig, ax = plt.subplots(figsize=(7.5, 4.8))
+    x_far = 8.0
+    for i, (name, (spec, repeated)) in enumerate(ladders.items()):
+        rs = data_runs(spec, repeated)
+        if len(rs) < 3:
+            continue
+        color = f"C{i}"
+        x = np.array([tokens_seen(r) for r in rs]) / 614_400_000
+        y = np.array([r.val_loss for r in rs])
+        a, alpha, eps, predict = fit_power_law_eps(x, y)
+        _, slope, _ = fit_power_law(x, y)
+        local = -np.diff(np.log(y)) / np.diff(np.log(x))
+        print(f"data ladder {name:9s}: eps={eps:.2f} alpha={alpha:.3f} log-log slope={slope:.3f}; "
+              f"local slopes: " + ", ".join(f"{v:.3f}" for v in local))
+        ax.plot(x, y, "o", color=color, label=f"{name}:  L = {a:.2f}·C^-{alpha:.2f} + {eps:.2f}   [log-log slope {slope:.3f}]")
+        xs = np.logspace(np.log10(x.min()), np.log10(x_far), 60)
+        ax.plot(xs, predict(xs), "--", color=color, alpha=0.75)
+        lo, hi, _ = power_law_eps_band(x, y, x_far)
+        ax.plot([x_far] * 2, [lo, hi], "-", color=color, alpha=0.5, lw=3)
+        ax.plot([x_far], [predict(x_far)], "D", mfc="none", mec=color)
+        ax.annotate(f"{predict(x_far):.2f}", (x_far, predict(x_far)), textcoords="offset points",
+                    xytext=(6, 0), fontsize=8, color=color, va="center")
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.set_xlabel("C = compute relative to the d8 default  (= tokens / 614M at fixed d8)")
+    ax.set_xlabel("C = compute relative to the d8 default  (= tokens seen / 614M at fixed d8)")
     ax.set_ylabel("final validation loss")
-    ax.set_title("Data ladder: d8 with 77M → 1.23B tokens; extrapolation to 8x (≈10B tokens)", fontsize=9.5)
-    ax.legend(fontsize=8)
+    ax.set_title("Data ladders at fixed d8 (77M → 1.23B tokens); extrapolation to 8x (≈5B tokens)", fontsize=9.5)
+    ax.legend(fontsize=7.5)
     ax.grid(alpha=0.3, which="both")
     fig.tight_layout()
     out = PLOT_DIR / "p2b_data_ladder.pdf"
@@ -158,7 +178,7 @@ def main():
     runs = fetch_runs([TAG, "a1-p1"], curves=False)  # the d8 baseline carries the P1 tag
     print(plot_ladders(runs, LADDERS, "p2a_ladders.pdf"))
     print(plot_ladders(runs, {"baseline": {}, "wd 0.3": dict(weight_decay=0.3),
-                              "lr 0.001": dict(learning_rate=0.001)}, "p2b_model_ladders.pdf"))
+                              "lr 0.001": dict(learning_rate=0.001)}, "p2b_model_ladders.pdf", show_slope=True))
     print(plot_data_ladder(runs))
     print(plot_ladders(runs, {"baseline": {}, **BREAKERS}, "p2c_breakers.pdf"))
 

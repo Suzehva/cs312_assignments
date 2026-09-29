@@ -51,11 +51,19 @@ PART_C = (
     + seeds(num_train_sequences=1_200_000)             # longer training, lower loss
 )
 
-RUNS = PART_C  # REFERENCE + PART_A + PART_B already launched
+# (c) follow-up: a middle point on the size axis. d4 (std 0.010) vs d8
+# (std 0.002) is two points; d6 tells whether noise falls monotonically with size.
+PART_C_D6 = seeds(model_config=depth_model_config(6))
+
+# More baseline seeds (the question's range 4-13, as far as time allows) so the
+# baseline SD is estimated from 10 runs instead of 3.
+BASELINE_SEEDS = [run(model_seed=s, data_seed=s, run_name_suffix="allvar") for s in range(4, 11)]
+
+RUNS = BASELINE_SEEDS  # earlier parts already launched
 
 
 def main():
-    if RUNS is PART_C:
+    if RUNS is PART_C or RUNS is PART_C_D6 or RUNS is BASELINE_SEEDS:
         launch_training_jobs(RUNS, max_parallel_runs=8)
         return
     # Fixed GPU type so reproducibility is tested on one hardware kind.

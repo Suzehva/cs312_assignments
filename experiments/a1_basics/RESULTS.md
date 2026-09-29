@@ -18,8 +18,8 @@
 | 6 activation / gradient norms (+3 levers) | done | 3 | p6a_*.pdf, p6b_*.pdf, p6c_levers.pdf |
 | 7 | skipped by instruction | 0 | |
 
-Total 187 training runs after the follow-ups requested on 28 Sep afternoon
-(handout suggests ≈170; hard cap 200). All on the `sphinx` queue;
+Total **196** training runs after the follow-ups requested on 28 Sep
+afternoon (handout suggests ≈170; hard cap 200; 4 left). All on the `sphinx` queue;
 comparison sweeps on H100/H200, variance measurements pinned to H100.
 
 Headline numbers to remember (d8, 614M tokens):
@@ -154,12 +154,16 @@ are indistinguishable by eye after ~1k steps (see plot, right panel); the
 distribution over 3 samples looks symmetric, no outliers. A loss difference
 below ~0.005 between two single runs is not evidence of anything.
 
-3(b) reading — decomposition of the variance:
-- **Initialisation** is the largest single source (std ≈ 0.003, ~2x data
-  order), **data order** next (≈ 0.002), **kernel non-determinism** smallest
-  (≈ 0.001). Summing variances predicts an all-sources std of ≈ 0.0037; the
-  observed 0.0016 from n=3 is consistent given that a 3-sample std has ~50%
-  relative error.
+3(b) reading — **revised 17:40 after re-reading lecture 2** ("randomness
+sources are not additive; any single source leads to similar variance"):
+- Each source alone gives a spread of a few thousandths (init 0.003, data
+  0.002, kernels 0.001) and all three together give **no more** (0.0016). An
+  additive model would predict ≈ 0.004 for all-sources; the data do not show
+  that. Together with P4 (one token → 0.0023, a full reseed's worth) this is
+  the chaotic picture: any perturbation lands the run at a random point
+  within the same ≈0.002 floor. The ordering init > data > kernels is within
+  the ~50% relative error of a 3-sample std and should not be over-read.
+  (Earlier text here summed variances; that framing was wrong.)
 - **Hardware**: bit-identical across H100/H200 (same kernels), and only 0.0005
   apart on A100, *smaller* than kernel noise on one GPU. So GPU choice is not a
   meaningful source of variation here; run-to-run atomics are.
@@ -1160,3 +1164,148 @@ range is 3x wider (ε moved 2.84 → 2.68 when two points were added), and
 dropout's best fit sits on the ε = 0 boundary, so for those two the floor is
 not identified and only the range should be quoted. The pure power law
 (ε = 0) is no longer plotted; it is one end of these ranges for dropout only.
+
+### 2(b) plots redone in the (a) convention (16:15)
+
+`p2b_model_ladders.pdf` and `p2b_data_ladder.pdf` now use C (compute relative
+to d8) and L = a·C^−α + ε with noise-compatible bands.
+- wd 0.3: ε = 2.40, α = 0.25, identical to the baseline's; only the constant
+  differs (0.52 vs 0.53). A pure parallel offset, confirmed by the fit.
+- lr 0.001: three points, so the fit (ε 2.49, α 0.29) is unconstrained; its
+  d20 bar spans ~0.3. Describe in words (gap shrinking with N), not by fit.
+- data ladder (d8, C = tokens/614M): ε = **2.70**, α = 0.64, residuals small;
+  local exponents 0.13 → 0.08 → 0.06 → 0.045. Extrapolation to 8x tokens
+  (≈10B) gives 2.74 ± 0.02. **The data axis has a higher floor (2.70) than the
+  model axis (2.40)**: at fixed d8, more tokens saturate near 2.7; at fixed
+  614M tokens, more parameters saturate near 2.4. Each axis alone runs into its
+  own floor, which is the case for scaling N and D together.
+
+**lr 0.001 ladder completion — job 17647929, 3 runs (16:30):** d4, d6, d9.
+Prediction: the gap to baseline keeps shrinking with N (d5 +0.066, d7 +0.053,
+d8 +0.050 so far), so d4 ≈ 3.36, d6 ≈ 3.11, d9 ≈ 2.93; the six-point no-floor
+slope comes out steeper than the baseline's 0.059, around 0.065.
+Run total after this: 190 of 200.
+
+**Result (17:14):** d4 3.3523, d6 3.1165, d9 2.9219 (predicted 3.36 / 3.11 /
+2.93 — all within 0.01). Gap to baseline by depth: d4 +0.061, d5 +0.066, d6 +0.061, d7 +0.053, d8 +0.050, d9 +0.039.
+Six-point log-log slope: **0.056 vs the baseline's 0.054**, and on d4–d7
+alone both are 0.059. That is *not* a resolvable slope change: the gap
+narrows from ≈0.06 to ≈0.04, but almost entirely at d9, a single point with
+≈0.003 noise. Honest reading: lr 0.001 is a parallel shift (+0.05 to +0.06)
+with at most a hint of convergence at the largest sizes. My earlier
+"gap shrinks with N" claim was built on three points and over-read them.
+Consequence for (b): none of the model-axis interventions tried (wd 0.3,
+lr 0.001, dropout, bs256) changed the slope; the slope changes we have are
+from (a)'s constant-LR and lr 0.03 ladders (0.036 and 0.045 vs 0.054), and
+the clearest slope effects are on the data axis.
+
+**Data-axis intervention — job 17648032, 3 runs (16:40):** lr 0.009 at 77M,
+154M and 1.23B tokens on d8 (614M = 2.9501 from P1; baseline data ladder
+3.537 / 3.230 / 3.054 / 2.9275 / 2.8375). Prediction: the LR optimum depends
+on the number of steps, so 0.009 beats the baseline at short horizons and
+loses at long ones: 77M ≈ 3.48 (−0.06), 154M ≈ 3.21 (−0.02), 614M +0.023
+(known), 1.23B ≈ 2.87 (+0.03). That is a *tilt* of the data-axis slope
+(shallower than the baseline's) with the curve still smooth → part (b). If
+instead the 1.23B point spikes or the curve stops being monotone, it belongs
+in (c). Run total after this: 193 of 200.
+
+**Result (17:40):** 77M 3.9759, 154M 3.3742, 1.23B 2.8517 (614M 2.9501 known).
+Penalty vs baseline: +0.44, +0.14, +0.02, +0.01 — shrinking with tokens.
+Prediction (hot LR helps short runs) **wrong in direction**. Log-log slope
+0.115 vs the baseline's 0.078, curve smooth → **a slope change within the
+linear regime, on the data axis → part (b)**. Mechanism: warmup and decay are
+fractions of the run, so a 77M-token run gets 12 warmup steps and a 1.2k-step
+decay — nowhere near enough for lr 0.009 (P1(b): high LR needs long warmup) —
+while the 1.23B run gets 190 and 19k. The optimal LR rises with training
+length at a fixed warmup *fraction*. Lesson: an intervention's effect on a
+data ladder is mediated by anything defined as a fraction of the run.
+
+**Data-axis breaker — job 17648063, 3 runs (16:50):** d8 on 75k sequences
+repeated for 2, 4, 8 epochs (154M / 307M / 614M tokens seen; 1 epoch = 3.537
+from 2(c)). Compared on the same compute axis as the fresh-data ladder
+(3.230 / 3.054 / 2.9275 at those token counts). Prediction: repetition helps
+much less than fresh data and the gain shrinks with each doubling — 2 epochs
+≈ 3.33, 4 epochs ≈ 3.24, 8 epochs ≈ 3.22 or slightly worse than 4 (onset of
+memorisation on 75k sequences). If the 8-epoch point is ≥ the 4-epoch one
+the data-axis law is broken by repetition; the "compute regime" is more
+passes than the unique data supports. Run total after this: 196 of 200.
+
+### Worked quiz example (handout p.11, context-length pilots) — 17:10
+
+Setup: fixed 1024 context vs context growing with depth; 39M tokens × 15
+epochs; pilots d4–d6, endpoint d10. Fit predicted scaled − fixed = +0.055 at
+d10. Answer given by staff: **box 2, Δ = −0.019** (sign flips).
+
+Reasoning that got it right: the scaled pilots train on contexts shorter than
+the 1024-token eval, a penalty that shrinks with depth and vanishes at d8, so
+the pilot slope is an artifact that cannot continue → gap collapses/flips.
+Reasoning that got it wrong (my revision): reading the d6 val curves as
+"scaled overfits harder, so the gap widens at d10". The d6 scaled model still
+had the mismatch, so its late rise was not clean evidence about d10.
+
+Lessons: (1) identify the pilot-regime artifact and predict its removal
+first; (2) upturning val curves mean absolute projections are optimistic, not
+which recipe wins; (3) don't stack a speculative second-order effect on a
+solid first-order mechanism.
+
+**Repeated-data result (17:38):** 2 epochs 3.2413, 4 epochs 3.1111, 8 epochs
+3.0893 (1 epoch 3.5370). Fresh data at the same tokens seen: 3.230 / 3.054 /
+2.9275. Repetition tracks fresh data for the first doubling (+0.01), falls
+behind by the second (+0.06) and stalls by the third (+0.16; only −0.02 from
+4 → 8 epochs, local slope 0.010 vs 0.061 for fresh). Predictions (3.33 /
+3.24 / ≥3.22) were too pessimistic: repetition helps more than I expected
+early, and there is no upturn within 8 epochs, just a hard flattening.
+Classification: **break on the data axis** — the law in tokens-seen holds for
+≈2 passes and then the curve leaves the linear regime because the compute is
+buying re-reads, not information. Compute regime: more than ~2–4 passes over
+the unique data. Belongs in (c).
+
+**3(c) follow-up — job 17648802 (resubmitted on Hopper after 17648796 sat pinned to a full H100 node), 3 runs (17:50):** all-sources seeds 1–3 at
+d6, to add a middle point to the size axis (d4 std 0.010, d8 std 0.002).
+Prediction: monotone — d6 std between the two, around 0.005. If instead d6
+matches d8 or exceeds d4, there is no clean size trend. Run total after
+this: **199 of 200**.
+
+**Result (18:24):** d6 seeds 3.0636, 3.0632, 3.0636 → std **0.0002**, range
+0.0004. Prediction (≈0.005, between d4 and d8) **wrong**: the size axis is
+not monotone — d4 0.0096, d6 0.0002, d8 0.0016. Two readings, both worth
+stating: (i) with three samples a std is uncertain by ~50%, so 0.0002 vs
+0.0016 may be partly luck, but 0.0096 at d4 is not; (ii) there is no clean
+"noise falls with size" law here, only "d4 is much noisier than d6–d8".
+Note also that the three d6 seeds all sit 0.008 *above* the seed-42 d6 run
+used in the P2 ladders (3.0557): single-seed ladder points at small depths
+carry ±0.005–0.01, which matters for scaling fits.
+
+### 3(c) final takeaway
+Noise depends strongly on the recipe (0.002 default → 0.007 at lr 0.009,
+0.004 at batch 16, 0.025 with no warmup) and does not follow capability:
+training 2x longer left it unchanged, and across model size it is
+non-monotone (d4 ≫ d6 ≈ d8). The only robust size statement is that the
+smallest model is several times noisier. Run total: **199 of 200**.
+
+### 3(c) correction (19:05) — what three seeds can and cannot resolve
+
+Staff answer to the p.14 example: **neither** batch 16 nor lr 0.009 doubles
+the SD (lr gives ≈1.6x over ten seeds). My 3-seed ratios (2.5x, 4.3x) were
+over-read. With n=3 per arm, the ratio of two sample variances is F(2,2):
+even with *equal* true variances the SD ratio lands in [0.23, 4.4] 90% of the
+time. So 4.3x was at the edge of "no change" and 2.5x well inside it. Our own
+default-recipe SD estimates (0.0016 all-sources, 0.0029 init-only, 0.0017
+pooled n=13) already showed ~2x scatter between estimates of one quantity.
+
+Revised 3(c) claims: resolved — no warmup (15x) and d4 (6x) widen the floor;
+unresolved — lr 0.009, batch 16, d6, 2x tokens all "within a factor of a few
+of the default". Rule: SD from n runs has relative error ≈ 1/√(2(n−1)): 50%
+at n=3, 24% at n=10. Ratio questions need ~10 seeds per arm.
+
+**Baseline seeds 4–10 — job 17649662, 7 runs (20:30; 17649660 was cancelled
+after sitting pending with all 24 Hopper GPUs taken):** default d8 recipe,
+model_seed = data_seed ∈ {4..10}, non-deterministic, **any GPU type** (one
+task took the only free A100; P3(b) showed the GPU adds < kernel noise). Brings
+the all-sources baseline to n = 10 (seeds 1–10). Purpose: pin the denominator
+of every 3(c) ratio; with n=10 the SD is known to ±~35% instead of ±~60%.
+Prediction: baseline SD settles in 0.0017–0.0025 (the region where the n=3
+estimates of all sources / data-only / init-only / kernels-only overlap), so
+the lr 0.009 ratio (0.0069 / SD) comes down to ≈3x, still uncertain because
+the lr arm has 3 seeds. Run total after this: 206 (cap lifted; GPU budget
+≈36 of 48 h used before this batch).
