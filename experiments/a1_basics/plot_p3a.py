@@ -49,10 +49,9 @@ def main():
     ax = axs[1]
     for sd, (steps, loss) in curves.items():
         ax.plot(steps + 1, running_mean(loss, 101), lw=1.1, label=f"seed {sd}")
-    ax.set_xscale("log")
-    ax.set_yscale("log")
     ax.set_xlabel("optimizer step")
     ax.set_ylabel("train loss (101-step mean)")
+    ax.set_ylim(2.7, 6)
     ax.set_title("Smoothed training curves: identical shape", fontsize=9.5)
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3, which="both")

@@ -14,3 +14,4 @@ slurmjobs/
 .wandb.secret.env
 .venv/
 wandb/
+.history_cache/

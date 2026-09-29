@@ -109,8 +109,24 @@ def fit_power_law(x, y):
     return A, alpha, (lambda x_new: A * np.asarray(x_new, float) ** (-alpha))
 
 
+import hashlib
+from pathlib import Path as _Path
+
+_CACHE = _Path(__file__).resolve().parent / "plots" / ".history_cache"
+
+
 def history(run: Run, keys):
-    """Rows of `keys` (plus optimizer_step) from a run's history, sorted by step."""
+    """Rows of `keys` (plus optimizer_step) from a run's history, sorted by step.
+
+    Cached on disk per (run id, keys): a finished run's history never changes,
+    and re-fetching 9k rows per run from W&B takes minutes per figure."""
+    keys = list(keys)
+    run_id = getattr(run.api_run, "id", None) or run.url.rsplit("/", 1)[-1]
+    tag = hashlib.md5("|".join(keys).encode()).hexdigest()[:8]
+    cache = _CACHE / f"{run_id}_{tag}.npz"
+    if cache.exists():
+        z = np.load(cache)
+        return z["steps"], {k: z[k] for k in keys}
     rows = {}
     for row in run.api_run.scan_history(keys=["optimizer_step", *keys]):
         step = row.get("optimizer_step")
@@ -118,7 +134,11 @@ def history(run: Run, keys):
             continue
         rows[int(step)] = {k: row.get(k) for k in keys}
     steps = np.array(sorted(rows))
-    return steps, {k: np.array([rows[s][k] for s in steps], dtype=float) for k in keys}
+    out = {k: np.array([rows[s][k] for s in steps], dtype=float) for k in keys}
+    if run.state == "finished":
+        _CACHE.mkdir(parents=True, exist_ok=True)
+        np.savez(cache, steps=steps, **out)
+    return steps, out
 
 
 def running_mean(x, window=51):

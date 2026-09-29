@@ -20,7 +20,7 @@ PLOT_DIR = Path(__file__).resolve().parent / "plots"
 BASE = "model-d8-lr0.003-tok614M"
 
 GROUPS_A = {
-    "learning rate": r"model-d8-lr[0-9.]+-tok614M",
+    "learning rate": r"model-d8-lr(0\.0003|0\.001|0\.003|0\.009|0\.027)-tok614M",
     "batch size": r"model-d8-lr0.003(-bs\d+)?-tok614M",
     "momentum (beta1)": r"model-d8-lr0.003-tok614M(-b1[0-9.]+)?",
     "schedule": r"model-d8-lr0.003-tok614M(-(cos|constant|wsd0\.[125]))?",
@@ -48,7 +48,7 @@ GALLERY = {  # label -> run name
 
 
 def label(n):
-    return "default" if n == BASE else n.replace(BASE, "").replace("model-d8-", "").strip("-")
+    return "default" if n == BASE else n.replace(BASE, "").replace("model-d8-", "").replace("-tok614M", "").strip("-")
 
 
 def train_curve(r):
@@ -62,20 +62,53 @@ def jitter(steps, loss, window=51):
     return steps, res, float(np.std(res[half:-window]))
 
 
+FACTOR = {  # group -> (config key, log-scale?) ; schedule is ordered by time spent at peak LR
+    "learning rate": ("learning_rate", True),
+    "batch size": ("batch_size", True),
+    "momentum (beta1)": ("beta1", False),
+    "warmup": ("warmup_percent", False),
+}
+SCHED_ORDER = ["linear", "cos", "wsd0.5", "wsd0.2", "wsd0.1", "constant"]
+
+
+def factor_value(r, title):
+    if title == "schedule":
+        return SCHED_ORDER.index(r.get("lr_schedule"))
+    key, _ = FACTOR[title]
+    return r.get(key)
+
+
 def plot_a(runs):
-    fig, axs = plt.subplots(1, len(GROUPS_A), figsize=(4.0 * len(GROUPS_A), 3.8), sharey=True)
-    for ax, (title, pat) in zip(axs, GROUPS_A.items()):
-        for n in sorted(n for n in runs if re.fullmatch(pat, n)):
+    """Row 1: whole run (101-step mean). Row 2: first 800 steps, raw per-step loss."""
+    fig, axs = plt.subplots(2, len(GROUPS_A), figsize=(4.2 * len(GROUPS_A), 7.6))
+    cmap = plt.get_cmap("viridis")
+    for col, (title, pat) in enumerate(GROUPS_A.items()):
+        names = [n for n in runs if re.fullmatch(pat, n)]
+        vals = {n: factor_value(runs[n], title) for n in names}
+        names.sort(key=lambda n: vals[n])
+        v = np.array([vals[n] for n in names], float)
+        if title != "schedule" and FACTOR[title][1]:
+            v = np.log(v)
+        pos = (v - v.min()) / (v.max() - v.min() + 1e-12)
+        for n, t in zip(names, pos):
             steps, loss = train_curve(runs[n])
-            ax.plot(steps + 1, running_mean(loss, 101), lw=1.1, label=label(n))
-        ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_ylim(2.7, 9.5)
-        ax.set_title(title)
-        ax.set_xlabel("optimizer step")
-        ax.grid(alpha=0.3, which="both")
-        ax.legend(fontsize=7)
-    axs[0].set_ylabel("train loss (101-step running mean)")
+            color, lw, z = ("k", 1.8, 5) if n == BASE else (cmap(0.9 * t), 1.1, 3)
+            axs[0, col].plot(steps + 1, running_mean(loss, 101), lw=lw, color=color, zorder=z,
+                             label=f"{label(n)}  ({runs[n].val_loss:.3f})")
+            m = steps < 800
+            axs[1, col].plot(steps[m] + 1, loss[m], lw=0.7 if n != BASE else 1.0, color=color, zorder=z, alpha=0.9)
+        axs[0, col].set_ylim(2.8, 5.5)
+        axs[0, col].set_yticks([3, 3.5, 4, 4.5, 5, 5.5])
+        axs[0, col].set_title(title)
+        axs[0, col].set_xlabel("optimizer step")
+        axs[0, col].legend(fontsize=7.5, title="run  (final val loss)", title_fontsize=7.5)
+        axs[1, col].set_ylim(3.0, 9.0)
+        axs[1, col].set_yticks([3, 4, 5, 6, 7, 8, 9])
+        axs[1, col].set_xlabel("optimizer step (first 800)")
+        for ax in axs[:, col]:
+            ax.grid(alpha=0.3)
+    axs[0, 0].set_ylabel("train loss, whole run (101-step mean)")
+    axs[1, 0].set_ylabel("train loss, first 800 steps (raw, unsmoothed)")
     fig.tight_layout()
     out = PLOT_DIR / "p5a_macro.pdf"
     fig.savefig(out)
@@ -109,7 +142,7 @@ def plot_b(runs):
     for b, sd in bs_rows:
         print(f"batch {b:<10d} jitter std {sd:.4f}")
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 4.2), gridspec_kw={"width_ratios": [1, 1.3, 1.3]})
+    fig, ((ax1, ax4), (ax2, ax3)) = plt.subplots(2, 2, figsize=(13, 8.4))
     # (1) jitter size vs batch size, with the 1/sqrt(B) line
     b = np.array([r[0] for r in bs_rows], float); sd = np.array([r[1] for r in bs_rows])
     ax1.plot(b, sd, "o", color="C0", label="measured")
@@ -142,6 +175,36 @@ def plot_b(runs):
     ax3.set_xlabel("correlation of per-step jitter with the default run")
     ax3.set_title("Same data order → same jitter, point for point", fontsize=9.5)
     ax3.grid(alpha=0.3, axis="x")
+    # (4) jitter along training, in windows, for the LR sweep and two batch sizes
+    windows = [(100, 300), (300, 600), (600, 1000), (1000, 2000), (2000, 4000), (4000, 7000), (7000, 9375)]
+    series = {"lr 0.0003": "model-d8-lr0.0003-tok614M", "lr 0.001": "model-d8-lr0.001-tok614M",
+              "default (lr 0.003, batch 64)": BASE, "lr 0.009": "model-d8-lr0.009-tok614M",
+              "lr 0.027": "model-d8-lr0.027-tok614M",
+              "batch 16": "model-d8-lr0.003-bs16-tok614M", "batch 256": "model-d8-lr0.003-bs256-tok614M"}
+    cmap = plt.get_cmap("viridis")
+    lr_vals = [0.0003, 0.001, 0.003, 0.009, 0.027]
+    for lab, n in series.items():
+        if n not in runs:
+            continue
+        steps, loss = train_curve(runs[n]); res = loss - running_mean(loss, 51)
+        xs, ys = [], []
+        for a, b in windows:
+            m = (steps >= a) & (steps < b)
+            if m.sum() > 20:
+                xs.append((a + b) / 2); ys.append(np.std(res[m]))
+        if lab.startswith("lr") or lab.startswith("default"):
+            lr = runs[n].get("learning_rate")
+            t = (np.log(lr) - np.log(lr_vals[0])) / (np.log(lr_vals[-1]) - np.log(lr_vals[0]))
+            style = dict(color="k", lw=2) if n == BASE else dict(color=cmap(0.9 * t), lw=1.2)
+        else:
+            style = dict(color="C3" if "16" in lab else "C0", lw=1.5, ls="--")
+        ax4.plot(xs, ys, "o-", ms=4, label=lab, **style)
+    ax4.set_xscale("log")
+    ax4.set_xlabel("optimizer step (window centre)")
+    ax4.set_ylabel("jitter std in window")
+    ax4.set_title("Jitter along training: learning rate never changes it, batch always does", fontsize=9.5)
+    ax4.legend(fontsize=7.5)
+    ax4.grid(alpha=0.3, which="both")
     fig.tight_layout()
     out = PLOT_DIR / "p5b_micro.pdf"
     fig.savefig(out)
@@ -155,15 +218,15 @@ def plot_c(runs):
             print("gallery: missing", n); continue
         steps, loss = train_curve(runs[n])
         kw = dict(lw=1.6, color="k", zorder=5) if n == BASE else dict(lw=1.1, color=f"C{i}")
+        lab = f"{lab}  ({runs[n].val_loss:.3f})"
         ax1.plot(steps + 1, running_mean(loss, 101), label=lab, **kw)
         m = steps < 600
         ax2.plot(steps[m] + 1, loss[m], label=lab, **{**kw, "lw": 0.9 if n != BASE else 1.4})
-    ax1.set_xscale("log"); ax1.set_yscale("log")
     ax1.set_xlabel("optimizer step"); ax1.set_ylabel("train loss (101-step running mean)")
+    ax1.set_ylim(2.7, 8.5)
     ax1.set_title("Whole run, smoothed", fontsize=9.5)
     ax1.legend(fontsize=7)
     ax1.grid(alpha=0.3, which="both")
-    ax2.set_xscale("log"); ax2.set_yscale("log")
     ax2.set_xlabel("optimizer step (first 600)"); ax2.set_ylabel("raw train loss")
     ax2.set_title("The first 600 steps, unsmoothed", fontsize=9.5)
     ax2.grid(alpha=0.3, which="both")

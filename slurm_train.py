@@ -50,6 +50,7 @@ mkdir -p "$LOCAL" {slurm_log_dir}
 export DL_ALCHEMY_EPHEMERAL_DATA_DIR="$LOCAL/data"
 export TORCHINDUCTOR_CACHE_DIR="$LOCAL/inductor"
 export TRITON_CACHE_DIR="$LOCAL/triton"
+export WANDB__SERVICE_WAIT=300   # some nodes start the W&B service slowly (default 30 s timed out twice on sphinx1)
 
 cd {repo_dir}
 echo "Host: $(hostname)  GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader | head -n1)"

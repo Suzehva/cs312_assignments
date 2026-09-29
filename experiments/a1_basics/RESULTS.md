@@ -1309,3 +1309,69 @@ estimates of all sources / data-only / init-only / kernels-only overlap), so
 the lr 0.009 ratio (0.0069 / SD) comes down to ≈3x, still uncertain because
 the lr arm has 3 seeds. Run total after this: 206 (cap lifted; GPU budget
 ≈36 of 48 h used before this batch).
+
+### Problem 5 rework (21:10) — separate 5(a)/(b)/(c) figures + micro statistics
+
+Figures: `p5a_macro.pdf` (smoothed curves per knob), `p5b_micro.pdf` (jitter
+vs batch with 1/√B line; jitter for other knobs; correlation of per-step
+jitter with the default run), `p5c_gallery.pdf` (unusual curves).
+
+5(b) with correlations: same data seed → jitter correlated 0.98–1.00 with the
+default's (lr 0.0003/0.027, β1 0/0.98, constant, warmup 0, wd 1.0, dropout,
+no clip, no qk-norm, tied emb, model seed 1); different data seed → 0.01.
+Batch 256 → 0.83 (each big batch shares most examples with 4 small ones);
+batch 16 → 0.00. Jitter × √(B/64) = 0.040 for every healthy run.
+
+5(c) micro statistics (second half; spikes = residual > 5σ; overshoot =
+max loss in first 300 steps / initial loss):
+
+| run | jitter | #spikes | max spike | overshoot |
+|---|---|---|---|---|
+| default | 0.040 | 1 | 0.23 | 1.00 |
+| no warmup / constant / lr 0.027 / no momentum / repeated data | 0.039–0.040 | 0–2 | 0.14–0.27 | 1.00 |
+| batch 16 / 256 | 0.079 / 0.020 | 2 / 0 | 0.73 / 0.06 | 1.00 |
+| lr 0.03, no warmup, no clip | 0.039 | 0 | 0.19 | **2.25** |
+| lr 0.081, batch 256 | 0.020 | 0 | 0.09 | 1.57 |
+| wd 1.0 at lr 0.009 | **0.071** | **21** | 0.62 | 1.00 |
+| plain SGD lr 0.5 | **0.213** | **186** | **9.07** | 1.50 |
+| 77M tokens (data-starved) | 0.036 | 0 | 0.12 | 1.00 |
+
+Reading: healthy runs share one jitter law (set by batch) and ≤2 small
+spikes. Instability shows either as early overshoot (hot LR without warmup /
+clipping: 2.25x, then normal) or as persistent spiking (SGD; over-heavy decay
+at high LR). Written into main.tex §5.
+
+**Baseline seeds result (21:15), 9 of 10 in (seed 6 still running):**
+seeds 4,5,7,8,9,10 → 2.9257, 2.9288, 2.9329, 2.9333, 2.9329, 2.9287.
+Seeds 1–3 alone gave std 0.0016; seeds 4–10 give 0.0031; **all 9: mean
+2.9299, std 0.0027, range 0.0076 (2.9257–2.9333)**. The original 3-seed
+estimate was low by ~40%, as the n=3 interval predicted it might be.
+
+Ratios vs the 9-seed baseline (numerators still n=3): lr 0.009 2.6x, batch 16
+1.5x, d4 3.6x, warmup 0 9.3x, d6 0.09x, 1.23B tokens 0.6x. Batch 16 is now
+clearly below 2x, in line with the staff answer; lr 0.009 is still above 2x
+on its 3 seeds but the staff's 10-seed value is 1.6x, consistent with our
+3-seed number being high by chance. The d6 std (0.0002 from 3 seeds) vs
+0.0027 now looks like the same kind of 3-sample fluke in the other
+direction, not evidence that d6 is tighter.
+seed 6 rerun: job 17649867 (first attempt 17649662_2 died at W&B service start-up on sphinx1, before training).
+seed 6: second attempt (17649867, sphinx1 A100) also died at W&B service start (30 s timeout). Third attempt on Hopper with WANDB__SERVICE_WAIT=300 added to the sbatch template.
+
+**Baseline seeds complete (21:30): seed 6 → 2.9295 (3rd attempt, H200).**
+All 10 seeds: 2.9276, 2.9307, 2.9286, 2.9257, 2.9288, 2.9295, 2.9329, 2.9333, 2.9329, 2.9287.
+**mean 2.9299, std 0.0025, range 0.0076.** Deterministic
+reference 2.9277 sits in the lower third. Ratios vs the 10-seed baseline
+(numerators n=3): lr 0.009 2.7x, batch 16 1.6x, d4 3.8x, warmup 0 9.9x, d6 0.1x, 1.23B tokens 0.6x.
+Final 3(c) reading: warmup 0 (~9x) and d4 (~3.5x) clearly widen the floor;
+lr 0.009 (2.5x on 3 seeds; staff: 1.6x on 10) and batch 16 (1.5x) are
+"somewhat wider" at best; d6 and 2x tokens show no resolvable change.
+Run total: 206.
+
+### Page-16 example, checked against our runs (22:00)
+Official answer: D (lr 0.009) via "earlier plateau and a bit more noise", then
+(a) since 3x LR costs little. Our data: the plateau cue holds (lr 0.009 sits
+0.1–0.2 above the default from step 50 on and flattens earlier); the noise
+cue does **not** — per-step jitter std is 0.031/0.031 (steps 100–300) and
+0.038/0.036 (300–800) for lr 0.003/0.009, and their deviations are
+correlated 0.98 (same batches). Raw zooms in `p5_early_raw.pdf`,
+`p5_quiz_view.pdf`. Terminal gap +0.023 → (a) confirmed.
