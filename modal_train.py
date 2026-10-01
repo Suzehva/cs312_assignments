@@ -136,6 +136,7 @@ def launch_training_jobs(
     gpu: str = DEFAULT_MODAL_GPU,
     environment_name: str = MODAL_ENVIRONMENT,
     max_parallel_runs: int | None = None,
+    app_name: str | None = None,
 ):
     assert isinstance(
         configs, list
@@ -175,7 +176,10 @@ def launch_training_jobs(
         _print_launched_training_jobs(jobs)
         return jobs
 
-    modal_app_name = timestamped_modal_app_name()
+    modal_app_name = (
+        timestamped_modal_app_name(app_name)
+        if app_name else timestamped_modal_app_name()
+    )
     with modal.enable_output():
         with app.run(
             name=modal_app_name,

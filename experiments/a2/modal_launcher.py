@@ -76,7 +76,7 @@ def _prepare_prefixes(counts):
     return paths
 
 
-def launch_training_jobs(configs, *, max_parallel_runs=None):
+def launch_training_jobs(configs, *, max_parallel_runs=None, app_name=None):
     """Prepare the requested budgets on CPU, then invoke A1's GPU launcher."""
     from modal_train import launch_training_jobs as shared_launch
     if not configs:
@@ -88,7 +88,8 @@ def launch_training_jobs(configs, *, max_parallel_runs=None):
             raise ValueError('Use this module\'s config() for automatic data preparation')
 
     import modal
+    preparation_app_name = app_name or 'a2'
     with modal.enable_output():
-        with app.run(name=timestamped_modal_app_name('a2-data'), environment_name=MODAL_ENVIRONMENT):
+        with app.run(name=timestamped_modal_app_name(preparation_app_name), environment_name=MODAL_ENVIRONMENT):
             _prepare_prefixes.remote([c.num_train_sequences for c in configs])
-    return shared_launch(configs, max_parallel_runs=max_parallel_runs)
+    return shared_launch(configs, max_parallel_runs=max_parallel_runs, app_name=app_name)

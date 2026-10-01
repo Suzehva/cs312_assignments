@@ -81,6 +81,35 @@ in `P1_PREDICTIONS.md`, and the plot is
 `experiments/a2/plots/p1c_scaling_predictions.png`. This does not launch
 training or load target-run losses.
 
+Fit all 24 supplied Hyperball measurements for P1(d) and compare with AdamW
+at the same three small token budgets:
+
+```sh
+uv run python -m experiments.a2.plot_p1d
+```
+
+This offline analysis writes `plots/p1d_hyperball_and_adamw.png` and
+`plots/p1d_source_fits.json`, and copies the figure into the write-up's
+`figures/` folder. It fits quadratics in log LR using all eight Hyperball LRs
+per budget, then power laws over the three source optima. A local-four-LR
+sensitivity check is included. It does not launch training or inspect targets.
+
+Submit P1(d)'s four Hyperball target runs at 1.2288B tokens:
+
+```sh
+uv run python -m experiments.a2.p1d_grid
+```
+
+This submits the recorded prediction `0.008386850003371452` and nearby
+LRs `0.006`, `0.010`, and `0.012` as detached jobs, with up to four running
+concurrently if GPUs are available. CPU prefix preparation happens first.
+Both Modal apps use `a2-p1d-<timestamp>`, without optimizer, size, or
+data-preparation labels. Other launch scripts should pass the corresponding
+subquestion, for example `app_name="a2-p2c"`, to the same launcher.
+The optimizer implementation is in `hyperball.py`: zero weight decay,
+fixed initial norms for linear-layer weights (including readout), and ordinary
+Adam for embeddings, norms, and biases at `(0.000656 / 0.00630) * peak_lr`.
+
 The [data README](../../worksheets/hparam_invariants/data/README.md) describes
 the columns and width-512 diagnostic logs for P4.2. Fit the scaling laws and
 make target predictions from these measurements.

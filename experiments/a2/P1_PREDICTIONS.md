@@ -52,3 +52,23 @@ may have less extrapolation bias. The target measurements will test this.
 
 The target runs at these two predicted LRs have not been launched by this
 analysis. The fixed target grid remains 0.0015, 0.003, and 0.006.
+
+## P1(d): Hyperball target prediction
+
+Recorded on 2026-10-01 at 05:55 UTC (September 30, Los Angeles), before
+launching a Hyperball target run or inspecting any Hyperball target losses.
+
+Use only the 24 supplied P1(d) runs at 153.6M, 307.2M, and 614.4M tokens.
+Fit a quadratic in log LR to all eight LRs per budget, then fit a power law
+to the three inferred optima:
+
+```text
+eta*(D) = 0.010267261603103506 * (D / 614400000)^(-0.2918504903975972)
+eta*(1228800000) = 0.008386850003371452
+```
+
+The recorded target peak LR is **0.00838685** (Hyperball's matrix-group LR).
+This uses the primary all-eight-LR fits, not the local-four-LR sensitivity
+check. The prediction extrapolates to twice the largest source budget;
+its accuracy is not yet tested. No Hyperball target job has been launched
+by this analysis.
