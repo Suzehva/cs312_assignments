@@ -48,6 +48,18 @@ rows = load('P1a')  # tokens, learning_rate, weight_decay, final_val_loss, ...
 # TODO: fit the loss curves and make your own plots.
 ```
 
+Run the complete P1(a) analysis: loss-versus-LR curve fits, fitted optima, the
+optimal-LR scaling rule, and the supplementary loss-versus-data plot with an
+approximate `6 * N_body * D` compute scale:
+
+```sh
+uv run python -m experiments.a2.plot_p1a
+```
+
+The fitted curves use viridis from purple (smallest token budget) to yellow
+(largest token budget). Plots are written to `experiments/a2/plots/`, and the
+numerical results and interpretation are in `experiments/a2/P1A_RESULTS.md`.
+
 The [data README](../../worksheets/hparam_invariants/data/README.md) describes
 the columns and width-512 diagnostic logs for P4.2. Fit the scaling laws and
 make target predictions from these measurements.
