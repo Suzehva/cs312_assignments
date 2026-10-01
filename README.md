@@ -290,13 +290,20 @@ tag.
 
 ## 11. Check Your Modal Usage
 
-Print usage for your configured Modal environment:
+Print usage for your configured Modal environment. The report starts on
+September 29, 2026, converts Modal's GPU charges into billed GPU time, and
+compares the result with the assignment's 48 GPU-hour budget:
 
 ```bash
 uv run python -m scripts.modal_usage
 ```
 
-For Modal's raw CLI summary:
+The billed time includes GPU container startup and shutdown, so it can be a
+little longer than the training loop's elapsed time. To inspect the underlying
+Modal responses, use `--raw-json`. To reuse the helper for a later assignment,
+pass its start date with `--start YYYY-MM-DD`.
+
+For Modal's raw CLI summary for the current calendar month:
 
 ```bash
 uv run modal environment billing summary --for "this month"

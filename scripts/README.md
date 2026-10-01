@@ -11,7 +11,8 @@ uv run python -m scripts.modal_usage
 
 ## Files
 
-- `modal_usage.py`: prints the current Modal billing summary for an environment.
+- `modal_usage.py`: prints billed GPU time since September 29, 2026, including
+  per-app usage and progress against the 48 GPU-hour assignment budget.
 - `inspect_data_row.py`: launches a small Modal job in your configured
   environment, reads one hardcoded training row from the binary DCLM data, and
   decodes it with the course SentencePiece tokenizer.
