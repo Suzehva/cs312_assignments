@@ -5,7 +5,6 @@ import numpy as np
 
 from experiments.a2.plot_p1a import (
     PLOT_DIR,
-    VIRIDIS_MAX,
     VIRIDIS_MIN,
     fit_learning_rate_curve,
     fit_optimal_lr_rule,
@@ -32,7 +31,7 @@ def main():
     fig, axes = plt.subplots(1, 2, figsize=(13.5, 5.1), sharey=True)
     viridis = mpl.colormaps["viridis"]
     budget_colors = dict(zip(budgets + [TARGET_TOKENS],
-                            viridis(np.linspace(VIRIDIS_MIN, VIRIDIS_MAX, 7))))
+                            viridis(np.linspace(VIRIDIS_MIN, 1.0, 7))))
     for ax, (title, selected) in zip(axes, groups):
         eta_ref, beta = fit_optimal_lr_rule(selected, reference_tokens=REFERENCE_TOKENS)
         prediction = eta_ref * (TARGET_TOKENS / REFERENCE_TOKENS) ** beta
@@ -48,10 +47,10 @@ def main():
                 color=curve_color, linestyle="--", linewidth=2, label="Extrapolation")
         for fit in selected:
             ax.scatter(fit.tokens, fit.optimal_learning_rate,
-                       color=budget_colors[fit.tokens], s=65, edgecolor="#222222",
+                       color=budget_colors[fit.tokens], marker="*", s=100, edgecolor="#222222",
                        linewidth=0.6, zorder=3)
-        ax.scatter(TARGET_TOKENS, prediction, color=budget_colors[TARGET_TOKENS],
-                   marker="*", s=180, edgecolor="#222222", linewidth=0.7, zorder=4)
+        ax.scatter(TARGET_TOKENS, prediction, facecolor="none",
+                   marker="D", s=100, edgecolor=budget_colors[TARGET_TOKENS], linewidth=1.7, zorder=4)
         ax.annotate(f"4.9152B prediction: {prediction:.6f}",
                     (TARGET_TOKENS, prediction), textcoords="offset points",
                     xytext=(-10, 15 if beta > 0 else -23), ha="right", fontsize=10)

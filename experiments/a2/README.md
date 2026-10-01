@@ -81,6 +81,20 @@ in `P1_PREDICTIONS.md`, and the plot is
 `experiments/a2/plots/p1c_scaling_predictions.png`. This does not launch
 training or load target-run losses.
 
+After P1(c)'s five runs have finished, fetch their final W&B losses and
+generate the completed-target analysis:
+
+```sh
+uv run python -m experiments.a2.p1c_results
+uv run python -m experiments.a2.plot_p1c_results
+```
+
+The first command reads completed runs from your configured W&B project and
+saves `results/p1c_target_runs.json`. The second works offline, fits the
+target curve using only the three fixed-grid runs, compares both recorded
+predictions with the best measured grid loss, and saves the results plot
+and `results/p1c_analysis.json`. Neither command launches training.
+
 Fit all 24 supplied Hyperball measurements for P1(d) and compare with AdamW
 at the same three small token budgets:
 
@@ -109,6 +123,19 @@ subquestion, for example `app_name="a2-p2c"`, to the same launcher.
 The optimizer implementation is in `hyperball.py`: zero weight decay,
 fixed initial norms for linear-layer weights (including readout), and ordinary
 Adam for embeddings, norms, and biases at `(0.000656 / 0.00630) * peak_lr`.
+
+Analyze P2(a)'s 36 supplied LR–WD measurements offline:
+
+```sh
+uv run python -m experiments.a2.plot_p2a
+```
+
+This fits the six-coefficient quadratic in `log2(LR / 0.003)` and
+`log2(WD / 0.1)`, checks that each fitted minimum is inside its grid,
+and compares with P1's fixed-WD measurements at the same four budgets.
+It writes two figures (`plots/p2a_joint_contours.png` and
+`plots/p2a_optima_and_loss_gains.png`) plus `plots/p2a_source_fits.json`,
+and copies the figures into the write-up. No training is launched.
 
 The [data README](../../worksheets/hparam_invariants/data/README.md) describes
 the columns and width-512 diagnostic logs for P4.2. Fit the scaling laws and
