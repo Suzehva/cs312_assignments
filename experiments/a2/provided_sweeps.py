@@ -10,7 +10,7 @@ PARTS = ('P1a', 'P1b', 'P1d', 'P1e', 'P2a')
 
 def load(part):
     """Return only the requested part, so P1(b) can be withheld until prediction."""
-    if part not in PARTS:s
+    if part not in PARTS:
         raise ValueError(f'part must be one of {PARTS}')
     with (DATA_DIR / 'provided_sweeps.csv').open(newline='') as f:
         rows = [row for row in csv.DictReader(f) if part in row['parts'].split('|')]
