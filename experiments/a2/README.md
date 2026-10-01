@@ -60,6 +60,27 @@ The fitted curves use viridis from purple (smallest token budget) to yellow
 (largest token budget). Plots are written to `experiments/a2/plots/`, and the
 numerical results and interpretation are in `experiments/a2/P1A_RESULTS.md`.
 
+After recording P1(b)'s predictions, compare them with the supplied larger-budget
+loss curves:
+
+```sh
+uv run python -m experiments.a2.plot_p1b
+```
+
+This uses the previously recorded P1(a) rule and writes
+`experiments/a2/plots/p1b_predictions_and_fits.png`.
+
+Fit P1(c)'s two source-only power laws and plot their target predictions:
+
+```sh
+uv run python -m experiments.a2.plot_p1c
+```
+
+The code is in `experiments/a2/plot_p1c.py`, the recorded predictions are
+in `P1_PREDICTIONS.md`, and the plot is
+`experiments/a2/plots/p1c_scaling_predictions.png`. This does not launch
+training or load target-run losses.
+
 The [data README](../../worksheets/hparam_invariants/data/README.md) describes
 the columns and width-512 diagnostic logs for P4.2. Fit the scaling laws and
 make target predictions from these measurements.
