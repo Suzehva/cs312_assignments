@@ -23,26 +23,24 @@ U-shaped curve. The fitted optimum is `x* = -b_D/(2a_D)` and
 | 307.2M | 0.014959 | 0.000310 | 3.056223 | 0.002979 | 3.056222 |
 | 614.4M | 0.018412 | -0.003297 | 2.925636 | 0.003192 | 2.925488 |
 
-I then fit the three optima with the scale-free rule
+I then fit a power law relating the training-token budget `D` to the optimal
+learning rate:
 
 ```text
 eta*(D) = eta_ref (D / D_ref)^beta
         = 0.003276 (D / 614.4M)^0.2125.
 ```
 
-| Power-law constant | Value |
-| --- | ---: |
-| `D_ref` | 614.4M tokens |
-| `eta_ref` | 0.003276 |
-| exponent `beta` | 0.2125 |
-| LR multiplier per 2x tokens, `2^beta` | 1.159x |
+Longer training prefers a larger peak LR. With only three measurements per
+budget, precise minima depend on the fit; quadratics in raw LR give a similar
+scaling exponent (0.221). P1(b) tests the prediction.
 
-The fitted optimum increases from 0.00238 to 0.00319 as the budget grows 4x:
-longer training prefers a mildly larger peak LR. The exact optima are uncertain
-because each loss curve has only three points; fitting quadratics in raw LR
-changes their levels but gives nearly the same exponent (0.221 instead of
-0.213). P1(b) is the held-out test of whether this proposed rule continues.
+**Takeaway.** Our fitted rule: double the training data, multiply peak LR
+by 1.16. This estimate uses only three budgets.
 
-**Takeaway.** At fixed d8 model size, doubling the training tokens calls for
-about a 16% larger peak learning rate, but the rule is based on only three
-budgets and should be treated as a prediction rather than a law.
+The quadratic approximates a smooth minimum.
+[Hoffmann et al. (2022), Section 3.2](https://arxiv.org/abs/2203.15556)
+similarly fit parabolas to find optima, then power laws across budgets, but
+their swept variable is model size. This is an analogy for the method,
+not evidence for the LR curve. Original figures and their laws are recorded
+in the [figure source notes](../../6abdc5b0bad58b38dfd83f81/figures/SOURCES.md).

@@ -35,3 +35,4 @@ def main(argv=None):
 
 if __name__ == '__main__':
     main()
+    # uv run python -m experiments.a2.p1_learning_rate --predicted-lrs .0015 .003 --execute
