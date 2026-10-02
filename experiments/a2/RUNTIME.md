@@ -7,7 +7,10 @@ W&B credentials as described in the [runtime guide](README.md).
 
 The baseline uses shared AdamW with epsilon `1e-8` and fused execution on CUDA.
 Set `optimizer_builder` and `optimizer_kwargs` to supply an optimizer factory
-for custom parameter-group rules. Set `model_builder` and
+for custom parameter-group rules. The A2 Modal config factory also supports
+`optimizer_name="adamh"` (Hyperball) and `optimizer_name="muon"`; see the
+[optimizer guide](README.md#hyperball-and-muon) for grouping and LR settings.
+Set `model_builder` and
 `model_builder_kwargs` for a custom model.
 
 ## Run names and checkpoints

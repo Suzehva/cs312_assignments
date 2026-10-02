@@ -21,6 +21,10 @@ def config(*, tokens=153_600_000, batch=64, diagnostics=True, **overrides):
     train_path = prefix_path(MODAL_USER_DATASETS_DIR, tokens // 1024)
     val_path = PurePosixPath(MODAL_SHARED_DATASETS_DIR) / DEFAULT_DATASET_DIR_NAME / 'val'
     c = baseline_config(str(train_path), str(val_path), tokens=tokens, batch=batch, diagnostics=diagnostics)
+    if overrides.get('optimizer_name') in {'adamh', 'hyperball', 'muon'}:
+        overrides.setdefault('optimizer_builder', 'experiments.a2.optimizers:build_optimizer')
+        if overrides['optimizer_name'] in {'adamh', 'hyperball'}:
+            overrides.setdefault('weight_decay', 0.)
     return replace(c, **overrides)
 
 

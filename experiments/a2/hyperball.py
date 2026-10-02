@@ -1,39 +1,92 @@
-"""P1(d)'s Hyperball optimizer with Kaiyue Wen's AdamH core update.
-
-Reference (``scale_invariant_update_`` and ``AdamH``):
-https://github.com/KellerJordan/modded-nanogpt/pull/272
-https://github.com/KellerJordan/modded-nanogpt/blob/master/records/track_3_optimization/results/20260430_adamh/7533dd87-107f-4a4f-8229-acbec0fb00ac.txt
-
-Parameter groups, LR ratio, and scheduling follow the assignment handout,
-not the reference benchmark's training configuration.
-"""
-
+"""Hyperball Adam for linear weights, with ordinary Adam for other parameters."""
 import torch
+from optimizers import is_norm_module
+ADAMH_DEFAULT_ADAM_LR_RATIO = 0.000656 / 0.00630
+
+def should_use_adamh(module, parameter_name, parameter):
+    if parameter_name != "weight":
+        return False
+    if parameter.ndim < 2:
+        return False
+    if isinstance(module, torch.nn.Embedding):
+        return False
+    if is_norm_module(module):
+        return False
+    return isinstance(module, torch.nn.Linear)
 
 
-ADAM_LR_RATIO = 0.000656 / 0.00630
+def build_adamh_parameter_groups(model, learning_rate, adamh_adam_lr=None):
+    if adamh_adam_lr is None:
+        adamh_adam_lr = learning_rate * ADAMH_DEFAULT_ADAM_LR_RATIO
+
+    adamh_parameters = []
+    adam_parameters = []
+    adamh_names = []
+    adam_names = []
+    seen_parameter_ids = set()
+
+    for module_name, module in model.named_modules():
+        for parameter_name, parameter in module.named_parameters(recurse=False):
+            if not parameter.requires_grad:
+                continue
+            parameter_id = id(parameter)
+            if parameter_id in seen_parameter_ids:
+                continue
+            seen_parameter_ids.add(parameter_id)
+
+            full_name = (
+                f"{module_name}.{parameter_name}"
+                if module_name
+                else parameter_name
+            )
+            if should_use_adamh(module, parameter_name, parameter):
+                adamh_parameters.append(parameter)
+                adamh_names.append(full_name)
+            else:
+                adam_parameters.append(parameter)
+                adam_names.append(full_name)
+
+    if not adamh_parameters:
+        raise ValueError("AdamH requested, but no Linear weight tensors were routed to AdamH.")
+
+    parameter_groups = [
+        {"params": adamh_parameters, "mode": "adamh", "lr": learning_rate},
+    ]
+    if adam_parameters:
+        parameter_groups.append({"params": adam_parameters, "mode": "adam", "lr": adamh_adam_lr})
+
+    print(
+        "Using AdamH optimizer: "
+        f"{len(adamh_parameters)} hyperball tensors, "
+        f"{len(adam_parameters)} Adam fallback tensors; "
+        f"adamh_lr={learning_rate:g}, adam_lr={adamh_adam_lr:g}."
+    )
+
+    return parameter_groups, {
+        "weight_decay_style": "ignored_for_adamh",
+        "masked_weight_decay": False,
+        "optimizer_weight_decay_effective": 0.0,
+        "adamh_adam_lr": adamh_adam_lr,
+        "adamh_default_adam_lr_ratio": ADAMH_DEFAULT_ADAM_LR_RATIO,
+        "adamh_tensor_count": len(adamh_parameters),
+        "adam_fallback_tensor_count": len(adam_parameters),
+        "adamh_tensor_examples": adamh_names[:16],
+        "adam_fallback_tensor_examples": adam_names[:16],
+    }
 
 
-@torch.no_grad()
-def scale_invariant_update_(param, update, lr, eps=1e-10):
-    """Kaiyue's norm-scaled step and projection to the pre-step norm."""
-    p_norm = param.norm()
-    u_norm = update.norm()
-    new_param = param - lr * update * p_norm / torch.clamp(u_norm, min=eps)
-    new_norm = torch.clamp(new_param.norm(), min=eps)
-    param.copy_(new_param / new_norm * p_norm)
+class AdamH(torch.optim.Optimizer):
+    """Adam with Hyperball projection for matrix weights.
 
-
-class Hyperball(torch.optim.Optimizer):
-    """Adam directions with relative-norm steps and fixed linear-weight norms.
-
-    Linear-layer matrices use W <- W - lr * ||W||/||U|| * U followed by
-    projection back to their pre-step Frobenius norm. Other parameters
-    use ordinary Adam. Group LRs are scheduled by the shared trainer.
+    This mirrors Marin/Levanter's AdamH update: first form an Adam update, then
+    move each selected matrix along that direction with update norm proportional
+    to its current Frobenius norm, and project back to the original sphere.
+    Non-hyperball parameter groups use plain Adam.
     """
 
-    def __init__(self, groups, *, lr, betas, eps=1e-8):
-        super().__init__(groups, dict(lr=lr, betas=betas, eps=eps, weight_decay=0.0))
+    def __init__(self, params, betas=(0.9, 0.95), eps=1e-8):
+        defaults = {"betas": betas, "eps": eps, "mode": "adam"}
+        super().__init__(params, defaults)
 
     @torch.no_grad()
     def step(self, closure=None):
@@ -41,49 +94,67 @@ class Hyperball(torch.optim.Optimizer):
         if closure is not None:
             with torch.enable_grad():
                 loss = closure()
+
         for group in self.param_groups:
             beta1, beta2 = group["betas"]
+            eps = group["eps"]
+            lr = group["lr"]
+            mode = group.get("mode", "adam")
+
             for parameter in group["params"]:
-                gradient = parameter.grad
-                if gradient is None:
+                if parameter.grad is None:
                     continue
-                if gradient.is_sparse:
-                    raise RuntimeError("Hyperball requires dense gradients.")
+                grad = parameter.grad
+                if grad.is_sparse:
+                    raise RuntimeError("AdamH does not support sparse gradients.")
+
                 state = self.state[parameter]
-                if not state:
-                    state["step"] = 0
-                    state["exp_avg"] = torch.zeros_like(parameter)
-                    state["exp_avg_sq"] = torch.zeros_like(parameter)
-                state["step"] += 1
-                step = state["step"]
-                mean, variance = state["exp_avg"], state["exp_avg_sq"]
-                mean.mul_(beta1).add_(gradient, alpha=1 - beta1)
-                variance.mul_(beta2).addcmul_(gradient, gradient, value=1 - beta2)
-                bc1 = 1 - beta1 ** step
-                bc2 = 1 - beta2 ** step
-                direction = (mean / bc1) / ((variance / bc2).sqrt() + group["eps"])
-                if group["hyperball"]:
-                    scale_invariant_update_(parameter, direction, group["lr"])
+                if len(state) == 0:
+                    state["step"] = torch.zeros((), dtype=torch.float32, device=parameter.device)
+                    state["exp_avg"] = torch.zeros_like(parameter, memory_format=torch.preserve_format)
+                    state["exp_avg_sq"] = torch.zeros_like(parameter, memory_format=torch.preserve_format)
+
+                exp_avg = state["exp_avg"]
+                exp_avg_sq = state["exp_avg_sq"]
+                state["step"].add_(1.0)
+                step = int(state["step"].item())
+
+                exp_avg.mul_(beta1).add_(grad, alpha=1.0 - beta1)
+                exp_avg_sq.mul_(beta2).addcmul_(grad, grad, value=1.0 - beta2)
+
+                bias_correction1 = 1.0 - beta1**step
+                bias_correction2 = 1.0 - beta2**step
+                update = (exp_avg / bias_correction1) / (
+                    exp_avg_sq.sqrt() / (bias_correction2**0.5) + eps
+                )
+
+                if mode == "adamh":
+                    apply_hyperball_update_(parameter, update, lr)
+                elif mode == "adam":
+                    parameter.add_(update, alpha=-lr)
                 else:
-                    parameter.add_(direction, alpha=-group["lr"])
+                    raise ValueError(f"Invalid AdamH parameter group mode: {mode!r}")
+
         return loss
 
 
-def build_optimizer(model, optimizer_name, learning_rate, weight_decay, beta1, beta2):
-    """Select all linear weights, including readout; leave other params in Adam."""
-    if optimizer_name != "adamh" or weight_decay != 0:
-        raise ValueError("P1(d) requires optimizer_name='adamh' and weight_decay=0.")
-    linear_ids = {
-        id(module.weight) for module in model.modules()
-        if isinstance(module, torch.nn.Linear)
-    }
-    matrices, ordinary = [], []
-    for parameter in model.parameters():
-        if parameter.requires_grad:
-            (matrices if id(parameter) in linear_ids else ordinary).append(parameter)
-    groups = []
-    if matrices:
-        groups.append(dict(params=matrices, lr=learning_rate, hyperball=True))
-    if ordinary:
-        groups.append(dict(params=ordinary, lr=learning_rate * ADAM_LR_RATIO, hyperball=False))
-    return Hyperball(groups, lr=learning_rate, betas=(beta1, beta2))
+def apply_hyperball_update_(parameter, update, learning_rate):
+    if parameter.ndim == 2:
+        p_norm = torch.linalg.vector_norm(parameter)
+        u_norm = torch.linalg.vector_norm(update)
+        candidate = parameter - learning_rate * update * p_norm / u_norm.clamp_min(1e-10)
+        candidate_norm = torch.linalg.vector_norm(candidate).clamp_min(1e-10)
+        parameter.copy_(candidate * (p_norm / candidate_norm))
+        return
+
+    axes = tuple(range(1, parameter.ndim))
+    p_norm = torch.sqrt(torch.sum(parameter.square(), dim=axes, keepdim=True))
+    u_norm = torch.sqrt(torch.sum(update.square(), dim=axes, keepdim=True))
+    candidate = parameter - learning_rate * update * p_norm / u_norm.clamp_min(1e-10)
+    candidate_norm = torch.sqrt(torch.sum(candidate.square(), dim=axes, keepdim=True))
+    parameter.copy_(candidate * p_norm / candidate_norm.clamp_min(1e-10))
+
+
+# Preserve the recorded factory path for completed P1(d) runs and their
+# integer-step checkpoints. New experiments use experiments.a2.optimizers.
+from experiments.a2.hyperball_legacy import build_optimizer

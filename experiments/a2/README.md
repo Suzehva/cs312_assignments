@@ -120,9 +120,20 @@ concurrently if GPUs are available. CPU prefix preparation happens first.
 Both Modal apps use `a2-p1d-<timestamp>`, without optimizer, size, or
 data-preparation labels. Other launch scripts should pass the corresponding
 subquestion, for example `app_name="a2-p2c"`, to the same launcher.
-The optimizer implementation is in `hyperball.py`: zero weight decay,
-fixed initial norms for linear-layer weights (including readout), and ordinary
-Adam for embeddings, norms, and biases at `(0.000656 / 0.00630) * peak_lr`.
+The completed P1(d) runs used the local optimizer now preserved unchanged
+in `hyperball_legacy.py`. It uses zero weight decay, norm-preserving updates
+for linear weights (including readout), and ordinary Adam for embeddings,
+norms, and biases at `(0.000656 / 0.00630) * peak_lr`. Its routing and update
+equations match the subsequently supplied course optimizer; rounding differs.
+
+`hyperball.py` now contains the course implementation. The historical factory
+path `experiments.a2.hyperball:build_optimizer` remains a legacy alias so
+existing P1(d) launchers and integer-step optimizer checkpoints still work.
+For new experiments, use `experiments.a2.optimizers:build_optimizer`; the A2
+launcher's `config(optimizer_name='adamh')` selects this automatically.
+Do not load a legacy optimizer state into upstream `AdamH`: its step counters
+and parameter-group keys differ. Keep completed results and cached W&B
+configuration records unchanged.
 
 Analyze P2(a)'s 36 supplied LR–WD measurements offline:
 
@@ -206,6 +217,62 @@ For local CUDA runs, `baseline.config(train_path, val_path, ...)` and
 `data.stage_prefix` remain available. Follow [the local GPU guide](../../gpu/README.md)
 to download data, prepare each prefix once, and use the same prepared prefix
 across comparisons. The Modal commands above do not require this local workflow.
+
+## Hyperball and Muon
+
+Both implementations are included; no additional package is required. The A2
+Modal config factory selects their optimizer builder automatically.
+
+For P1(d), pass your predicted or swept LR to:
+
+```python
+from experiments.a2.modal_launcher import config, launch_training_jobs
+
+def hyperball_run(lr):
+    return config(tokens=1_228_800_000, optimizer_name='adamh',
+                  learning_rate=lr, weight_decay=0.,
+                  run_name_suffix='a2-hyperball-target')
+```
+
+Launch your chosen configurations with `launch_training_jobs(RUNS)`.
+[`hyperball.py`](hyperball.py) supplies AdamH for linear-layer weights,
+including the readout. Embeddings, normalization parameters, and biases use
+ordinary Adam at `(0.000656 / 0.00630) * learning_rate`, matching the supplied
+Hyperball runs. Both groups follow the same scheduler; epsilon is `1e-8`.
+Hyperball requires zero weight decay. Keep the fallback LR ratio fixed for P1(d).
+
+For the optional Muon exploration:
+
+```python
+muon_run = config(
+    optimizer_name='muon', learning_rate=.02, weight_decay=.1,
+    optimizer_kwargs={'adam_learning_rate': 3e-4, 'momentum': .95},
+    run_name_suffix='a2-muon-exploration',
+)
+```
+
+These are starting settings, not tuned assignment results. Tune Muon's LR and
+the auxiliary AdamW LR separately. [`muon.py`](muon.py) uses five BF16
+Newton–Schulz steps, Nesterov momentum, and the upstream rectangular-matrix
+factor `sqrt(max(1, rows / columns))`. Hidden linear weights use Muon;
+embedding, readout, normalization, and bias parameters use AdamW. Weight decay
+applies to hidden and readout weights; embedding, normalization, and bias
+parameters are exempt. The auxiliary AdamW uses the config's betas and epsilon
+`1e-8`. Both optimizers' groups follow the configured LR schedule.
+
+The Muon implementation is adapted from
+[KellerJordan/Muon](https://github.com/KellerJordan/Muon/tree/f98f1cacc0263b04290753e32be8d498c1efc806)
+under its [MIT license](licenses/Muon.txt). It supports one device without
+initializing a distributed process group. Missing gradients are skipped, and
+optimizer steps preserve the recorded gradients.
+
+For local training, set
+`optimizer_builder='experiments.a2.optimizers:build_optimizer'` alongside the
+optimizer name in `TrainConfig`; pass optional settings in `optimizer_kwargs`.
+Muon routing expects an output module named `lm_head` or `head`.
+For custom parameter groups, use `AdamH` or `SingleDeviceMuonWithAuxAdam`
+directly in your optimizer factory. Width/depth initialization, readout
+multipliers, and parameter-group scaling remain student work.
 
 ## Implement the experiments
 
