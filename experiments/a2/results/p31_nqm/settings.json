@@ -1,0 +1,46 @@
+{
+  "total_examples": 8192,
+  "source_batches": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64
+  ],
+  "extended_batches": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256,
+    512
+  ],
+  "init_variance_2d": [
+    1.0,
+    0.1
+  ],
+  "init_variance_scalar": [
+    2.0
+  ],
+  "curvature_2d": [
+    1.0,
+    10.0
+  ],
+  "beta2": 0.95,
+  "epsilon": 1e-08,
+  "seed": 312,
+  "coarse_samples": 2048,
+  "refinement_samples": 4096,
+  "evaluation_samples": 32768,
+  "large_batch_coarse_samples": 8192,
+  "large_batch_refinement_samples": 32768,
+  "independent_evaluation": true,
+  "shared_noise_across_lrs": true,
+  "lr_selection": "coarse/fine log grids, local three-point quadratic interpolation"
+}

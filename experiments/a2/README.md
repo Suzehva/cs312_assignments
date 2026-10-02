@@ -432,6 +432,35 @@ and plotting remain student work.
 
 ## P3 settings
 
+### Local P3.1 noisy-quadratic experiments
+
+```bash
+uv run python -m experiments.a2.p31_nqm
+uv run python -m experiments.a2.plot_p31
+```
+
+The first command runs all four CPU-only parts; it never calls Modal or W&B.
+Use `--parts a` (or `b c d`) to select parts and `--workers 1` for serial
+execution. Up to four local processes handle the independent adaptive cases.
+Completed sweeps are cached under `experiments/a2/results/p31_nqm/`, so reruns
+resume rather than repeating completed work. The second command only plots
+cached results, saving figures under `experiments/a2/plots/` and copying them
+into the write-up's figures folder; neither command compiles TeX.
+
+The implementation follows `worksheets/hparam_invariants/units/batch_nqm_theory.tex`:
+N=8192, initialization *variances* (1, .1) for the 2D quadratic and 2 for
+the scalar comparison, constant LR, no WD, and bias-corrected moments with
+beta2=.95 and epsilon=1e-8. RMSProp is precisely Adam with beta1=0.
+Each LR grid shares initialization/noise across candidate LRs, while its
+trajectories are independent. Source coarse/refined grids use 2048/4096
+trajectories; batches >=128 use 8192/32768 to resolve their more irregular
+loss curves. Three adjacent refined points give a local quadratic in log LR
+for minimum interpolation; this is separate from the log-log power-law fit
+across source batches. Predictions are saved before target tuning. Final
+loss comparisons use 32768 independent evaluation trajectories and record
+standard errors, including paired errors for prediction-minus-tuned loss.
+The SGD and momentum implementations also have exact covariance checks.
+
 P3.1 fixes the NQM second-moment coefficient at beta2=.95. P3.2 uses
 614.4M tokens; pass `tokens=614_400_000` explicitly to the config factory.
 The config factory defaults to 153.6M tokens.

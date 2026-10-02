@@ -1,0 +1,20 @@
+{
+  "source_batches": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64
+  ],
+  "law": {
+    "reference_batch": 64,
+    "lr_ref": 0.026956634513408458,
+    "exponent": 0.5204364033352676,
+    "r_squared_log": 0.9993865591101976,
+    "multiplier_per_doubling": 1.434389073246896
+  },
+  "target_batch": 256,
+  "predicted_lr": 0.05546252108814067
+}
