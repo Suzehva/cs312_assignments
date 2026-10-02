@@ -1,0 +1,211 @@
+{
+  "target_tokens": 1228800000,
+  "loss_fit": "L=a*x^2+b*x+c; x=log2(LR/0.003); uses three nearby controls, prediction held out",
+  "coefficients": [
+    0.03341615589726462,
+    -0.1160003063758755,
+    2.926412113353976
+  ],
+  "fitted_optimal_lr": 0.009991175749405569,
+  "fitted_minimum_loss": 2.825741713677644,
+  "all_four_fit_sensitivity": {
+    "coefficients": [
+      0.029458720333257485,
+      -0.10443979327632054,
+      2.9188951839260926
+    ],
+    "fitted_optimal_lr": 0.01025040474532207
+  },
+  "predicted_lr": 0.008386850003371452,
+  "prediction_lr_error_percent": -16.0574269362599,
+  "prediction_loss_gap_to_best_sampled": 0.0035386085510253906,
+  "best_sampled_lr": 0.01,
+  "best_sampled_loss": 2.825741767883301,
+  "source_power_laws": {
+    "Hyperball": {
+      "eta_ref": 0.010267261603103506,
+      "beta": -0.2918504903975972,
+      "r_squared_log": 0.9850958951165467
+    },
+    "AdamW": {
+      "eta_ref": 0.0032762095188946802,
+      "beta": 0.21250717450922932,
+      "r_squared_log": 0.9144245452065599
+    }
+  },
+  "adamw_target_comparison": {
+    "predicted_lr": 0.0037961442042928418,
+    "fitted_optimal_lr": 0.003878357828151972,
+    "prediction_lr_error_percent": -2.119805018050769
+  },
+  "runs": [
+    {
+      "run_id": "bwtejsrj",
+      "run_url": "https://wandb.ai/suzevana/assignments/runs/bwtejsrj",
+      "state": "finished",
+      "created_at": "2026-10-02T00:20:13Z",
+      "tokens": 1228800000,
+      "learning_rate": 0.006,
+      "final_val_loss": 2.843827962875366,
+      "elapsed_seconds": 1275.210443083,
+      "final_optimizer_step": 18749,
+      "training_progress": 1,
+      "settings": {
+        "num_train_sequences": 1200000,
+        "optimizer_name": "adamh",
+        "optimizer_builder": "experiments.a2.hyperball:build_optimizer",
+        "weight_decay": 0.0,
+        "batch_size": 64,
+        "num_micro_batches": 1,
+        "lr_schedule": "linear",
+        "warmup_percent": 0.01,
+        "beta1": 0.9,
+        "beta2": 0.95,
+        "model_seed": 42,
+        "data_seed": 42,
+        "qk_norm": true,
+        "num_epochs": 1
+      },
+      "model_config": {
+        "name": "a2-d8",
+        "head_dim": 64,
+        "vocab_size": 4096,
+        "hidden_size": 512,
+        "context_length": 1024,
+        "intermediate_size": 1792,
+        "num_hidden_layers": 8,
+        "num_attention_heads": 8,
+        "num_key_value_heads": 8,
+        "max_position_embeddings": 131072
+      },
+      "kind": "Nearby control",
+      "loss_gap_to_best_sampled": 0.01808619499206543
+    },
+    {
+      "run_id": "cn0dtm2w",
+      "run_url": "https://wandb.ai/suzevana/assignments/runs/cn0dtm2w",
+      "state": "finished",
+      "created_at": "2026-10-02T00:20:16Z",
+      "tokens": 1228800000,
+      "learning_rate": 0.008386850003371452,
+      "final_val_loss": 2.829280376434326,
+      "elapsed_seconds": 1306.54030999,
+      "final_optimizer_step": 18749,
+      "training_progress": 1,
+      "settings": {
+        "num_train_sequences": 1200000,
+        "optimizer_name": "adamh",
+        "optimizer_builder": "experiments.a2.hyperball:build_optimizer",
+        "weight_decay": 0.0,
+        "batch_size": 64,
+        "num_micro_batches": 1,
+        "lr_schedule": "linear",
+        "warmup_percent": 0.01,
+        "beta1": 0.9,
+        "beta2": 0.95,
+        "model_seed": 42,
+        "data_seed": 42,
+        "qk_norm": true,
+        "num_epochs": 1
+      },
+      "model_config": {
+        "name": "a2-d8",
+        "head_dim": 64,
+        "vocab_size": 4096,
+        "hidden_size": 512,
+        "context_length": 1024,
+        "intermediate_size": 1792,
+        "num_hidden_layers": 8,
+        "num_attention_heads": 8,
+        "num_key_value_heads": 8,
+        "max_position_embeddings": 131072
+      },
+      "kind": "Prediction",
+      "loss_gap_to_best_sampled": 0.0035386085510253906
+    },
+    {
+      "run_id": "sg98nzmg",
+      "run_url": "https://wandb.ai/suzevana/assignments/runs/sg98nzmg",
+      "state": "finished",
+      "created_at": "2026-10-02T00:41:32Z",
+      "tokens": 1228800000,
+      "learning_rate": 0.01,
+      "final_val_loss": 2.825741767883301,
+      "elapsed_seconds": 1247.857363444,
+      "final_optimizer_step": 18749,
+      "training_progress": 1,
+      "settings": {
+        "num_train_sequences": 1200000,
+        "optimizer_name": "adamh",
+        "optimizer_builder": "experiments.a2.hyperball:build_optimizer",
+        "weight_decay": 0.0,
+        "batch_size": 64,
+        "num_micro_batches": 1,
+        "lr_schedule": "linear",
+        "warmup_percent": 0.01,
+        "beta1": 0.9,
+        "beta2": 0.95,
+        "model_seed": 42,
+        "data_seed": 42,
+        "qk_norm": true,
+        "num_epochs": 1
+      },
+      "model_config": {
+        "name": "a2-d8",
+        "head_dim": 64,
+        "vocab_size": 4096,
+        "hidden_size": 512,
+        "context_length": 1024,
+        "intermediate_size": 1792,
+        "num_hidden_layers": 8,
+        "num_attention_heads": 8,
+        "num_key_value_heads": 8,
+        "max_position_embeddings": 131072
+      },
+      "kind": "Nearby control",
+      "loss_gap_to_best_sampled": 0.0
+    },
+    {
+      "run_id": "30htkdu0",
+      "run_url": "https://wandb.ai/suzevana/assignments/runs/30htkdu0",
+      "state": "finished",
+      "created_at": "2026-10-02T00:42:08Z",
+      "tokens": 1228800000,
+      "learning_rate": 0.012,
+      "final_val_loss": 2.828076124191284,
+      "elapsed_seconds": 1244.1629688950002,
+      "final_optimizer_step": 18749,
+      "training_progress": 1,
+      "settings": {
+        "num_train_sequences": 1200000,
+        "optimizer_name": "adamh",
+        "optimizer_builder": "experiments.a2.hyperball:build_optimizer",
+        "weight_decay": 0.0,
+        "batch_size": 64,
+        "num_micro_batches": 1,
+        "lr_schedule": "linear",
+        "warmup_percent": 0.01,
+        "beta1": 0.9,
+        "beta2": 0.95,
+        "model_seed": 42,
+        "data_seed": 42,
+        "qk_norm": true,
+        "num_epochs": 1
+      },
+      "model_config": {
+        "name": "a2-d8",
+        "head_dim": 64,
+        "vocab_size": 4096,
+        "hidden_size": 512,
+        "context_length": 1024,
+        "intermediate_size": 1792,
+        "num_hidden_layers": 8,
+        "num_attention_heads": 8,
+        "num_key_value_heads": 8,
+        "max_position_embeddings": 131072
+      },
+      "kind": "Nearby control",
+      "loss_gap_to_best_sampled": 0.0023343563079833984
+    }
+  ]
+}
