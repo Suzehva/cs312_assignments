@@ -1,0 +1,64 @@
+{
+  "data_source": "worksheets/hparam_invariants/data/provided_sweeps.csv (P2a)",
+  "fit_method": "Unweighted least-squares power laws in log space, using P2(a) fitted optima",
+  "power_laws": {
+    "lr": {
+      "reference_tokens": 1228800000,
+      "value_ref": 0.002662215442440445,
+      "exponent": 0.22323671252860477,
+      "r_squared_log": 0.6784375292638065
+    },
+    "wd": {
+      "reference_tokens": 1228800000,
+      "value_ref": 0.15762381059724606,
+      "exponent": -0.8161783217408665,
+      "r_squared_log": 0.9936558904067578
+    },
+    "product": {
+      "reference_tokens": 1228800000,
+      "value_ref": 0.0004196285426682968,
+      "exponent": -0.5929416092122617,
+      "r_squared_log": 0.9674852743407101
+    }
+  },
+  "best_log_space_fit": "wd",
+  "product_multiplier_per_doubling": 0.6629897130607262,
+  "budgets": [
+    {
+      "tokens": 153600000,
+      "optimal_lr": 0.0018592514315184862,
+      "optimal_wd": 0.8466049141942533,
+      "optimal_product": 0.0015740513986462507,
+      "quadratic_cross_coefficient": 0.028761804103850895,
+      "conditional_log_wd_slope_vs_log_lr": -0.736263238842333,
+      "shallow_contour_angle_to_constant_product_degrees": 21.732927964919988
+    },
+    {
+      "tokens": 307200000,
+      "optimal_lr": 0.0016030234616866415,
+      "optimal_wd": 0.5194150756833087,
+      "optimal_product": 0.0008326345526740864,
+      "quadratic_cross_coefficient": 0.01188753332410471,
+      "conditional_log_wd_slope_vs_log_lr": -0.8614477986590225,
+      "shallow_contour_angle_to_constant_product_degrees": 16.732408848500054
+    },
+    {
+      "tokens": 614400000,
+      "optimal_lr": 0.0024703119893946814,
+      "optimal_wd": 0.25785625551782565,
+      "optimal_product": 0.0006369853995461032,
+      "quadratic_cross_coefficient": 0.011511981487274048,
+      "conditional_log_wd_slope_vs_log_lr": -1.050064154608985,
+      "shallow_contour_angle_to_constant_product_degrees": 25.413749393404384
+    },
+    {
+      "tokens": 1228800000,
+      "optimal_lr": 0.0026961081179006628,
+      "optimal_wd": 0.16221059692860587,
+      "optimal_product": 0.0004373373071887266,
+      "quadratic_cross_coefficient": 0.013739824295043827,
+      "conditional_log_wd_slope_vs_log_lr": -0.9602166064981558,
+      "shallow_contour_angle_to_constant_product_degrees": 2.9104600442643243
+    }
+  ]
+}

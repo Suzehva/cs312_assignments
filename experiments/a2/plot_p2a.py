@@ -17,6 +17,7 @@ from experiments.a2.plot_p1a import (
 from experiments.a2.provided_sweeps import load
 
 import matplotlib as mpl
+import matplotlib.patheffects as path_effects
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -134,7 +135,8 @@ def analyze_sources() -> tuple[list[JointFit], list[LearningRateFit], dict]:
     return joint_fits, fixed_fits, report
 
 
-def plot_contours(fits: list[JointFit], output_path: Path = CONTOUR_PATH) -> Path:
+def plot_contours(fits: list[JointFit], output_path: Path = CONTOUR_PATH,
+                  *, show_constant_product=False) -> Path:
     fig, axes = plt.subplots(2, 2, figsize=(10.7, 7.7), layout="constrained")
     for ax, fit in zip(axes.flat, fits, strict=True):
         lrs = sorted({r["learning_rate"] for r in fit.rows})
@@ -163,6 +165,18 @@ def plot_contours(fits: list[JointFit], output_path: Path = CONTOUR_PATH) -> Pat
                     textcoords="offset points", fontsize=8,
                     bbox=dict(facecolor="white", alpha=0.85, edgecolor="none", pad=2),
                     zorder=5)
+        if show_constant_product:
+            product = fit.optimal_lr * fit.optimal_wd
+            line_lrs = np.geomspace(lrs[0], lrs[-1], 300)
+            line_wds = product / line_lrs
+            visible = (line_wds >= wds[0]) & (line_wds <= wds[-1])
+            ax.plot(
+                line_lrs[visible], line_wds[visible], color="white", linestyle="--",
+                linewidth=1.8, label=r"$\eta\lambda=\eta^*\lambda^*$", zorder=3.5,
+                path_effects=[path_effects.Stroke(linewidth=3, foreground="#333333"),
+                              path_effects.Normal()],
+            )
+            ax.legend(loc="upper right", fontsize=8, framealpha=0.9)
         ax.set_xscale("log")
         ax.set_yscale("log")
         ax.set_xticks(lrs, labels=[f"{x:g}" for x in lrs])
@@ -173,7 +187,8 @@ def plot_contours(fits: list[JointFit], output_path: Path = CONTOUR_PATH) -> Pat
         ax.set_title(f"{fit.tokens / 1e6:g}M training tokens")
         fig.colorbar(fill, ax=ax, label="Final validation loss", fraction=0.05,
                      format="%.3f", ticks=levels[::3])
-    fig.suptitle("P2(a): Joint loss fits — circles are measurements, stars are fitted optima", fontsize=13)
+    part = "P2(a–b)" if show_constant_product else "P2(a)"
+    fig.suptitle(f"{part}: Joint loss fits — circles are measurements, stars are fitted optima", fontsize=13)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path)
     plt.close(fig)
@@ -251,7 +266,8 @@ def plot_trends(joint_fits, fixed_fits, report, output_path: Path = TREND_PATH) 
 def main():
     joint_fits, fixed_fits, report = analyze_sources()
     set_style()
-    outputs = [plot_contours(joint_fits), plot_trends(joint_fits, fixed_fits, report)]
+    outputs = [plot_contours(joint_fits, show_constant_product=True),
+               plot_trends(joint_fits, fixed_fits, report)]
     RESULTS_PATH.write_text(json.dumps(report, indent=2) + "\n")
     WRITEUP_FIGURES.mkdir(parents=True, exist_ok=True)
     for output in outputs:
