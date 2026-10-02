@@ -29,3 +29,4 @@ RUNS = [
 
 if __name__ == "__main__":
     launch_training_jobs(RUNS, max_parallel_runs=4, app_name=APP_NAME)
+    # uv run python -m experiments.a2.p1d_grid

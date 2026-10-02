@@ -181,8 +181,8 @@ def plot_contours(fits: list[JointFit], output_path: Path = CONTOUR_PATH) -> Pat
 
 
 def plot_trends(joint_fits, fixed_fits, report, output_path: Path = TREND_PATH) -> Path:
-    fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.8), layout="constrained")
-    lr_ax, wd_ax, loss_ax, gain_ax = axes.flat
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5), layout="constrained")
+    lr_ax, wd_ax, loss_ax = axes
     colors = mpl.colormaps["viridis"](np.linspace(0.08, 1, len(BUDGETS)))
     joint_color, fixed_color = mpl.colormaps["viridis"]([0.55, 0.15])
     lr_ax.plot(BUDGETS, [f.optimal_lr for f in joint_fits], color=joint_color,
@@ -202,9 +202,6 @@ def plot_trends(joint_fits, fixed_fits, report, output_path: Path = TREND_PATH) 
                  color=joint_color, linewidth=2, label="Joint grid (filled circles)")
     loss_ax.plot(BUDGETS, [r["p1_best_measured_loss"] for r in report["budgets"]],
                  color=fixed_color, linewidth=2, linestyle="--", label="P1, WD=0.1 (hollow circles)")
-    gain_ax.plot(BUDGETS, [r["measured_loss_gain"] for r in report["budgets"]],
-                 color=joint_color, linewidth=2)
-    gain_ax.axhline(0, color="#555555", linewidth=0.8, linestyle=":")
     for joint, fixed, result, color in zip(joint_fits, fixed_fits, report["budgets"], colors, strict=True):
         lr_ax.scatter(joint.tokens, joint.optimal_lr, color=color, marker="*", s=130,
                       edgecolor="#333333", linewidth=0.6, zorder=4)
@@ -216,19 +213,23 @@ def plot_trends(joint_fits, fixed_fits, report, output_path: Path = TREND_PATH) 
                         s=45, edgecolor="#333333", linewidth=0.5, zorder=4)
         loss_ax.scatter(joint.tokens, result["p1_best_measured_loss"], facecolor="none",
                         edgecolor=color, s=45, linewidth=1.3, zorder=4)
-        gain_ax.scatter(joint.tokens, result["measured_loss_gain"], color=color,
-                        s=45, edgecolor="#333333", linewidth=0.5, zorder=4)
-        gain_ax.annotate(f"{result['measured_loss_gain']:.4f}",
-                        (joint.tokens, result["measured_loss_gain"]),
-                        xytext=(0, 9), textcoords="offset points", ha="center", fontsize=9)
-    lr_ax.set_title("Joint tuning changes the LR trend")
-    wd_ax.set_title("Optimal WD falls as training gets longer")
-    loss_ax.set_title("Best measured validation losses")
-    gain_ax.set_title("Benefit from the joint grid shrinks")
+        midpoint = (result["p1_best_measured_loss"] + result["joint_best_measured_loss"]) / 2
+        last_budget = joint.tokens == BUDGETS[-1]
+        loss_ax.annotate(
+            rf"$\Delta L={result['measured_loss_gain']:.4f}$",
+            (joint.tokens, midpoint),
+            xytext=(-9, 12) if last_budget else (9, 0),
+            textcoords="offset points", ha="right" if last_budget else "left",
+            va="center", fontsize=8,
+            bbox=dict(facecolor="white", alpha=0.85, edgecolor="none", pad=1),
+            zorder=5,
+        )
+    lr_ax.set_title("Optimal peak LR")
+    wd_ax.set_title("Optimal weight decay")
+    loss_ax.set_title("Best measured validation loss")
     lr_ax.set_ylabel("Fitted optimal peak LR")
     wd_ax.set_ylabel("Fitted optimal WD")
     loss_ax.set_ylabel("Final validation loss")
-    gain_ax.set_ylabel("Loss gain: P1 best − joint best")
     lr_ax.set_yticks([0.0015, 0.002, 0.003, 0.004],
                     labels=[".0015", ".002", ".003", ".004"])
     wd_ax.set_yticks([0.1, 0.2, 0.4, 0.8, 1.6], labels=[".1", ".2", ".4", ".8", "1.6"])
@@ -240,7 +241,6 @@ def plot_trends(joint_fits, fixed_fits, report, output_path: Path = TREND_PATH) 
         ax.grid(True, linestyle=":", alpha=0.35)
     for ax in (lr_ax, wd_ax, loss_ax):
         ax.legend(frameon=False, fontsize=8, loc="best")
-    gain_ax.margins(y=0.2)
     fig.suptitle("P2(a): Joint tuning versus fixed WD — largest token budget is yellow", fontsize=13)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path)
