@@ -465,6 +465,22 @@ P3.1 fixes the NQM second-moment coefficient at beta2=.95. P3.2 uses
 614.4M tokens; pass `tokens=614_400_000` explicitly to the config factory.
 The config factory defaults to 153.6M tokens.
 
+### P3.2(a) completed batch-size sweeps
+
+```bash
+uv run python -m experiments.a2.p32a_results
+uv run python -m experiments.a2.plot_p32a
+```
+
+The first command reads W&B and caches the 28 selected final losses in
+`results/p32a_runs.json`: seven LRs per batch at 8, 16, 32, and 64,
+including nine new runs, 16 reused A1 runs, and three supplied controls.
+Fixed run IDs and configuration checks exclude warmup ablations and other
+seeds. All runs use WD=.1, 1% warmup, and exactly 614.4M tokens.
+The second command works offline: it fits quadratics in log LR, saves
+`results/p32a_analysis.json`, and copies the three-panel figure into the
+write-up. Neither command launches training or compiles TeX.
+
 The batch-switching example also uses 614.4M tokens, switching from total
 batch 64 to 128 at exactly 307.2M tokens. It compares initialization seeds
 42, 43, and 44 at fixed token order, peak LR .0015, and initial WD 1.6.
