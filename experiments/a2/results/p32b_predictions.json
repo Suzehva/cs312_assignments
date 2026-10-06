@@ -1,0 +1,35 @@
+{
+  "wd_rule": {
+    "reference_batch": 64,
+    "wd_ref": 0.2611575185207332,
+    "exponent": 0.7011603013877691,
+    "doubling_multiplier": 1.625811841877967,
+    "r_squared_log": 0.9481091142295361
+  },
+  "wd_predictions": [
+    {
+      "batch_size": 128,
+      "learning_rate": 0.0015,
+      "weight_decay": 0.42459298620647257
+    },
+    {
+      "batch_size": 256,
+      "learning_rate": 0.0015,
+      "weight_decay": 0.6903083049528113
+    }
+  ],
+  "lr_predictions": [
+    {
+      "batch_size": 128,
+      "learning_rate": 0.005825928618488781,
+      "weight_decay": 0.1
+    },
+    {
+      "batch_size": 256,
+      "learning_rate": 0.008755958266300889,
+      "weight_decay": 0.1
+    }
+  ],
+  "recorded_at_utc": "2026-10-05T23:14:03.059207+00:00",
+  "recording_note": "WD source law recorded before fetching target losses."
+}

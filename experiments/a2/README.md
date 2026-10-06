@@ -481,6 +481,56 @@ The second command works offline: it fits quadratics in log LR, saves
 `results/p32a_analysis.json`, and copies the three-panel figure into the
 write-up. Neither command launches training or compiles TeX.
 
+### P3.2(b) source WD sweep and frozen LR predictions
+
+```bash
+uv run python -m experiments.a2.p32b_wd_grid
+uv run python -m experiments.a2.p32b_lr_predictions
+```
+
+These commands submit detached GPU jobs; they do not wait for training to
+finish. The first submits 22 missing source runs: LR=.0015 and seven WDs
+(.025, .05, .1, .2, .4, .8, 1.6) per batch at 8, 16, 32, and 64, reusing
+six completed configurations listed in the script. The second submits
+only the two source-law LR predictions: .005825928618488781 at batch 128
+and .008755958266300889 at batch 256, both with WD=.1. These can run while
+the source WD sweep is in progress; WD target predictions must wait for
+its results. All runs request 614.4M tokens and use 1% warmup. Target
+microbatches are 64 sequences, accumulated twice/four times at 128/256.
+Incomplete accumulation groups are dropped, so actual target budgets are
+614,334,464 and 614,203,392 tokens, respectively.
+Both apps are named `a2-p32b` with a timestamp; actual GPU concurrency
+depends on the Modal quota.
+
+With the source WD sweep complete, submit its two frozen target predictions:
+
+```bash
+uv run python -m experiments.a2.p32b_wd_predictions
+```
+
+This submits only batch 128 with WD=.42459298620647257 and batch 256 with
+WD=.6903083049528113, both at peak LR=.0015. Predictions match the recorded
+seven-point-fit source law in `results/p32b_predictions.json`. The jobs
+are detached and eligible to run concurrently, with app name `a2-p32b`
+plus a timestamp. No source or LR-prediction runs are repeated.
+
+To collect completed P3.2(b) results and plot them:
+
+```bash
+uv run python -m experiments.a2.p32b_results
+uv run python -m experiments.a2.plot_p32b
+```
+
+The collector validates the 22 new source runs, combines them with the
+six reused configurations, and saves `results/p32b_source_wd_runs.json`.
+It records source-only WD predictions in `results/p32b_predictions.json`
+before reading the two LR-target losses into `results/p32b_lr_target_runs.json`.
+Frozen predictions are not overwritten on reruns. The offline plotter
+saves `results/p32b_analysis.json` and copies the source WD figure into
+the write-up. The seven-point quadratic fits include a local-three-point
+fit sensitivity check. WD-target tests and the final recipe comparison
+are still pending. Neither command launches training or compiles TeX.
+
 The batch-switching example also uses 614.4M tokens, switching from total
 batch 64 to 128 at exactly 307.2M tokens. It compares initialization seeds
 42, 43, and 44 at fixed token order, peak LR .0015, and initial WD 1.6.
