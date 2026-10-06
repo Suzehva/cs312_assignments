@@ -17,6 +17,7 @@ from utils import WANDB_ENTITY, WANDB_PROJECT
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 SOURCE_PATH = RESULTS_DIR / "p32b_source_wd_runs.json"
 TARGET_PATH = RESULTS_DIR / "p32b_lr_target_runs.json"
+WD_TARGET_PATH = RESULTS_DIR / "p32b_wd_target_runs.json"
 PREDICTION_PATH = RESULTS_DIR / "p32b_predictions.json"
 
 
@@ -99,6 +100,28 @@ def fetch_lr_targets(api):
     return [matched[batch] for batch in sorted(matched)]
 
 
+def fetch_wd_targets(api):
+    # Read the frozen predictions, not a rule refitted after seeing targets.
+    predictions = json.loads(PREDICTION_PATH.read_text())["wd_predictions"]
+    expected = {p["batch_size"]: p for p in predictions}
+    matched = {}
+    for run in api.runs(f"{WANDB_ENTITY}/{WANDB_PROJECT}", filters={
+            "config.run_name_suffix": "a2-p32b",
+            "config.batch_size": {"$in": list(expected)},
+            "config.learning_rate": .0015,
+        }, order="-created_at", per_page=20):
+        batch = run.config["batch_size"]
+        prediction = expected[batch]
+        if (batch in matched or
+                run.config["weight_decay"] != prediction["weight_decay"]):
+            continue
+        matched[batch] = completed_row(run, batch, prediction["learning_rate"],
+                                       prediction["weight_decay"])
+    if set(matched) != set(expected):
+        raise ValueError(f"Missing completed WD-prediction targets: {set(expected) - set(matched)}")
+    return [matched[batch] for batch in sorted(matched)]
+
+
 def save_snapshot(path, rows):
     path.write_text(json.dumps({
         "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -129,6 +152,11 @@ def main():
     save_snapshot(TARGET_PATH, targets)
     for row in targets:
         print(f"LR target B={row['batch_size']}: loss={row['final_val_loss']:.9f}, "
+              f"actual tokens={row['actual_tokens']:,}", flush=True)
+    wd_targets = fetch_wd_targets(api)
+    save_snapshot(WD_TARGET_PATH, wd_targets)
+    for row in wd_targets:
+        print(f"WD target B={row['batch_size']}: loss={row['final_val_loss']:.9f}, "
               f"actual tokens={row['actual_tokens']:,}", flush=True)
     print("No training launched.")
 

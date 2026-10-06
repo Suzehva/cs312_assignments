@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 
 import matplotlib as mpl
+from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -93,35 +94,94 @@ def plot_a():
 
 def plot_b():
     reports = dict(sgd=read("a"), **read("b"))
-    fig, axes = plt.subplots(1, 3, figsize=(13.4, 3.65), layout="constrained")
+    fig = plt.figure(figsize=(14.3, 7.2), layout="constrained")
+    grid = fig.add_gridspec(2, 3, width_ratios=(1.15, 1.12, 1))
+    sweep_axes = {"rmsprop": fig.add_subplot(grid[0, 0]),
+                  "adam": fig.add_subplot(grid[1, 0])}
+    lr_ax = fig.add_subplot(grid[:, 1])
+    tuned_ax = fig.add_subplot(grid[0, 2])
+    transfer_ax = fig.add_subplot(grid[1, 2])
+    selected_batches = (1, 8, 64, 256)
+    batch_colors = dict(zip(selected_batches, VIRIDIS(np.linspace(.08, 1., 4))))
+    for key, ax in sweep_axes.items():
+        report = reports[key]
+        for row in report["extended"]:
+            batch = row["batch"]
+            if batch not in selected_batches:
+                continue
+            color, lr = batch_colors[batch], row["optimal_lr"]
+            # Show the actual cached sweeps, not newly simulated/analytic curves.
+            # Refined measurements supersede coarse ones at duplicate LRs.
+            measurements = {}
+            for phase in ("coarse", "fine"):
+                measurements.update(zip(row[phase]["lrs"], row[phase]["mean_loss"]))
+            visible = sorted((rate, loss) for rate, loss in measurements.items()
+                             if lr/4 <= rate <= lr*4 and np.isfinite(loss) and loss > 0)
+            rates, losses = np.asarray(visible).T
+            ax.plot(rates, losses, color=color, linewidth=1.2, marker="o",
+                    markersize=2, label=f"B={batch}")
+            local = row["local_quadratic"]
+            minimum = np.polyval(local["coefficients"], np.log(lr/local["reference_lr"]))
+            ax.scatter(lr, minimum, color=color, marker="*", s=105,
+                       edgecolor="#333", linewidth=.6, zorder=4)
+        ax.scatter(report["predicted_lr"], report["predicted_loss"],
+                   marker="D", facecolor="none", edgecolor=batch_colors[256],
+                   linewidth=1.6, s=65, zorder=5, label="B=256 prediction")
+        ax.set(xscale="log", yscale="log", xlabel="Learning rate, η",
+               ylabel="Expected final loss", title=f"{LABELS[key]} loss–LR sweeps")
+        ax.legend(fontsize=8, frameon=False, ncol=2)
+        ax.grid(True, linestyle=":", alpha=.3)
+
+    source_x = np.geomspace(1, max(SOURCE_BATCHES), 150)
+    extrapolation_x = np.geomspace(max(SOURCE_BATCHES), 512, 150)
+    handles = []
     for key, report in reports.items():
         rows, color = report["extended"], OPTIMIZER_COLORS[key]
         batches = [r["batch"] for r in rows]
-        axes[0].plot(batches, [r["optimal_lr"] for r in rows], color=color, linewidth=1)
-        axes[0].scatter(batches, [r["optimal_lr"] for r in rows], color=color, marker="*", s=60,
-                        edgecolor="#333", linewidth=.5,
-                        label=f"{LABELS[key]}: p={report['law']['exponent']:.3f}")
-        dense = np.geomspace(1, 256, 150)
-        axes[0].plot(dense, predict(report["law"], dense), "--", color=color, alpha=.7)
-        axes[1].plot(batches, [r["evaluated_loss"] for r in rows], color=color, marker="o",
-                     markersize=3, label=LABELS[key])
+        lr_ax.plot(source_x, predict(report["law"], source_x), color=color, linewidth=1.7)
+        lr_ax.plot(extrapolation_x, predict(report["law"], extrapolation_x),
+                   "--", color=color, linewidth=1.7)
+        lr_ax.scatter(batches, [r["optimal_lr"] for r in rows], color=color, marker="*",
+                      s=80 if key != "rmsprop" else 125, edgecolor="#333",
+                      linewidth=.5, zorder=4)
+        lr_ax.scatter(256, report["predicted_lr"], marker="D", facecolor="none",
+                      edgecolor=color, s=110 if key == "rmsprop" else 65,
+                      linewidth=1.7, zorder=5)
+        handles.append(Line2D([], [], color=color,
+                              label=f"{LABELS[key]}: p={report['law']['exponent']:.3f}"))
+        tuned_ax.plot(batches, [r["evaluated_loss"] for r in rows], color=color, marker="o",
+                      markersize=3, label=LABELS[key])
     for i, key in enumerate(reports):
         report = reports[key]
-        axes[2].errorbar(i-.1, report["predicted_loss"], yerr=1.96*report["predicted_loss_se"],
-                         fmt="D", color=VIRIDIS(.15), markerfacecolor="none", capsize=3,
-                         label="Predicted LR" if i == 0 else None)
-        axes[2].errorbar(i+.1, report["tuned_loss"], yerr=1.96*report["target"]["evaluated_loss_se"],
-                         fmt="o", color=VIRIDIS(1.0), markeredgecolor="#555", capsize=3,
-                         label="Tuned LR" if i == 0 else None)
-    axes[0].set(yscale="log", ylabel="Optimal learning rate, η*", title="Similar source exponents")
-    axes[1].set(yscale="log", ylabel="Final loss at tuned LR", title="Different tuned losses")
-    axes[2].set(yscale="log", ylabel="Expected final loss at B=256", title="Does the prediction transfer?")
-    axes[2].set_xticks(range(3), labels=[LABELS[k] for k in reports])
-    axes[2].grid(True, axis="y", linestyle=":", alpha=.3)
-    for ax in axes[:2]:
+        transfer_ax.errorbar(i-.1, report["predicted_loss"],
+                             yerr=1.96*report["predicted_loss_se"], fmt="D",
+                             color=VIRIDIS(.15), markerfacecolor="none", capsize=3,
+                             label="Predicted LR" if i == 0 else None)
+        transfer_ax.errorbar(i+.1, report["tuned_loss"],
+                             yerr=1.96*report["target"]["evaluated_loss_se"], fmt="o",
+                             color=VIRIDIS(1.0), markeredgecolor="#555", capsize=3,
+                             label="Tuned LR" if i == 0 else None)
+    style_color = VIRIDIS(.35)
+    handles.extend([
+        Line2D([], [], color=style_color, linestyle="-", label="Source fit: B=1–64"),
+        Line2D([], [], color=style_color, linestyle="--", label="Extrapolation: B>64"),
+        Line2D([], [], color=style_color, marker="*", linestyle="none", markersize=10,
+               label="Fitted optima"),
+        Line2D([], [], color=style_color, marker="D", markerfacecolor="none",
+               linestyle="none", label="B=256 prediction"),
+    ])
+    lr_ax.set(yscale="log", ylabel="Optimal learning rate, η*",
+              title="Source fit → extrapolation → prediction")
+    tuned_ax.set(yscale="log", ylabel="Final loss at tuned LR", title="Different tuned losses")
+    transfer_ax.set(yscale="log", ylabel="Expected final loss at B=256",
+                    title="Does the prediction transfer?")
+    transfer_ax.set_xticks(range(3), labels=[LABELS[k] for k in reports])
+    transfer_ax.grid(True, axis="y", linestyle=":", alpha=.3)
+    for ax in (lr_ax, tuned_ax):
         batch_axis(ax)
-    for ax in axes:
-        ax.legend(fontsize=8, frameon=False)
+    lr_ax.legend(handles=handles, fontsize=8.5, frameon=False, loc="upper left")
+    tuned_ax.legend(fontsize=8, frameon=False)
+    transfer_ax.legend(fontsize=8, frameon=False)
     save(fig, "p31b_adaptive.png")
 
 
@@ -129,8 +189,33 @@ def plot_c():
     report = read("c")
     sigmas = np.array([1, 10, 100, 300])
     noise_colors = VIRIDIS(np.linspace(.08, 1., 4))
-    fig, axes = plt.subplots(1, 3, figsize=(13.4, 3.65), layout="constrained")
-    for ax, model, title in zip(axes[:2], ("2d", "scalar"), ("Two curvatures: H=diag(1,10)", "Scalar curvature: H=1")):
+    fig, axes = plt.subplots(2, 3, figsize=(13.4, 6.8), layout="constrained")
+    source_batches = np.geomspace(1, 64, 100)
+    target_batches = np.geomspace(64, 256, 100)
+    for row, model, title in ((0, "2d", "Original loss"),
+                              (1, "scalar", "One-parameter loss")):
+        for col, key in enumerate(("rmsprop", "adam")):
+            ax = axes[row, col]
+            for sigma, color in zip(sigmas, noise_colors):
+                result = report[model][str(sigma)][key]
+                law = result["law"]
+                ax.plot(source_batches, predict(law, source_batches), color=color,
+                        label=rf"$\sigma={sigma},\ p={law['exponent']:.3f}$")
+                ax.plot(target_batches, predict(law, target_batches), "--", color=color)
+                ax.scatter([r["batch"] for r in result["source"]],
+                           [r["optimal_lr"] for r in result["source"]],
+                           marker="*", s=60, color=color, edgecolor="#333",
+                           linewidth=.4, zorder=4)
+                ax.scatter(256, result["target"]["optimal_lr"], marker="*", s=85,
+                           color=color, edgecolor="#333", linewidth=.5, zorder=4)
+                ax.scatter(256, result["predicted_lr"], marker="D", s=55,
+                           facecolor="none", edgecolor=color, linewidth=1.5, zorder=5)
+            batch_axis(ax)
+            ax.set_xticks([1, 4, 16, 64, 256], labels=["1", "4", "16", "64", "256"])
+            ax.set(xlim=(.85, 320), yscale="log", ylabel="Optimal learning rate, η*",
+                   title=f"{title}: {LABELS[key]}")
+            ax.legend(fontsize=7.5, frameon=False, loc="upper left")
+        ax = axes[row, 2]
         for key, style in (("rmsprop", "--"), ("adam", "-")):
             p = [report[model][str(s)][key]["law"]["exponent"] for s in sigmas]
             ax.plot(sigmas, p, style, color=OPTIMIZER_COLORS[key], label=LABELS[key])
@@ -141,26 +226,21 @@ def plot_c():
                 ax.scatter(sigmas, p, c=noise_colors, marker="*", s=70, edgecolor="#333",
                            linewidth=.6, zorder=3)
         ax.axhline(.5, color="#555", linestyle=":", linewidth=1)
-        ax.set(xscale="log", xlabel="Gradient-noise scale, σ", ylabel="Fitted LR–batch exponent, p", title=title)
+        ax.set(xscale="log", xlabel="Gradient-noise scale, σ", ylabel="Fitted LR–batch exponent, p",
+               title=f"{title}: exponent versus noise")
         ax.set_xticks(sigmas, labels=["1", "10", "100", "300"])
         ax.set_ylim(.35, 1.08)
         ax.minorticks_off()
         ax.grid(True, linestyle=":", alpha=.3)
         ax.legend(fontsize=8, frameon=False)
-    for model, style in (("2d", "-"), ("scalar", "--")):
-        for key in ("rmsprop", "adam"):
-            ratios = [report[model][str(s)][key]["predicted_loss"]/report[model][str(s)][key]["tuned_loss"]
-                      for s in sigmas]
-            axes[2].plot(sigmas, ratios, style, color=OPTIMIZER_COLORS[key],
-                         label=f"{LABELS[key]} ({model})")
-            axes[2].scatter(sigmas, ratios, c=noise_colors, s=22, edgecolor="#333", linewidth=.4)
-    axes[2].axhline(1., color="#555", linestyle=":", linewidth=1)
-    axes[2].set(xscale="log", xlabel="Gradient-noise scale, σ",
-                ylabel="Predicted / tuned loss at B=256", title="Exponent alone does not ensure transfer")
-    axes[2].set_xticks(sigmas, labels=["1", "10", "100", "300"])
-    axes[2].minorticks_off()
-    axes[2].grid(True, linestyle=":", alpha=.3)
-    axes[2].legend(fontsize=7.5, frameon=False)
+    fig.legend(handles=[
+        Line2D([], [], color="#555", label="Source fit (B=1–64)"),
+        Line2D([], [], color="#555", linestyle="--", label="Extrapolation to B=256"),
+        Line2D([], [], color="#555", linestyle="none", marker="*", markersize=9,
+               label="Fitted optima (including held-out B=256)"),
+        Line2D([], [], color="#555", linestyle="none", marker="D", markerfacecolor="none",
+               label="Frozen B=256 prediction"),
+    ], loc="outside lower center", ncol=4, fontsize=8, frameon=False)
     save(fig, "p31c_noise_and_curvature.png")
 
 

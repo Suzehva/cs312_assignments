@@ -21,7 +21,7 @@ RUNS = [
         optimizer_name="adamw",
         lr_schedule="linear",
         diagnostics=False,
-        run_name_suffix=EXPERIMENT_KEY,
+        run_name_suffix=EXPERIMENT_KEY, 
         wandb_tags=(EXPERIMENT_KEY,),
     )
     for batch, wd in PREDICTED_WDS.items()

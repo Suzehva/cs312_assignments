@@ -6,10 +6,11 @@ from pathlib import Path
 import shutil
 
 from experiments.a2.plot_p1a import PLOT_DIR, set_style
-from experiments.a2.p32b_results import RESULTS_DIR, SOURCE_PATH, TARGET_PATH, PREDICTION_PATH
+from experiments.a2.p32b_results import RESULTS_DIR, SOURCE_PATH, TARGET_PATH, WD_TARGET_PATH, PREDICTION_PATH
 from experiments.a2.p32b_lr_predictions import PREDICTED_LRS
 
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 
 
@@ -95,7 +96,10 @@ def freeze_predictions(report):
 
 def plot(report):
     set_style()
-    fig, (loss_ax, wd_ax) = plt.subplots(1, 2, figsize=(12.6, 4.7))
+    completed = report["wd_target_status"] == "completed"
+    fig, axes = plt.subplots(1, 3 if completed else 2,
+                             figsize=(15.5 if completed else 12.6, 4.7))
+    loss_ax, wd_ax = axes[:2]
     colors = plt.get_cmap("viridis")(np.linspace(.08, 1.0, 4))
     for row, color in zip(report["source_batches"], colors):
         wds = np.array([r["weight_decay"] for r in row["runs"]])
@@ -116,9 +120,10 @@ def plot(report):
     loss_ax.set_title("Source WD sweeps")
     loss_ax.legend(frameon=False)
     law = report["wd_rule"]
-    dense = np.geomspace(8, 256, 250)
-    wd_ax.plot(dense, law["wd_ref"] * (dense/64)**law["exponent"], linestyle="--",
-               color=colors[2], linewidth=1.7)
+    for lo, hi, style in ((8, 64, "-"), (64, 256, "--")):
+        dense = np.geomspace(lo, hi, 150)
+        wd_ax.plot(dense, law["wd_ref"] * (dense/64)**law["exponent"], linestyle=style,
+                   color=colors[2], linewidth=1.7)
     for pred in report["wd_predictions"]:
         wd_ax.scatter(pred["batch_size"], pred["weight_decay"], marker="D", s=65,
                       facecolors="none", edgecolors=plt.get_cmap("viridis")(1.0),
@@ -131,10 +136,37 @@ def plot(report):
     wd_ax.set_xticks([8, 16, 32, 64, 128, 256], labels=["8", "16", "32", "64", "128", "256"])
     wd_ax.set_xlabel("Batch size (sequences/update)")
     wd_ax.set_ylabel("Fitted optimal / predicted WD")
-    wd_ax.set_title("Source law and untested WD predictions")
+    wd_ax.set_title("Source law and frozen WD predictions")
     wd_ax.text(.03, .97, rf"$\lambda^*={law['wd_ref']:.4f}(B/64)^{{{law['exponent']:.3f}}}$",
                transform=wd_ax.transAxes, va="top", fontsize=11)
-    for ax in (loss_ax, wd_ax):
+    if completed:
+        target_ax = axes[2]
+        for rows, style in ((report["lr_target_runs"], "-"),
+                            (report["wd_target_runs"], "--")):
+            batches = [r["batch_size"] for r in rows]
+            losses = [r["final_val_loss"] for r in rows]
+            target_ax.plot(batches, losses, style, color="#555", linewidth=1.2)
+            target_ax.scatter(batches, losses, s=55,
+                              c=[plt.get_cmap("viridis")(.08 + .92*np.log2(b/8)/5)
+                                 for b in batches],
+                              edgecolors="#333", linewidths=.5, zorder=3)
+        for comparison in report["target_comparison"]:
+            batch = comparison["batch_size"]
+            midpoint = (comparison["lr_recipe_loss"] + comparison["wd_recipe_loss"])/2
+            target_ax.annotate(f"ΔL={comparison['wd_recipe_loss_reduction']:.4f}",
+                               (batch, midpoint), xytext=(-9 if batch == 256 else 9, 0),
+                               textcoords="offset points",
+                               ha="right" if batch == 256 else "left", fontsize=9)
+        target_ax.set(xscale="log", xlabel="Target batch size", ylabel="Final validation loss",
+                      title="Measured target recipe comparison")
+        target_ax.set_xlim(110, 290)
+        target_ax.set_xticks([128, 256], labels=["128", "256"])
+        target_ax.minorticks_off()
+        target_ax.legend(handles=[
+            Line2D([], [], color="#555", label="Scale LR; WD=.1"),
+            Line2D([], [], color="#555", linestyle="--", label="Scale WD; LR=.0015"),
+        ], fontsize=8, frameon=False)
+    for ax in axes:
         ax.grid(True, linestyle=":", alpha=.3)
     fig.tight_layout(w_pad=2)
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -151,7 +183,30 @@ def main():
     freeze_predictions(report)
     if TARGET_PATH.exists():
         report["lr_target_runs"] = json.loads(TARGET_PATH.read_text())["runs"]
-    report["wd_target_status"] = "not launched or measured; comparison incomplete"
+    report["wd_target_status"] = "awaiting completed target measurements"
+    if WD_TARGET_PATH.exists() and "lr_target_runs" in report:
+        report["wd_target_runs"] = json.loads(WD_TARGET_PATH.read_text())["runs"]
+        report["target_comparison"] = []
+        for prediction in report["wd_predictions"]:
+            batch = prediction["batch_size"]
+            wd = next(r for r in report["wd_target_runs"] if r["batch_size"] == batch)
+            lr = next(r for r in report["lr_target_runs"] if r["batch_size"] == batch)
+            lr_prediction = next(p for p in report["lr_predictions"] if p["batch_size"] == batch)
+            for row, pred in ((wd, prediction), (lr, lr_prediction)):
+                if any(row[k] != pred[k] for k in ("learning_rate", "weight_decay")):
+                    raise ValueError("Target configuration does not match its frozen prediction.")
+                if row["state"] != "finished" or not np.isfinite(row["final_val_loss"]):
+                    raise ValueError("Target result is not complete and finite.")
+            if wd["actual_tokens"] != lr["actual_tokens"]:
+                raise ValueError("Recipes have different token budgets at the same batch.")
+            report["target_comparison"].append({
+                "batch_size": batch, "lr_recipe_loss": lr["final_val_loss"],
+                "wd_recipe_loss": wd["final_val_loss"],
+                "wd_recipe_loss_reduction": lr["final_val_loss"] - wd["final_val_loss"],
+                "actual_tokens": wd["actual_tokens"],
+                "lr_recipe_run_id": lr["run_id"], "wd_recipe_run_id": wd["run_id"],
+            })
+        report["wd_target_status"] = "completed"
     ANALYSIS_PATH.write_text(json.dumps(report, indent=2) + "\n")
     plot(report)
     for row in report["source_batches"]:

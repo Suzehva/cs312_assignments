@@ -524,12 +524,15 @@ uv run python -m experiments.a2.plot_p32b
 The collector validates the 22 new source runs, combines them with the
 six reused configurations, and saves `results/p32b_source_wd_runs.json`.
 It records source-only WD predictions in `results/p32b_predictions.json`
-before reading the two LR-target losses into `results/p32b_lr_target_runs.json`.
+before reading target losses into `results/p32b_lr_target_runs.json`
+and `results/p32b_wd_target_runs.json` (two completed runs per recipe).
 Frozen predictions are not overwritten on reruns. The offline plotter
-saves `results/p32b_analysis.json` and copies the source WD figure into
+saves `results/p32b_analysis.json` and copies the source WD / target-comparison figure into
 the write-up. The seven-point quadratic fits include a local-three-point
-fit sensitivity check. WD-target tests and the final recipe comparison
-are still pending. Neither command launches training or compiles TeX.
+fit sensitivity check. WD scaling gives lower target loss by 0.021683
+at batch 128 and 0.140206 at batch 256; these are recipe comparisons,
+not independent target-optimum sweeps. Neither command launches training
+or compiles TeX.
 
 The batch-switching example also uses 614.4M tokens, switching from total
 batch 64 to 128 at exactly 307.2M tokens. It compares initialization seeds
