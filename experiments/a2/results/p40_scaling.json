@@ -1,0 +1,231 @@
+{
+  "source": "worksheets/hparam_invariants/units/mup_no_alignment.tex",
+  "assumptions": [
+    "Fixed step, base LR and reference width; normalized Adam direction RMS is Theta(1).",
+    "Pre-update inputs and feature changes have Theta(1) RMS.",
+    "R(U, x0)=Theta(n**alpha); S(V0, delta_x)=Theta(n**omega_move).",
+    "Interaction additionally assumes R(U, delta_x)=O(n**alpha).",
+    "Hidden dimensions have a fixed aspect ratio; readout class count and input fan-in stay fixed.",
+    "Hidden and input a=0; readout c=0, as required by the handout."
+  ],
+  "reference_initialization_variances": {
+    "input": "1/d",
+    "hidden": "1/k0",
+    "readout": "1/n0"
+  },
+  "cases": [
+    {
+      "update_alignment": "full",
+      "readout_feature_change_alignment": "full",
+      "alpha": "1",
+      "omega_move": "1",
+      "abc": {
+        "hidden": {
+          "a": "0",
+          "b": "1/2",
+          "c": "1"
+        },
+        "readout": {
+          "a": "1",
+          "b": "0",
+          "c": "0"
+        },
+        "input": {
+          "a": "0",
+          "b": "0",
+          "c": "0"
+        }
+      },
+      "relative_width_powers": {
+        "input": {
+          "forward": "0",
+          "initialization_variance": "0",
+          "lr": "0"
+        },
+        "hidden": {
+          "forward": "0",
+          "initialization_variance": "-1",
+          "lr": "-1"
+        },
+        "readout": {
+          "forward": "-1",
+          "initialization_variance": "0",
+          "lr": "0"
+        }
+      },
+      "width_powers_of_terms": {
+        "input_initial_feature": "0",
+        "input_direct_update": "0",
+        "hidden_initial_feature": "0",
+        "hidden_direct_update": "0",
+        "hidden_initial_weight_feature_change_bound": "0",
+        "hidden_interaction_bound": "0",
+        "readout_initial_logits": "-1/2",
+        "readout_direct_update": "0",
+        "readout_initial_weight_feature_change": "0",
+        "readout_interaction_bound": "0"
+      },
+      "recovers_handout_mup": true
+    },
+    {
+      "update_alignment": "full",
+      "readout_feature_change_alignment": "none",
+      "alpha": "1",
+      "omega_move": "1/2",
+      "abc": {
+        "hidden": {
+          "a": "0",
+          "b": "1/2",
+          "c": "1"
+        },
+        "readout": {
+          "a": "1",
+          "b": "-1/2",
+          "c": "0"
+        },
+        "input": {
+          "a": "0",
+          "b": "0",
+          "c": "0"
+        }
+      },
+      "relative_width_powers": {
+        "input": {
+          "forward": "0",
+          "initialization_variance": "0",
+          "lr": "0"
+        },
+        "hidden": {
+          "forward": "0",
+          "initialization_variance": "-1",
+          "lr": "-1"
+        },
+        "readout": {
+          "forward": "-1",
+          "initialization_variance": "1",
+          "lr": "0"
+        }
+      },
+      "width_powers_of_terms": {
+        "input_initial_feature": "0",
+        "input_direct_update": "0",
+        "hidden_initial_feature": "0",
+        "hidden_direct_update": "0",
+        "hidden_initial_weight_feature_change_bound": "0",
+        "hidden_interaction_bound": "0",
+        "readout_initial_logits": "0",
+        "readout_direct_update": "0",
+        "readout_initial_weight_feature_change": "0",
+        "readout_interaction_bound": "0"
+      },
+      "recovers_handout_mup": false
+    },
+    {
+      "update_alignment": "none",
+      "readout_feature_change_alignment": "full",
+      "alpha": "1/2",
+      "omega_move": "1",
+      "abc": {
+        "hidden": {
+          "a": "0",
+          "b": "1/2",
+          "c": "1/2"
+        },
+        "readout": {
+          "a": "1/2",
+          "b": "1/2",
+          "c": "0"
+        },
+        "input": {
+          "a": "0",
+          "b": "0",
+          "c": "0"
+        }
+      },
+      "relative_width_powers": {
+        "input": {
+          "forward": "0",
+          "initialization_variance": "0",
+          "lr": "0"
+        },
+        "hidden": {
+          "forward": "0",
+          "initialization_variance": "-1",
+          "lr": "-1/2"
+        },
+        "readout": {
+          "forward": "-1/2",
+          "initialization_variance": "-1",
+          "lr": "0"
+        }
+      },
+      "width_powers_of_terms": {
+        "input_initial_feature": "0",
+        "input_direct_update": "0",
+        "hidden_initial_feature": "0",
+        "hidden_direct_update": "0",
+        "hidden_initial_weight_feature_change_bound": "0",
+        "hidden_interaction_bound": "0",
+        "readout_initial_logits": "-1/2",
+        "readout_direct_update": "0",
+        "readout_initial_weight_feature_change": "0",
+        "readout_interaction_bound": "0"
+      },
+      "recovers_handout_mup": false
+    },
+    {
+      "update_alignment": "none",
+      "readout_feature_change_alignment": "none",
+      "alpha": "1/2",
+      "omega_move": "1/2",
+      "abc": {
+        "hidden": {
+          "a": "0",
+          "b": "1/2",
+          "c": "1/2"
+        },
+        "readout": {
+          "a": "1/2",
+          "b": "0",
+          "c": "0"
+        },
+        "input": {
+          "a": "0",
+          "b": "0",
+          "c": "0"
+        }
+      },
+      "relative_width_powers": {
+        "input": {
+          "forward": "0",
+          "initialization_variance": "0",
+          "lr": "0"
+        },
+        "hidden": {
+          "forward": "0",
+          "initialization_variance": "-1",
+          "lr": "-1/2"
+        },
+        "readout": {
+          "forward": "-1/2",
+          "initialization_variance": "0",
+          "lr": "0"
+        }
+      },
+      "width_powers_of_terms": {
+        "input_initial_feature": "0",
+        "input_direct_update": "0",
+        "hidden_initial_feature": "0",
+        "hidden_direct_update": "0",
+        "hidden_initial_weight_feature_change_bound": "0",
+        "hidden_interaction_bound": "0",
+        "readout_initial_logits": "0",
+        "readout_direct_update": "0",
+        "readout_initial_weight_feature_change": "0",
+        "readout_interaction_bound": "0"
+      },
+      "recovers_handout_mup": false
+    }
+  ],
+  "checks": "Exact rational exponents; bounded logits and interactions; finite-width reference matching."
+}
