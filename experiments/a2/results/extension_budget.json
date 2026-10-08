@@ -1,0 +1,6 @@
+{
+  "recorded_at_utc": "2026-10-06T22:26:06.373138+00:00",
+  "baseline_conservative_hours": 31.47345039319,
+  "maximum_additional_gpu_hours": 10.0,
+  "total_ceiling_hours": 41.47345039319
+}

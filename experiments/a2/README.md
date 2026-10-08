@@ -6,6 +6,27 @@ This starter supplies the language-model baseline, data preparation, and
 measurement hooks. Source sweeps for P1(a,b,d,e) and P2(a) are supplied. New target experiments,
 parameterization recipes, and analysis are student work.
 
+## Completed initial draft (October 6, 2026)
+
+All required sections are complete in the [write-up](../../6abdc5b0bad58b38dfd83f81/main.tex).
+The 133 required P4 configurations finished. The draft is intentionally
+untrimmed. After that completion, an additional extension was authorized
+with its own ten-GPU-hour cap; its current status is tracked separately in
+`results/extension_jobs.json` and its rationale in
+[the extension plan](results/extension_plan.txt).
+
+- [Methods and completion log](results/assignment_completion_log.txt)
+- [Required-deliverable audit](results/required_deliverables.txt)
+- [Quiz notes](results/quiz_notes.txt)
+- [P4 run inventory](results/p4_run_inventory.csv)
+- [P4.1 numerical analysis](results/p41_analysis.json) and
+  [P4.2 numerical analysis](results/p42_analysis.json)
+
+Required completion used 31.47 conservative GPU-hours out of 48. Extension
+jobs reserve their complete timeouts before submission and must stay below
+41.47 total GPU-hours. Existing launch commands below document the experiments;
+they are not instructions to resubmit completed runs.
+
 ## Setup and launch
 
 Use the same one-time setup as [the course README](../../README.md): install
@@ -272,9 +293,24 @@ optimizer name in `TrainConfig`; pass optional settings in `optimizer_kwargs`.
 Muon routing expects an output module named `lm_head` or `head`.
 For custom parameter groups, use `AdamH` or `SingleDeviceMuonWithAuxAdam`
 directly in your optimizer factory. Width/depth initialization, readout
-multipliers, and parameter-group scaling remain student work.
+multipliers, and parameter-group scaling for the optional Muon exploration
+remain student work; the required AdamW policies are implemented below.
 
 ## Implement the experiments
+
+Problem 4.0 is a derivation, not a training sweep. Its four alignment
+combinations and reference-matched width rules are in the write-up.
+To reproduce the exact exponent bookkeeping and reference-scale checks:
+
+```bash
+uv run python -m experiments.a2.p40_scaling
+```
+
+This saves `results/p40_scaling.json` and checks hidden initialization,
+direct updates, readout feature responses, initial logits, and interaction
+bounds. It uses the handout's extra assumption
+`R(U, delta_x) = O(n**alpha)`; alignment with the pre-update input alone
+does not establish that bound. It launches no training and does not compile TeX.
 
 P1 and P2 analyze supplied source sweeps and train new target configurations. P4.1 derives and
 tests parameterization rules in a five-step Transformer; P4.2 returns to the
@@ -312,8 +348,9 @@ Its five-step, constant-LR protocol differs from the longer-training baseline.
 For alignment, use the handout's definition and each matrix's actual fan-in.
 The before/after-update hooks can bracket each optimizer update.
 
-For P4.2, implement the readout scaling derived in the handout in your custom
-model builder. Pass its settings through `model_builder_kwargs` and establish
+For P4.2, `p42_model.ParameterizedLM` implements the handout's width/depth
+scaling, and `p42_model.build_optimizer` supplies the matching AdamW groups.
+For another custom policy, pass its settings through `model_builder_kwargs` and establish
 forward behavior in the constructor so saved models and checkpoints reconstruct
 it. The P4.1 stress scaffold separately provides `model.output_multiplier`.
 
@@ -338,8 +375,9 @@ ratios are omitted. The JSON logs are also available in the run's Files tab.
 ## P4.1: supplied Transformer scaffold
 
 The architecture and five-update experiment driver are in
-[`stress.py`](stress.py). Complete **only the two policy functions** in
-[`p31_student.py`](p31_student.py) to start an experiment:
+[`stress.py`](stress.py). The two policy functions in
+[`p31_student.py`](p31_student.py) are now implemented through
+[`p41_policies.py`](p41_policies.py), with explicit `--policy` selection:
 
 1. `initialize(model)`: initialize every parameter and set any forward multipliers
    from your derivation. Parameters initially contain NaNs so omitted weights
@@ -358,7 +396,7 @@ comparisons, use `--precision mp`: BF16 autocast with FP32 parameters, gradients
 Adam states, and residual additions. This driver is separate from the
 longer-training P1 baseline.
 
-After implementing the two functions, launch one configuration from your laptop:
+Launch one configuration from your laptop (synchronous alternative):
 
 ```sh
 uv run python -m experiments.a2.modal_stress \
@@ -388,7 +426,9 @@ uv run python -m experiments.a2.p31_student \
 For width comparisons, use widths 640, 2560, and 5120.
 For depth comparisons, use width 64, head dimension 64, and `--precision mp`,
 and change `--depth` among 2, 100, and 1000.
-Implement each requested depth policy in the same two functions. Use distinct
+Select `--policy mup`, `depth_mup`, or `completep`. Mixed-precision depth
+tests default to reference width64; FP32 width tests default to512.
+Use distinct
 output names for different policies and LRs; existing files are never overwritten.
 You can call `stress.run` from your own sweep or existing remote launcher.
 Nothing launches when either module is imported.
@@ -424,11 +464,73 @@ The JSON records loss and fixed-input diagnostics at steps 0 through 5:
 - Configuration, parameter-group LRs/stabilizers, forward multipliers, and token
   hashes identify the run. Select/fill your own policy name in the output filename.
 
-Validation loss uses all supplied validation inputs; feature/alignment probes
-use the first eight. Alignment snapshots live on CPU and are transferred one
+Validation loss uses all supplied validation inputs; the supplied scaffold
+defaults to eight probes, while our CLI/sweeps use one fixed sequence to
+limit depth1000 snapshot memory. All1024 positions are pooled. Set
+`--probe-sequences` explicitly to change this diagnostic sample size.
+Alignment snapshots live on CPU and are transferred one
 matrix at a time for measurement. `--no-alignment` omits those snapshots when
 only the depth feature diagnostics are needed. Sweep selection, curve fitting,
-and plotting remain student work.
+and plotting are implemented in `p4_analysis.py`, `plot_p41.py` and `plot_p42.py`.
+
+### Budgeted P4 workflow
+
+`p41_launch.py` and `p42_launch.py` submit detached jobs, save call IDs in
+`results/p41_jobs.json` / `p42_jobs.json`, use no automatic retries, and
+collect finished measurements without resubmission. The existing two-GPU
+course quota is unchanged. `gpu_budget.py` checks billed time plus full
+timeouts of every queued/unfinished job before submission, with47.5h as a
+required-work safety ceiling and42h for optional work.
+Use one local collector/launcher process at a time: atomic ledger writes
+prevent partial reads, but do not merge concurrent writers. Offline analyses
+can run alongside the monitor because they only read the ledgers.
+
+```sh
+uv run python -m experiments.a2.p41_grid width
+uv run python -m experiments.a2.p41_grid depth
+uv run python -m experiments.a2.p41_refine_depth
+uv run python -m experiments.a2.p41_launch --collect
+uv run python -m experiments.a2.p42_source_grid
+uv run python -m experiments.a2.p42_launch --collect
+uv run python -m experiments.a2.p42_analysis
+uv run python -m experiments.a2.p42_target_grid
+uv run python -m experiments.a2.p42_depth_grid
+```
+
+The width1024 target launcher requires the immutable source-only
+`results/p42_predictions.json`; source minima must first be bracketed.
+Repeated launch commands skip already-recorded grid configurations, not
+retry failed/uncertain submissions. Inspect the ledger before recovery.
+`p41_refine_depth` adds a common LR.02 to all seven unique depth
+configurations, resolving the coarse .01–.03 bracket before comparing
+interpolated minima. Depth2 is measured once and reused across policies.
+Raw measurements and completion notes are under `results/`. Final loss is
+the completed-budget evaluation, not the best checkpoint. The report is
+`../../6abdc5b0bad58b38dfd83f81/main.tex`.
+
+For an offline inventory of submitted configurations and completed-curve
+transfer comparisons, run `uv run python -m experiments.a2.p4_results_table`.
+This writes `results/p4_run_inventory.csv` and
+`results/p4_transfer_comparisons.json`; pending groups are marked incomplete.
+The script does not contact Modal or launch jobs. `results/quiz_notes.txt`
+summarizes the main concepts, while `results/required_deliverables.txt`
+tracks the remaining draft requirements.
+
+Offline plots can be generated one completed phase at a time:
+
+```sh
+uv run python -m experiments.a2.plot_p41 --part width
+uv run python -m experiments.a2.plot_p41 --part depth
+uv run python -m experiments.a2.plot_p42 --part source
+uv run python -m experiments.a2.plot_p42 --part depth
+```
+
+The default `--part all` requires the complete grids. Partial-phase outputs
+are explicitly named `p41_width_analysis.json`, `p41_depth_analysis.json`,
+`p42_source_plot_analysis.json` and `p42_depth_analysis.json`; they are not
+a claim that the whole problem is finished. Source normalization, width
+and depth feature/clipping diagnostics, and all-matrix alignment figures
+are saved with the same run selections as the loss comparisons.
 
 ## P3 settings
 
@@ -534,6 +636,22 @@ at batch 128 and 0.140206 at batch 256; these are recipe comparisons,
 not independent target-optimum sweeps. Neither command launches training
 or compiles TeX.
 
+### P3.2(c) momentum at fixed LR and WD
+
+```bash
+uv run python -m experiments.a2.p32c_grid
+```
+
+This submits 12 detached runs: beta1=(0, .5, .7, .8, .95, .99) at each
+of batches 8 and 256, with beta2=.95 fixed. LR and WD are not retuned.
+Batch 8 uses the best measured P3.2(a) pair (LR=.001, WD=.1);
+batch 256 uses the winning P3.2(b) target recipe
+(LR=.0015, WD=.6903083049528113). The completed beta1=.9 controls
+(`pziniyjp` and `bt2rlpnv`) are reused, not resubmitted.
+Runs use d8, nominal 614.4M tokens, the same seeds and linear schedule,
+and app name `a2-p32c` plus a timestamp. Batch 256 accumulates four
+microbatches of 64; jobs can run concurrently subject to Modal quota.
+
 The batch-switching example also uses 614.4M tokens, switching from total
 batch 64 to 128 at exactly 307.2M tokens. It compares initialization seeds
 42, 43, and 44 at fixed token order, peak LR .0015, and initial WD 1.6.
@@ -567,3 +685,64 @@ Matched ablations are optional, with no extra required GPU runs.
 See [runtime details](RUNTIME.md) for checkpoints, batching, and diagnostics.
 With positive warmup, the first update uses zero LR, and the scheduler reaches
 zero again after the last update. W&B records the LR applied to each update.
+
+## Authorized extension: robustness, schedules and Muon
+
+The extension uses a separate **10 additional GPU-hour cap**, measured from
+the frozen baseline in `results/extension_budget.json`. Outstanding calls
+reserve their full timeout plus startup/shutdown overhead. This is stricter
+than the original 48-hour allowance and preserves at least six GPU-hours.
+`results/extension_jobs.json` is the submission ledger; `results/extension/`
+contains completed results, configurations, optimizer groups and diagnostics.
+Do not rerun the grid scripts to collect results or retry uncertain calls.
+
+Offline analysis and figures, without launching training:
+
+```bash
+uv run python -m experiments.a2.extension_analysis
+uv run python -m experiments.a2.plot_extensions
+```
+
+The analysis checks data fingerprints, completed token budgets, actual
+optimizer groups and prediction timestamps. It reconstructs the frozen source
+fits independently; missing measurements remain pending, not fabricated.
+Figures use viridis, measured circles, fitted stars and hollow prediction
+diamonds, and are copied into the write-up's `figures/` directory.
+
+Robustness checks use initialization seeds 43/44 with unchanged data seed 42
+and reuse seed-42 results. They compare fixed recipes, not separately retuned
+LR optima. The normalization intervention changes only the first block's
+RMSNorm epsilon; its executable prediction question is in
+`p5_normalization.py`. Optional schedule fitting uses supplied cosine sources.
+Muon uses the course implementation unchanged, tunes auxiliary AdamW LR at
+reference width 512, then freezes width-law predictions before testing 1024.
+Unlike AdamW, original Muon's hidden LR has no extra inverse-width multiplier.
+The final conditional paired-seed policy check is in `p42f_repeat_grid.py`:
+both policies use the source-selected hidden LR `.02` and auxiliary LR
+`.0015`, with initialization seeds 43/44 and unchanged data seed 42.
+It reuses seed-42 controls and does not retune LR at the new seeds. Launch
+only when the original monitor has terminated and the four-call reservation
+fits the remaining extension budget; do not run it alongside another writer.
+
+`extension_monitor.py` is the sole submission/collection writer. Never start
+a second monitor while one is live. Inspect the existing process or original
+call IDs before any recovery; local download errors do not prove training
+failed. All launches are detached, budget-checked and disallow duplicate keys.
+Results, limitations and exceptions are documented in
+`results/assignment_completion_log.txt`; concise revision notes are in
+`results/quiz_notes.txt`. All 64 extension calls are now complete: ten
+required-result robustness repeats, five cosine-schedule targets, five
+normalization checks, and 44 Muon pilot/source/target/repeat runs. No calls
+are pending or failed, and no training apps remain active.
+
+The final audit uses **9.031 additional GPU-hours** conservatively:
+40.505 hours of the original 48-hour allowance, leaving **7.495 hours**.
+All results and limitations are in the compiled, untrimmed draft. These are
+completed experiments; do not relaunch their scripts to inspect the results.
+
+The main write-up has since been condensed: detailed diagnostic grids,
+verification and repeated explanation are supplementary material. See
+[the detail index](results/writeup_details.txt), the preserved
+`results/full_experiment_report.tex`, and `results/diagnostic_figures/`.
+No measurements or original plots were removed; numerical result files
+remain the source of truth. The short draft retains every required subpart.

@@ -1,0 +1,2506 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\title{cs312\_a2}
+\author{suzeva }
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem 1: Learning-rate scaling}
+\subsection{(a) Learn from small training budgets}
+
+I used the nine supplied d8 runs: peak learning rate
+$\eta\in\{0.0015,0.003,0.006\}$ at
+$D\in\{153.6,307.2,614.4\}$M training tokens.  All nine runs use the same
+model, so this part scales the training budget $D$, not model size.
+
+At each budget I fit a quadratic in log learning rate to approximate the
+loss minimum (Figure~\ref{fig:p1a}, left).
+Define
+\[
+x=\log_2(\eta/0.003),
+\qquad
+L_D(\eta)=a_Dx^2+b_Dx+c_D.
+\]
+The sampled learning rates are $x\in\{-1,0,1\}$.  This fits the U-shaped
+loss curve; a simple power law would be monotone.  The fitted minimum is
+$x^*=-b_D/(2a_D)$ and $\eta^*=0.003\,2^{x^*}$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p1a_lr_fits_and_scaling.png}
+    \caption{Left: measured final losses (circles), quadratic fits in log LR,
+    and their minima (stars).  Right: a power-law fit to the three inferred
+    optimal learning rates. }
+    \label{fig:p1a}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{rrrrrr}
+\toprule
+$D$ (tokens) & $a_D$ & $b_D$ & $c_D$ & fitted $\eta^*$ & fitted loss \\
+\midrule
+153.6M & 0.045784 &  0.030720 & 3.229134 & 0.002378 & 3.223981 \\
+307.2M & 0.014959 &  0.000310 & 3.056223 & 0.002979 & 3.056222 \\
+614.4M & 0.018412 & $-0.003297$ & 2.925636 & 0.003192 & 2.925488 \\
+\bottomrule
+\end{tabular}
+\caption{The three loss--LR laws and their inferred optima, where
+$x=\log_2(\eta/0.003)$.}
+\label{tab:p1a-lr-fits}
+\end{table}
+
+I then fit a power law relating the training-token budget $D$ to the optimal
+learning rate (Figure~\ref{fig:p1a}, right):
+\[
+\eta^*(D)=\eta_{\mathrm{ref}}
+\left(\frac{D}{D_{\mathrm{ref}}}\right)^\beta
+=0.003276\left(\frac{D}{614.4\mathrm{M}}\right)^{0.2125}.
+\]
+Longer training prefers a larger peak LR.  With only three measurements per
+budget, precise minima depend on the fit; quadratics in raw LR give a similar
+scaling exponent (0.221).  Part (b) tests the prediction.
+
+\paragraph{Takeaway.} Our fitted rule: double the training data, multiply
+peak LR by $1.16$.  This estimate uses only three budgets.
+
+\subsection{(b) Predict before increasing the budget}
+
+Before inspecting the provided losses at the larger budgets, I applied the
+power law from part (a).  I then fit the provided loss--LR curves using
+the same quadratic in log LR (Figure~\ref{fig:p1b}, left):
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Training tokens & Predicted LR & Fitted optimum & Error (\%) \\
+\midrule
+1.2288B & 0.003796 & 0.003878 & $-2.1$ \\
+1.8432B & 0.004138 & 0.003426 & $+20.8$ \\
+2.4576B & 0.004399 & 0.002906 & $+51.4$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Error is $(\eta_{\mathrm{pred}}/\eta_{\mathrm{fit}}-1)\times100\%$;
+positive means the prediction is too high.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p1b_predictions_and_fits.png}
+    \caption{Left: all six budgets from (a) and (b), with provided losses
+    (circles), quadratic fits, and fitted minima (stars).
+    Right: the recorded predictions (hollow diamonds)
+    compared with fitted optima from (a) and (b).  The largest token
+    budget is yellow.}
+    \label{fig:p1b}
+\end{figure}
+
+Figure~\ref{fig:p1b} (right) shows that the first prediction is close,
+but the next two overshoot the fitted optima.
+The best measured LR is 0.003 at all three budgets.
+The fitted optima decrease across these larger budgets; this reversal also
+appears with quadratics in raw LR, although their precise minima differ.
+The optima between sampled LRs are estimates, not additional measurements.
+
+\paragraph{Takeaway.} The small-budget upward trend does not continue, it reverses:
+extrapolating it overshoots the larger-budget optima.
+
+\subsection{(c) Compare two scaling rules}
+
+I fit a straight line in log tokens versus log optimal LR, using either
+all six source budgets or only 1.2288B, 1.8432B, and 2.4576B.  The resulting
+power laws are
+\begin{align*}
+\eta_{\mathrm{all}}(D)
+&=0.00348169\left(\frac{D}{2.4576\mathrm{B}}\right)^{0.09881},\\
+\eta_{\mathrm{large}}(D)
+&=0.00295666\left(\frac{D}{2.4576\mathrm{B}}\right)^{-0.40928}.
+\end{align*}
+I recorded both predictions at 4.9152B tokens before inspecting target losses
+(Figure~\ref{fig:p1c-predictions}).
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p1c_scaling_predictions.png}
+    \caption{Power laws fitted to all six source optima (left) or only
+    the three larger-budget optima (right).  Stars are source optima;
+    dashed lines extrapolate to the recorded target LRs (yellow hollow diamonds).}
+    \label{fig:p1c-predictions}
+\end{figure}
+
+Before seeing target losses, I expected the all-six fit to do better because
+more source budgets could reduce variance.  The completed runs instead favor
+the larger-three fit:
+
+\begin{center}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Run & Peak LR & Final val loss & Gap to grid best \\
+\midrule
+Grid & 0.00150000 & 2.717728 & $+0.000249$ \\
+Grid (best) & 0.00300000 & 2.717479 & $0$ \\
+Grid & 0.00600000 & 2.728922 & $+0.011443$ \\
+All-six prediction & 0.00372850 & 2.719499 & $+0.002020$ \\
+Larger-three prediction & 0.00222637 & 2.716902 & $-0.000576$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The reference is the best sampled LR in the prescribed three-point grid,
+not the best of all five runs; negative gaps indicate improvement.
+The same quadratic in log LR, fitted only to the three target-grid losses,
+estimates $\eta^*=0.002153$ (Figure~\ref{fig:p1c-results}, left).
+The larger-three prediction is 3.4\% above
+this estimate, versus 73.2\% for the all-six prediction.
+Fitting all five measurements gives a similar optimum, $0.002165$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p1c_target_results.png}
+    \caption{Left: final validation losses at all five LRs (circles),
+    the quadratic fitted to the three fixed-grid runs, and its minimum
+    (star).  Dashed vertical lines mark the two predicted LRs.
+    Right: their measured loss gaps relative to the best fixed-grid run.
+    Prediction colors match across panels; fixed-grid points and their
+    fit are teal.}
+    \label{fig:p1c-results}
+\end{figure}
+
+The larger-three rule follows the recent downturn and beats the all-six
+rule by 0.002597 loss.  It also improves slightly on the grid best, although
+the 0.000576 gain is a small, single-seed difference.
+
+This illustrates the bias--variance trade-off.  Using only three nearby
+budgets may increase variance because fewer points determine the rule,
+but avoids fitting the earlier trend which might be more biased.  Adding the three smaller
+budgets could reduce variance, yet makes a single power law a worse proxy
+for the target regime (increasing bias): its extrapolation is biased toward too large an LR.
+We cannot measure variance separately from these single-seed runs.
+
+Both rules extrapolate $2\times$ beyond their largest source budget
+(2.4576B to 4.9152B).  The larger-three rule gives a small measured gain
+at this distance; the all-six rule does not.  Relative to the smallest
+source budget, the target is $4\times$ larger for the three-budget fit
+and $32\times$ larger for the six-budget fit.  Those are full
+source-to-target spans, not different extrapolation distances.
+We have not tested how much farther either rule can extrapolate.
+All these comparisons change training tokens, not model size.
+
+\paragraph{Takeaway.} We found no gains from including the smaller-budget
+fits.  Fewer nearby budgets were a better proxy for the target: less
+trend mismatch mattered more than having more points.
+
+\subsection{(d) Hyperball versus AdamW}
+
+I used all 24 supplied Hyperball runs: eight LRs at each of
+$D\in\{153.6,\allowbreak307.2,\allowbreak614.4\}$M tokens. At each budget I least-squares fit
+the same quadratic in log LR as in (a), using all eight measurements:
+$L_D(\eta)=a_Dx^2+b_Dx+c_D$, with $x=\log_2(\eta/.003)$.
+Its minimum gives the following estimates, compared with AdamW at the
+same budgets:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Training tokens & Hyperball fitted LR & AdamW fitted LR \\
+\midrule
+153.6M & 0.015610 & 0.002378 \\
+307.2M & 0.012213 & 0.002979 \\
+614.4M & 0.010416 & 0.003192 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Fitting a power law to the three Hyperball optima gives
+\[
+\eta^*_{\mathrm{Hyperball}}(D)
+=0.010267\left(\frac{D}{614.4\mathrm{M}}\right)^{-0.2919}.
+\]
+Figure~\ref{fig:p1d-source} shows Hyperball's fitted optimal LR decreasing
+with training budget, opposite to
+AdamW's small-budget exponent $+0.2125$ from (a).  Absolute LRs are not
+equivalent step sizes because the optimizers scale updates differently.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p1d_hyperball_and_adamw.png}
+    \caption{Left: all supplied Hyperball losses and quadratic fits in
+    log LR.  Middle: the same fits zoomed near their minima (stars).
+    Right: power laws fitted to Hyperball (filled stars) and AdamW
+    (hollow stars) optima at the same three budgets.  The largest token
+    budget is yellow.}
+    \label{fig:p1d-source}
+\end{figure}
+
+The exponent is sensitive to the loss fit: using only the four LRs nearest
+the minima ($.006,.01,.015,.03$) gives $-0.1335$, still decreasing.
+Only three Hyperball source budgets are supplied; these fits alone
+do not establish reliable extrapolation.
+
+Before testing the target, I recorded the prediction at 1.2288B tokens:
+\[
+\eta^*_{\mathrm{Hyperball}}(1.2288\mathrm{B})
+=0.010267\,2^{-0.2919}\approx\mathbf{0.00838685}.
+\]
+
+The target runs used our local AdamH implementation, with the same parameter
+routing and equivalent update equations as the subsequently supplied course code.
+All four runs completed with the following final losses:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Peak LR & Final val loss & Gap to best sampled \\
+\midrule
+0.006000 & 2.843828 & $+0.018086$ \\
+0.008387 (prediction) & 2.829280 & $+0.003539$ \\
+0.010000 & 2.825742 & $0$ \\
+0.012000 & 2.828076 & $+0.002334$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Fitting the three nearby controls, with the prediction run held out,
+gives $\eta^*=0.009991$ (Figure~\ref{fig:p1d-target}, left).
+The prediction is $16.1\%$ below that optimum;
+fitting all four runs instead gives $0.010250$, so the optimum remains
+near $0.010$. The target LR still decreases, but less than the source
+law predicts.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p1d_target_results.png}
+    \caption{Left: target losses (circles), a quadratic fitted to the
+    three nearby controls, and its optimum (star); purple marks the
+    prediction run. Right: source-only power law and its extrapolation,
+    with the target prediction (hollow diamond) and fitted optimum
+    (yellow star).}
+    \label{fig:p1d-target}
+\end{figure}
+
+Hyperball's three source optima fit a power law more closely than AdamW's
+(log-space $R^2=0.985$ versus $0.914$). But its target LR error is larger:
+$16.1\%$ versus AdamW's $2.1\%$ at the same budget in (b).
+A tight three-point source fit therefore does not establish more
+predictable extrapolation. Both target optima are interpolated from
+sparse, single-seed measurements.
+
+\paragraph{Takeaway.} Hyperball's optimal LR decreases as the training
+budget grows, but its power law did not predict the larger-budget optimum
+more accurately than AdamW's. This comparison uses only one target budget.
+
+\subsection{(e) Optional: transfer across LR schedules}
+
+I compare the nine supplied cosine-decay runs with the nine linear-decay
+runs from (a), keeping model size, WD, warmup and token budgets fixed.
+Both schedules choose $.003$ as the best \emph{sampled} LR at all three
+source budgets. Using the same quadratic in $x=\log_2(\eta/.003)$ gives:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Training tokens & Linear fitted LR & Cosine fitted LR \\
+\midrule
+153.6M & .002378 & .002256 \\
+307.2M & .002979 & .002534 \\
+614.4M & .003192 & .003191 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Figure~\ref{fig:p1e-source} shows the measured curves and optima.
+The source-only cosine rule is
+\[
+\eta^*_{\mathrm{cos}}(D)=.0031305
+\left(\frac{D}{614.4\mathrm{M}}\right)^{.2500},
+\]
+versus exponent $.2125$ for linear decay. Doubling the tokens therefore
+multiplies LR by about $1.19$ for cosine, versus $1.16$ for linear.
+This rule predicts $.0037228$ at 1.2288B tokens, close to the linear
+prediction $.0037961$. I recorded it before submitting four new cosine
+target runs at $\{.0015,.003,.0037228,.006\}$. The best point was at the
+upper endpoint, so I added $.012$ to bracket it; all five runs completed.
+No supplied source runs were repeated.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p1e_schedule_source.png}
+\caption{Optional schedule comparison. Left/middle: supplied loss--LR
+measurements (circles), quadratic fits and interpolated optima (stars).
+The largest source budget is yellow. Right: source-only power laws,
+solid within the fitted range and dashed beyond it, with frozen target
+predictions (hollow diamonds) and held-out fitted optima (yellow stars).}
+\label{fig:p1e-source}
+\end{figure}
+
+Figure~\ref{fig:p1e-target} compares the completed target curves. At
+1.2288B tokens, the local three-point cosine fit gives optimal LR
+$.004798$, versus $.003878$ for the supplied linear curve. The cosine
+prediction has loss $2.837759$, only $.000430$ above the best sampled
+cosine loss $2.837329$ at LR $.006$. Directly transferring LR $.003$
+gives $2.840015$, a gap of $.002686$.
+The precise cosine optimum is uncertain: fitting all five points instead
+gives $.004059$. This changes the estimated best LR more than it changes
+the practical conclusion that the frozen prediction is near the loss minimum.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p1e_schedule_target.png}
+\caption{Schedule transfer at 1.2288B tokens. Measured losses are circles;
+stars mark local quadratic optima. Hollow outlined circles identify direct
+LR $.003$; the cosine prediction is a hollow diamond. The cosine fit uses
+the best point and its two neighbors, not all five measurements.}
+\label{fig:p1e-target}
+\end{figure}
+
+The best sampled cosine and linear losses differ by only $-.000460$;
+these single-seed, unequally dense grids do not establish a schedule winner.
+At the same LR $.003$, cosine is $.002226$ worse than linear. Retuning
+can therefore change the ranking seen at a single fixed LR.
+
+\paragraph{Takeaway.} Linear and cosine decay use similar LR scales.
+The cosine scaling prediction transfers well in loss, despite uncertainty
+in the exact optimum. Neither schedule has a clear tuned-loss advantage here.
+
+\section{Problem 2: Joint learning-rate and weight-decay scaling}
+\subsection{(a) Let LR and WD vary together}
+
+I used the 36 supplied runs: nine LR--WD combinations at each of four
+training-token budgets, with model size fixed.  For each budget I least-squares fit
+\[
+\widehat L(x,y)=a+bx+cy+dx^2+exy+fy^2,
+\qquad
+x=\log_2(\eta/0.003),\quad y=\log_2(\lambda/0.1).
+\]
+Here $\lambda$ is weight decay; the $exy$ term captures LR--WD interaction.
+All four fitted surfaces have a minimum inside the sampled grid
+(Figure~\ref{fig:p2a-contours}).
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p2a_joint_contours.png}
+    \caption{Quadratic loss contours for each budget, with measured losses
+    (circles) and fitted optima (stars).  Both axes are logarithmic.
+    Color denotes loss, with a separate scale for each panel.
+    Dashed white lines hold $\eta\lambda=\eta^*\lambda^*$ fixed (part b).}
+    \label{fig:p2a-contours}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Training tokens & Fitted LR & Fitted WD \\
+\midrule
+153.6M & 0.001859 & 0.8466 \\
+307.2M & 0.001603 & 0.5194 \\
+614.4M & 0.002470 & 0.2579 \\
+1.2288B & 0.002696 & 0.1622 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p2a_optima_and_loss_gains.png}
+    \caption{Left: joint-fit optimal LR and Problem 1's fixed-WD LR optima.
+    Middle: fitted optimal WD. Both include power-law fits.
+    Right: best measured losses from both grids; labels show
+    $\Delta L=L_{\mathrm{P1,best}}-L_{\mathrm{joint,best}}$.
+    Stars denote fitted optima; circles denote measured losses.
+    The largest token budget is yellow.}
+    \label{fig:p2a-trends}
+\end{figure}
+
+\paragraph{Takeaways.}
+\begin{enumerate}
+\item Figure~\ref{fig:p2a-trends} shows that tuning WD gives a lower
+optimal peak LR than fixing WD at $.1$.
+LR still rises overall with training tokens, though it dips at 307.2M.
+\item Optimal WD falls with training tokens. The fitted exponent is
+$-0.816$: doubling the tokens multiplies optimal WD by $2^{-0.816}\approx0.568$.
+\item A single power law describes WD much better than LR:
+log-space $R^2=0.994$ versus $0.678$.
+\item WD tuning helps most at small budgets. The measured loss gain
+shrinks from $0.0447$ to $0.0017$ (about $0.002$) at 1.2288B tokens.
+That last gain is small; without repeated seeds, we cannot establish
+a reliable benefit or estimate run-to-run variance.
+\end{enumerate}
+
+\subsection{(b) From coupling to a joint scaling law}
+
+On each contour in Figure~\ref{fig:p2a-contours}, I drew
+$\lambda=\eta^*\lambda^*/\eta$: increasing LR decreases WD along this
+line. It roughly follows the low-loss trade-off, most clearly at
+1.2288B tokens. Compensation keeps loss near its minimum only over a
+limited range; farther along the line, loss increases even though the
+product stays fixed.
+
+Using the four products of the fitted optima from part (a), I fit the
+power law shown in Figure~\ref{fig:p2b-product}:
+\[
+\eta^*(D)\lambda^*(D)
+=0.00041963\left(\frac{D}{1.2288\mathrm{B}}\right)^{-0.59294}.
+\]
+Doubling the training tokens multiplies the fitted product by $0.663$.
+All three power-law comparisons use least squares in log space and
+the same four source budgets.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.8\textwidth]{figures/p2b_product_scaling.png}
+    \caption{Products of fitted optima (stars) and their power-law fit.
+    The inset compares log-space $R^2$ for LR, WD, and their product.
+    The largest token budget is yellow.}
+    \label{fig:p2b-product}
+\end{figure}
+
+\paragraph{Takeaway.} WD alone still has the tightest power-law scaling,
+but LR$\times$WD follows a power law much better than LR alone.
+This comparison uses only four single-seed source budgets.
+
+\subsection{(c) Test the joint rule}
+
+Before inspecting target results, the product law from (b) predicted
+\[
+\lambda_{\mathrm{pred}}
+=\frac{(\eta^*\lambda^*)(2.4576\mathrm{B})}{0.003}
+=0.092736.
+\]
+The 2.4576B-token budget was excluded from the fit. I tested this WD
+at peak LR $.003$ and compared it with the best measured 153.6M pair
+transferred unchanged, and a WD sweep at the target. All runs use AdamW
+and linear decay. Four runs are new; the $.003$ LR, $.1$ WD control
+is supplied by P1(b).
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Recipe & Peak LR & WD & Final val loss \\
+\midrule
+Product-rule prediction & 0.003 & 0.092736 & 2.768667 \\
+Transferred small-budget pair & 0.0015 & 1.6 & 2.852842 \\
+WD-grid control & 0.003 & 0.05 & 2.771656 \\
+WD-grid control (supplied) & 0.003 & 0.1 & 2.768251 \\
+WD-grid control & 0.003 & 0.2 & 2.773303 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The product prediction lowers loss by $.084174$ relative to the
+transferred small-budget pair. Its loss is $.000416$ higher than the
+best WD-grid control.
+The latter difference is small; these single-seed results do not establish
+a reliable advantage for either nearby WD.
+
+\paragraph{Takeaway.} The product rule predicted an effective recipe
+without target-budget tuning. The baseline WD sweep independently found
+a very similar recipe ($\lambda=.1$); the rule nearly matched it, but did
+not improve on its measured loss.
+
+\section{Problem 3.1: Batch size in the noisy quadratic model}
+
+All experiments run locally on CPU with $N=8{,}192$ examples and exactly
+$N/B$ updates. The initial coordinates have variances $1$ and $.1$,
+as specified in the handout. I use constant LR, no WD, and standard Adam with
+$\beta_2=.95$, $\epsilon=10^{-8}$; RMSProp is Adam with $\beta_1=0$.
+Source LR sweeps average 2,048 independent trajectories on a coarse grid
+and 4,096 on a refined grid; batches $B\geq128$ use 8,192 and 32,768.
+A local quadratic in log LR through three
+neighboring points interpolates the minimum. Final losses use 32,768 fresh
+trajectories, independent of tuning; prediction and tuned-LR comparisons
+share initialization/noise to reduce comparison variance.
+
+\subsection{(a) SGD}
+
+Fitting the seven estimated optima at $B\in\{1,2,4,8,16,32,64\}$
+(Figure~\ref{fig:p31a}, middle) gives
+\[
+\eta^*(B)=0.036874\left(\frac{B}{64}\right)^{0.99206}.
+\]
+Doubling the batch multiplies LR by $1.989$, almost exactly two.
+I froze this rule before sweeping $B=256$: it predicts $0.145882$,
+versus a tuned optimum of $0.123795$. Their final losses are
+$0.000700$ and $0.000552$, respectively.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p31a_sgd.png}
+    \caption{Left: selected SGD sweeps (circles), exact expected-loss curves
+    (lines), and interpolated optima (stars). Middle: the source power law
+    and its extrapolation; the hollow diamond is the batch-256 prediction.
+    Right: independently evaluated loss after LR tuning, with approximate
+    95\% confidence intervals. Larger batches are yellow.}
+    \label{fig:p31a}
+\end{figure}
+
+The rule remains useful through $B=128$ (about $1.5\%$ excess expected
+loss), but at 256 its LR is $18\%$ too high and its loss is $27\%$ higher.
+At 512 it predicts $0.2902$, beyond SGD's stability limit
+$\eta<2/\lambda_{\max}(H)=0.2$.
+
+Doubling $B$ halves the gradient-noise variance, but also halves the
+number of updates at fixed $N$. For small steps, doubling LR compensates:
+the total optimization progress scales with $\eta N/B$, while the noise
+floor scales with $\eta/B$, so both stay roughly unchanged. This explains
+the near-linear LR rule and initially flat tuned loss. At larger batches,
+raising LR amplifies noise in the high-curvature direction and approaches
+the stability limit. Fewer stable updates also leave more initialization
+error, so tuned loss rises despite less noisy gradients.
+
+\paragraph{Takeaway.} Double the batch, roughly double LR---but only while
+steps remain small. Larger batches give cleaner gradients but fewer chances
+to update; eventually LR cannot safely increase enough to compensate.
+
+\subsection{(b) RMSProp and Adam}
+
+The \emph{source exponent} is the fitted power $p$ in $\eta^*(B)=cB^p$,
+using only the seven source batch sizes $B=1$--$64$, before testing at 256.
+It measures how quickly optimal LR increases with batch size:
+doubling the batch multiplies LR by $2^p$.
+The left panels of Figure~\ref{fig:p31b} show the RMSProp and Adam
+loss--LR sweeps. Fitting their source optima gives
+\[
+\begin{aligned}
+\eta^*_{\mathrm{RMSProp}}(B)&=0.025831(B/64)^{0.90423},\\
+\eta^*_{\mathrm{Adam}}(B)&=0.025456(B/64)^{0.90497}.
+\end{aligned}
+\]
+Their exponents are nearly identical ($p\approx0.904$--$0.905$), slightly
+below SGD's $0.992$: both adaptive optimizers suggest multiplying LR by
+$1.87$ when doubling the batch, versus SGD's $1.99$. Despite this agreement,
+their frozen predictions transfer differently to $B=256$:
+
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Optimizer & Predicted LR & Tuned LR & Predicted loss & Tuned loss \\
+\midrule
+RMSProp & 0.090478 & 0.093144 & 0.013001 & 0.012946 \\
+Adam & 0.089256 & 0.175288 & 0.015175 & 0.013954 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+RMSProp's loss penalty is about $0.4\%$ (gap $0.000055$, paired
+SE $0.000038$); Adam's is $8.8\%$ (gap $0.001222$, paired
+SE $0.000120$). Adam's target loss curve is relatively flat and irregular,
+so its estimated optimal LR is less precise than its loss comparison.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p31b_adaptive.png}
+    \caption{Left: cached RMSProp and Adam loss--LR sweeps near their
+    minima; lines join measured points. Batch colors increase to yellow
+    at 256. Middle: solid power laws fit only batches 1--64; dashed lines
+    extrapolate beyond 64, and hollow diamonds mark the batch-256
+    predictions. Stars mark interpolated optima.
+    Right: independently evaluated tuned losses (top) and predicted-versus-tuned
+    losses at 256 (bottom, approximate 95\% confidence intervals).
+    SGD is included in the middle/right comparisons; its sweeps appear
+    in Figure~\ref{fig:p31a}.}
+    \label{fig:p31b}
+\end{figure}
+
+\paragraph{Takeaway.} RMSProp and Adam follow nearly the same scaling rule
+over the source batches, with almost identical exponents. This does not
+imply similar transfer accuracy at larger batches.
+
+\paragraph{Language-model prediction.} At fixed training tokens, I expect
+optimal LR to increase with batch size, approximately following a power
+law over $B=8$--$64$. I expect extrapolation to 128 to be more reliable
+than to 256, with LR growth eventually slowing as fewer updates and
+stability become limiting. These are hypotheses to test in Problem 3.2,
+not established batch-size cutoffs; I would fit the LM exponent rather
+than assume the toy model's $p\approx0.905$ transfers unchanged.
+
+\subsection{(c) Noise and curvature}
+
+\paragraph{Starting setting.}
+Part (b) uses $f(w_1,w_2)=(w_1^2+10w_2^2)/2$, with independent
+$w_{0,1}\sim\mathcal N(0,1)$ and $w_{0,2}\sim\mathcal N(0,.1)$.
+The noisy gradient is $g_t=Hw_t+\epsilon_t$, where
+$H=\operatorname{diag}(1,10)$ and $\epsilon_t\sim\mathcal N(0,I_2/B)$.
+Training uses $N=8{,}192$ examples, $N/B$ updates, constant LR, and no WD.
+RMSProp has $\beta_1=0$ and Adam has $\beta_1=.9$; both use
+$\beta_2=.95$ and $\epsilon=10^{-8}$.
+
+\paragraph{1. Increase gradient noise.}
+I keep the loss, initialization, and optimizers unchanged and replace
+the gradient-noise covariance:
+\[
+\frac{I_2}{B}\quad\longrightarrow\quad\frac{\sigma^2I_2}{B},
+\qquad \sigma\in\{1,10,100,300\}.
+\]
+$I_2$ is the $2\times2$ identity matrix. Increasing $\sigma$ makes
+gradient estimates noisier without changing their mean or the number
+of updates; $\sigma=1$ is the original setting.
+For each noise level and optimizer, I tune LR at $B=1,2,4,8,16,32,64$
+and fit $\eta^*(B)=c(B/64)^p$. I freeze the prediction at $B=256$
+before separately tuning LR there. The fitted laws are below, with $r=B/64$:
+
+\begin{center}
+\small
+\begin{tabular}{rll}
+\toprule
+Noise $\sigma$ & $\eta^*_{\mathrm{RMSProp}}(B)$ & $\eta^*_{\mathrm{Adam}}(B)$ \\
+\midrule
+1 (original) & $0.025831\,r^{0.90423}$ & $0.025456\,r^{0.90497}$ \\
+10  & $0.028842\,r^{0.53622}$ & $0.026957\,r^{0.52044}$ \\
+100 & $0.031505\,r^{0.50827}$ & $0.031139\,r^{0.50783}$ \\
+300 & $0.019679\,r^{0.50666}$ & $0.019245\,r^{0.50368}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Takeaway---noise.} Earlier parts found almost linear LR--batch
+scaling ($p\approx0.99$ for SGD and $0.90$ for RMSProp/Adam).
+As gradient noise increases, the RMSProp/Adam exponent approaches
+$0.5$ (Figure~\ref{fig:p31c}, top row). This is square-root scaling,
+$\eta^*\propto\sqrt B$: four times the batch size calls for roughly
+twice the LR; doubling the batch calls for roughly $1.41$ times the LR.
+
+\paragraph{Intuition for the high-noise result.}
+RMSProp rescales each weight's gradient using recent squared gradients.
+Ignoring the small numerical-stability constant $\epsilon$, its update
+is approximately
+\[
+\Delta w_i\approx-\frac{\eta g_i}{\sqrt{v_i}},
+\]
+where $\Delta w_i$ is the change in weight $i$, $g_i$ is its noisy gradient,
+and $v_i$ is a running estimate of $\mathbb E[g_i^2]$, the expected
+squared gradient, rather than the exact expectation. Adam also smooths
+the gradient in the numerator, but uses the same kind of divisor.
+Thus, larger $v_i$ reduces the update at a fixed LR.
+
+For our quadratic loss, the true gradient in direction $i$ is $h_iw_i$,
+where $h_i$ is the curvature ($h_1=1$, $h_2=10$). Adding independent,
+zero-mean gradient noise gives
+\[
+\mathbb E[g_i^2]=h_i^2\mathbb E[w_i^2]+\sigma^2/B.
+\]
+The two terms are squared gradient signal and noise variance, respectively.
+When noise dominates, $v_i\approx\sigma^2/B$ and
+$\sqrt{v_i}\approx\sigma/\sqrt B$. The coefficient multiplying the
+gradient is therefore $\eta/\sqrt{v_i}\approx\eta\sqrt B/\sigma$.
+At fixed $N$, doubling $B$ halves the number of updates. If this
+coefficient grows proportionally to $B$ to compensate, then
+$\eta\propto\sqrt B$ at fixed $\sigma$. This is a noise-dominated
+heuristic, not an exact law; when signal contributes substantially to
+$v_i$, the same argument does not determine the exponent.
+
+\paragraph{2. Replace the loss with a one-parameter problem.}
+I repeat the same noise levels, source fits, and batch-256 tests with
+$f(w)=w^2/2$, $w_0\sim\mathcal N(0,2)$, and scalar gradient noise
+$\epsilon_t\sim\mathcal N(0,\sigma^2/B)$. There is now one weight instead
+of two: the direction with curvature ten is removed. Initialization
+variance two keeps expected initial loss at one, as before. All other
+settings remain unchanged; this comparison changes dimensionality
+as well as curvature.
+
+Figure~\ref{fig:p31c} (bottom row) shows the same broad pattern:
+$p\approx0.95$--$0.97$ at the original noise level, falling to
+$0.49$--$0.51$ at $\sigma\geq100$.
+
+\paragraph{Takeaway---loss change.} The one-parameter loss preserves the
+high-noise square-root rule. Noise strength changes the fitted exponent
+much more than this loss change, although the low-noise exponents differ
+slightly.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p31c_noise_and_curvature.png}
+    \caption{Noise and LR--batch scaling: original two-parameter loss
+    (top), one-parameter loss (bottom). Left and middle: RMSProp and Adam
+    laws fitted only at $B=1$--$64$ (solid), extrapolated to 256 (dashed).
+    Stars are fitted optima; hollow diamonds are frozen predictions at
+    256. Right: fitted exponent versus noise; the dotted line is $p=0.5$.
+    Largest noise is yellow.}
+    \label{fig:p31c}
+\end{figure}
+
+\paragraph{Batch-256 check.} At $\sigma\geq100$, predicted LRs give losses
+within $1.2\%$ of separately tuned LRs in both settings, although flat
+loss curves can hide LR errors. At $\sigma=10$, prediction penalties
+are $31\%$/ $24\%$ for RMSProp/Adam with the original loss, versus
+$123\%$/ $61\%$ with the one-parameter loss: similarns now. ns now.  scaling trends
+do not guarantee similar transfer accuracy.
+
+\paragraph{Takeaway.} More gradient noise moves both RMSProp and Adam toward
+$\eta^*\propto\sqrt B$. Replacing the loss with a one-parameter problem
+preserves that high-noise rule; noise strength changes the scaling much
+more than this loss change, but loss geometry still affects transfer accuracy.
+
+\subsection{(d) Momentum}
+
+At $B=16$ and 256, I tuned SGD LR separately for $\mu=0$ and $.9$.
+For Adam I jointly swept LR and 14 values of $\beta_1$, including zero,
+$.9$, and values up to $.9999$. I then evaluated the selected pairs on
+fresh trajectories; losses below correspond to the curves in
+Figure~\ref{fig:p31d}.
+
+\begin{center}
+\small
+\begin{tabular}{rrrrl}
+\toprule
+$B$ & SGD, $\mu=0$ & SGD, $\mu=.9$ & Adam, $\beta_1=0$ & Best Adam \\
+\midrule
+16 & 0.000335 & 0.000307 & 0.000985 & 0.000874 ($\beta_1=.95$) \\
+256 & 0.000554 & 0.000914 & 0.012758 & 0.001813 ($\beta_1=.7$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p31d_momentum.png}
+    \caption{Left: final loss after separate LR tuning at each Adam
+    momentum setting. Middle/right: learning curves for tuned SGD and
+    Adam, with and without momentum. Each curve averages 32,768 fresh
+    trajectories; batch 256 permits only 32 updates.}
+    \label{fig:p31d}
+\end{figure}
+
+\paragraph{SGD.} Fixed momentum $.9$ helps slightly at batch 16 ($9\%$ lower loss),
+but hurts at 256 ($65\%$ higher); exact covariance calculations confirm
+this finite-budget result. Its small-batch LR is roughly one tenth of
+the no-momentum LR, consistent with effective LR $\eta/(1-\mu)$.
+One intuition is that momentum combines past gradients, making updates
+less sensitive to noisy small-batch gradients. At batch 256, gradients
+are already less noisy, so that benefit is smaller. There are also only
+32 updates, versus 512 at batch 16: momentum $.9$ remembers roughly ten
+updates, so slow adjustment to changing gradients can consume a substantial
+fraction of the run. This explains a possible finite-budget trade-off,
+not a general rule that momentum hurts large batches.
+
+\paragraph{Adam.} Jointly tuned momentum gives $11\%$ lower loss at batch
+16, a modest improvement that is hard to see on the logarithmic learning
+curve, versus $86\%$ at 256. The best coefficient decreases from $.95$
+to $.7$; values near one perform poorly. Unlike SGD, Adam divides its
+gradient estimate by a running estimate of gradient magnitude. Smoothing
+the gradient in the numerator can therefore change the behavior of these
+normalized updates, not just average away raw gradient noise. A possible
+explanation is that moderate momentum reduces oscillatory updates and
+permits faster progress: the tuned LR at 256 rises from $.0931$ without
+momentum to $.1320$ with $\beta_1=.7$. This is an interpretation, not a
+separately isolated mechanism; simply having less gradient noise does
+not imply less benefit from Adam momentum.
+
+\paragraph{Takeaway.} Momentum can help more at large batches, but the
+coefficient must be tuned: fewer updates can make long gradient memory
+harmful. Fixed SGD momentum $.9$ does not reproduce the predicted
+large-batch advantage here.
+
+\paragraph{Language-model predictions.}
+\begin{itemize}
+    \item At small batches, momentum should help smooth noisy gradients,
+    though the gain may be modest once LR is well tuned.
+    \item At large batches and fixed training tokens, there are fewer
+    updates. Well-chosen momentum could help maintain useful directions
+    and improve progress, but excessive momentum could slow adaptation.
+    \item I would not conclude that SGD momentum generally hurts large
+    batches, or that Adam's best coefficients must be $.95$ and $.7$.
+    Those results depend on this toy loss and budget.
+\end{itemize}
+
+\section{Problem 3.2: Batch size in a language model}
+\subsection{(a) Tune LR at fixed weight decay}
+
+I used d8 with WD $.1$, linear LR decay, and 1\% warmup, sweeping seven
+peak LRs at each $B\in\{8,16,32,64\}$: nine new runs, 16 reused A1 runs,
+and three supplied runs. Reused runs match the model, seeds, schedule,
+and seed-42 training prefix. Every run processes exactly
+$600{,}000\times1024=614.4$M tokens. Each update uses one microbatch of
+$B$ sequences, so doubling $B$ halves the number of updates.
+
+I fit the same quadratic in log LR as in Problem 1 to all seven
+measurements at each batch (Figure~\ref{fig:p32a}, left).
+The fitted optimum interpolates the sweep;
+the best measured loss below comes from an actual run, not the curve.
+
+\begin{center}
+\small
+\begin{tabular}{rrrrr}
+\toprule
+$B$ & Updates & Fitted optimal LR & Best measured LR & Best measured loss \\
+\midrule
+8  & 75,000 & 0.001066 & 0.001  & 2.933064 \\
+16 & 37,500 & 0.001803 & 0.0015 & 2.922586 \\
+32 & 18,750 & 0.002875 & 0.003  & 2.920011 \\
+64 & 9,375  & 0.003547 & 0.003  & 2.925636 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p32a_lr_and_batch.png}
+    \caption{Left: measured loss--LR points and quadratic fits in log LR.
+    Middle: fitted optima and their power-law fit. Right: best measured
+    loss at each batch. Stars denote fitted optima; circles denote actual
+    measurements. Batch size controls color, with the largest batch yellow.}
+    \label{fig:p32a}
+\end{figure}
+
+Fitting a power law to these four optima gives
+\[
+\eta^*(B)\approx0.003876\left(\frac{B}{64}\right)^{0.588}.
+\]
+Doubling batch size suggests multiplying peak LR by $1.50$.
+Growth also slows between 32 and
+64. Batch 32 has the lowest measured loss; at that batch, LR $.003$ and
+$.0045$ differ by only $0.000041$ loss. The minima are approximate,
+particularly where the curves are flat, and these single-seed sweeps do
+not establish statistically significant batch rankings.
+
+\paragraph{Takeaway.} Over batches 8--64, larger batches prefer larger LR,
+with close to square-root scaling: $\eta^*\propto B^{0.588}$.
+Doubling batch size suggests about $1.50\times$ the LR
+($1.41\times$ for exact square-root scaling), not $2\times$.
+After LR tuning, loss improves from batch 8 to 32, then
+worsens slightly at 64: more updates alone do not guarantee better loss.
+Part (b) tests transfer to batches 128 and 256.
+
+\subsection{(b) Compare LR and WD scaling}
+
+I compare two recipes: scale LR with WD fixed at $.1$, or scale WD with
+peak LR fixed at $.0015$. The first reuses (a). For the second, I swept
+$\lambda\in\{.025,.05,.1,.2,.4,.8,1.6\}$ at each source batch, using
+22 new runs and six matching existing runs. All source runs completed
+614.4M tokens.
+
+At each batch I fit
+$L_B(\lambda)=a_By^2+b_By+c_B$, where $y=\log_2(\lambda/.1)$,
+to the seven losses. The optima and measured minima are:
+
+\begin{center}
+\small
+\begin{tabular}{rrrr}
+\toprule
+$B$ & Fitted optimal WD & Best measured WD & Best measured loss \\
+\midrule
+8  & 0.066841 & 0.05 & 2.935132 \\
+16 & 0.093868 & 0.1  & 2.922586 \\
+32 & 0.133741 & 0.2  & 2.919927 \\
+64 & 0.300167 & 0.4  & 2.923157 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The power law fitted to these four WD optima
+(Figure~\ref{fig:p32b}, middle) is
+\[
+\lambda^*(B)\approx0.261158\left(\frac{B}{64}\right)^{0.7012}.
+\]
+It suggests multiplying WD by $1.63$ when doubling batch size; the
+best measured WDs instead double exactly. The loss curves are asymmetric:
+all-seven-point quadratic fits have loss RMSE $0.008$--$0.009$ and their
+minima are sensitive to the high-WD tail. Fitting just three neighboring
+points around each measured minimum gives an exponent $0.988$ instead.
+Thus the direction is clear, but the precise extrapolation is uncertain.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/p32b_wd_source_fits.png}
+    \caption{Left: source WD measurements (circles) and all-seven-point
+    quadratic fits in log WD. Middle: fitted optima (stars), their power
+    law over source batches (solid), extrapolation (dashed), and frozen
+    target predictions (hollow diamonds). Right: measured target losses
+    for both recipes; $\Delta L=L_{\mathrm{LR}}-L_{\mathrm{WD}}$.
+    Largest batch in each measurement panel is yellow.}
+    \label{fig:p32b}
+\end{figure}
+
+Both rules were fixed before reading their target results. All four
+target runs finished; Figure~\ref{fig:p32b} (right) compares their losses:
+
+\begin{center}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrr}
+\toprule
+$B$ & LR prediction & LR-recipe loss & WD prediction & WD-recipe loss & $\Delta L$ \\
+\midrule
+128 & 0.005826 & 2.969603 & 0.424593 & 2.947920 & 0.021683 \\
+256 & 0.008756 & 3.137107 & 0.690308 & 2.996901 & 0.140206 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The LR recipe uses WD $.1$; the WD recipe uses LR $.0015$.
+At 128/256, microbatches of 64 are accumulated twice/four times.
+Discarding incomplete accumulation groups leaves actual budgets of
+614,334,464 and 614,203,392 tokens, respectively, less than $0.04\%$
+below nominal.
+
+Neither target has an independent optimum sweep or repeated seeds, so
+this comparison ranks the two frozen recipes rather than establishing
+optimal hyperparameters or statistical significance.
+
+\paragraph{Takeaways.} Both fitted optimal LR (at fixed WD) and optimal
+WD (at fixed LR) increase with batch size. Of the two recipes tested,
+fixing LR and scaling WD transfers better than fixing WD and scaling LR:
+losses are lower by $.0217$ at batch 128 and $.1402$ at 256.
+WD scaling reduces, but does not eliminate, the large-batch loss increase.
+
+\subsection{(c) Ablate momentum}
+
+The experiment fixes the best measured LR--WD pairs: $(.001,.1)$ at
+$B=8$ and $(.0015,.690308)$ at $B=256$, with $\beta_2=.95$.
+It varies $\beta_1\in\{0,\allowbreak.5,\allowbreak.7,\allowbreak.8,\allowbreak.9,\allowbreak.95,\allowbreak.99\}$, reusing the completed
+$.9$ controls. LR and WD are not retuned. These are the best measured
+recipes available, not proven joint optima; the batch-256 recipe was
+selected from only two transferred recipes. Figure~\ref{fig:p32c}
+shows all fourteen completed-budget measurements.
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Batch & Loss at $\beta_1=0$ & Best sampled $\beta_1$ & Best loss \\
+\midrule
+8 & 2.970755 & .95 & 2.929515 \\
+256 & 3.172107 & .9 & 2.996901 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Relative to no momentum, the best sampled setting lowers loss by $.04124$
+at batch 8 and $.17521$ at batch 256. Very long memory is not uniformly
+helpful: $\beta_1=.99$ gives loss $3.281432$ at batch 256, worse even than
+no momentum. There are approximately 75,000 updates at batch 8 but only
+2,343 at batch 256. Momentum averages gradient directions, but increasing
+it also delays adaptation. These are one-seed comparisons, not estimates
+of statistical uncertainty.
+The batch-8 runs process exactly 614,400,000 tokens; the batch-256 runs
+use four microbatches of 64 and process 614,203,392 tokens, matching the
+completed control's accumulation convention.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figures/p32c_momentum.png}
+\caption{P3.2(c): measured final loss versus momentum at fixed LR and WD.
+Each panel has its own vertical scale so the small-batch differences remain visible.
+Circles are measurements; no interpolated momentum optimum is claimed.}
+\label{fig:p32c}
+\end{figure}
+\paragraph{Takeaway.} Momentum helps both batches, especially batch 256,
+but too much momentum can hurt. The best sampled coefficients are $.95$
+and $.9$, respectively, under these fixed LR--WD recipes.
+
+\subsection{(d) What does the NQM explain?}
+
+\paragraph{LR scaling.} The upward LR trend in Figure~\ref{fig:p32a}
+agrees qualitatively with the NQM's competition between cleaner gradients
+and fewer updates. Quantitatively, the LM exponent $.588$ differs from
+the original-noise Adam NQM's $.905$: doubling batch size suggests
+$1.50\times$ versus $1.87\times$ LR. The LM exponent is closer to the
+high-noise NQM's $.5$, but this similarity does not establish the same
+noise regime in the LM.
+
+\paragraph{Weight decay.} Our 3.1 NQM explicitly has no WD: it predicts
+neither the optimal WD exponent nor which LR--WD recipe wins. Thus the
+WD recipe's advantage in Figure~\ref{fig:p32b} is not confirmation or
+failure of a WD prediction from those simulations.
+An additional intuition is that AdamW shrinks weights by a factor
+$1-\eta_t\lambda$ per update, where $\eta_t$ is the current LR.
+Larger batches give fewer updates and hence fewer decay applications.
+At fixed training tokens and schedule shape, preserving approximately
+$\eta_{\mathrm{peak}}\lambda/B$ suggests increasing either LR or WD
+with batch size. The direction agrees with our measurements, but the
+fitted exponents $.588$ and $.701$ are below this simple linear-scaling
+hypothesis. This is a shrinkage-preservation argument, not a prediction
+measured in our no-WD NQM or a proof of optimal validation loss.
+
+\paragraph{Momentum comparison.} In 3.1(d), tuned Adam momentum
+helped much more at the larger batch, while fixed SGD momentum $.9$ hurt
+there. LR was retuned for every momentum setting. Part 3.2(c) instead
+holds LR and WD fixed. Figure~\ref{fig:p32c} supports the qualitative
+prediction that some momentum helps both batches and helps more at the
+larger batch. It does not transfer the exact toy optima: the NQM preferred
+$.95$ at batch 16 and $.7$ at batch 256; the LM preferred $.95$ at batch 8
+and $.9$ at batch 256. The small batches and tuning procedures also differ,
+so this is not a controlled quantitative agreement test.
+
+\paragraph{What is missing?} The toy problem has constant curvature,
+independent additive gradient noise, and no decoupled WD. The LM has
+changing gradient directions, parameter-dependent noise, normalization,
+clipping, and a decaying LR schedule. A useful next toy experiment would
+add AdamW's actual shrinkage update and repeat the two fixed-LR and
+fixed-WD protocols. I would also shift the optimum away from zero, using
+$f(w)=\tfrac12(w-w^*)^\top H(w-w^*)$ with $w^*\ne0$:
+otherwise decay toward zero is artificially favored by the original toy
+loss. With a nonzero optimum, WD can reduce noise while introducing bias,
+creating a meaningful tuning trade-off. That would produce a testable
+WD prediction; the present no-WD simulations cannot supply one.
+
+\begin{center}
+\small
+\begin{tabular}{p{.15\textwidth}p{.30\textwidth}p{.43\textwidth}}
+\toprule
+Prediction & NQM result & LM measurement \\
+\midrule
+LR versus batch & Adam: LR grows, exponent $.905$ & LR grows, exponent $.588$;
+transferred losses $2.969603$ ($B=128$), $3.137107$ ($B=256$). Direction agrees, exponent differs. \\
+WD versus batch & Not modeled: no WD in our toy updates & WD-scaling losses
+$2.947920$, $2.996901$, better than LR scaling by $.021683$, $.140206$. No toy WD prediction to falsify. \\
+Momentum & Tuned Adam helps both, more at larger batch & Fixed-LR LM also improves both:
+loss drops $.041240$ at $B=8$, $.175206$ at $B=256$. Best coefficients do not transfer exactly. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Takeaway.} The NQM gets the direction of LR scaling and the
+larger-batch momentum benefit right, but not the exact exponents or best
+coefficients. Our no-WD version cannot explain which WD recipe wins.
+
+\section{Problem 4.0: Alignment-dependent scaling}
+
+The goal is to keep features usable and updates nonvanishing as model
+width grows, so the same base LR can potentially transfer across widths.
+For a linear layer, the handout writes
+\[
+\begin{aligned}
+z&=n^{-a}Wx, & \operatorname{Var}(W_{0,ij})&\propto n^{-2b},\\
+\eta_W&=\eta n^{-c}, & \Delta W&=-\eta n^{-c}U.
+\end{aligned}
+\]
+Here $a$ controls the forward multiplier, $b$ initialization standard
+deviation (hence variance uses $2b$), and $c$ LR. The base LR $\eta$ is
+width independent; the normalized Adam update direction $U$ is assumed
+to have order-one RMS. Initial weights have independent centered
+Gaussian entries and are independent of the initial inputs.
+RMS means the square root of the mean squared
+entries; order one means bounded and nonvanishing with width.
+All scales are evaluated at a fixed training step as width grows.
+Writing a scale as $\Theta(n^r)$ means its typical size is proportional
+to $n^r$, up to width-independent factors. A positive $r$ means it grows
+with width, a negative $r$ means it vanishes, and $r=0$ means it stays
+order one. Our derivation will therefore set the relevant exponents to zero.
+
+There are three layer types. Input matrices map a fixed-size external
+input into width-$n$ features, so their fan-in $d$ stays fixed.
+Hidden matrices map between features whose sizes both grow with $n$.
+The readout maps width-$n$ features to a fixed number $q$ of output logits.
+Let $x_0$ be the pre-update input and $\Delta x=x_1-x_0$ its change,
+both with order-one RMS for hidden and readout matrices.
+
+\paragraph{The two alignment choices.}
+First, how strongly does the update direction $U$ act on its current
+input $x_0$? Second, how strongly do the initial readout weights act on
+the change $\Delta x$ in their input? These are different relationships.
+The ratios below divide the size of the resulting output by the RMS
+sizes of the matrix and input, leaving their amplification due to alignment:
+\[
+\begin{aligned}
+R(U,x_0)&=\frac{\|Ux_0\|_{\rm RMS}}
+{\|U\|_{\rm RMS}\|x_0\|_{\rm RMS}}=\Theta(n^\alpha),\\
+S(V_0,\Delta x)&=\frac{\|V_0^\top\Delta x\|_{\rm RMS}}
+{\|V_0\|_{\rm RMS}\|\Delta x\|_{\rm RMS}}=\Theta(n^\omega).
+\end{aligned}
+\]
+where $V_0=W_0^\top$ for the readout and
+$\omega=\omega_{\rm move}$. For each ratio independently, full alignment
+means exponent $1$ and no alignment means $1/2$. The intuition is that
+aligned contributions add coherently, giving amplification proportional
+to $n$; independent centered contributions partly cancel, giving
+amplification proportional to $\sqrt n$. We choose each assumption
+separately, producing four combinations.
+
+\subsection{(a) Derive the four combinations}
+
+\paragraph{Step 1: keep initial hidden features order one.}
+Each output coordinate sums $n$ initially independent weight contributions.
+Because cross terms have zero expectation,
+\[
+\mathbb E[z_{0,i}^2\mid x_0]
+\propto n^{-2(a+b)}\sum_{j=1}^n x_{0,j}^2
+=n^{1-2(a+b)}\|x_0\|_{\rm RMS}^2.
+\]
+Taking a square root gives initial RMS scale $n^{1/2-a-b}$.
+Setting its exponent to zero requires $a+b=1/2$. The question fixes
+$a=0$ for hidden matrices, so $b=1/2$. This does not depend on either
+training-alignment assumption: initialization comes before any update.
+
+\paragraph{Step 2: keep the direct weight update order one.}
+The forward multiplier contributes $n^{-a}$, the update magnitude
+contributes $\eta n^{-c}$, and update alignment contributes $n^\alpha$:
+\[
+\|n^{-a}\Delta W x_0\|_{\rm RMS}
+=\Theta(\eta n^{\alpha-a-c}).
+\]
+Thus $a+c=\alpha$. This applies to hidden and readout matrices.
+For hidden matrices, $a=0$ gives $c=\alpha$; together with Step 1,
+their tuple is $(0,1/2,\alpha)$.
+For the readout, the question instead fixes $c=0$, so $a=\alpha$.
+
+\paragraph{Step 3: keep the readout's response to feature movement order one.}
+Even before its own weights change, the initial readout sees a changed
+input $\Delta x$. Its forward multiplier is $n^{-a}$, its stored weights
+have RMS scale $n^{-b}$, and this second alignment contributes $n^\omega$:
+\[
+\|n^{-a}V_0^\top\Delta x\|_{\rm RMS}
+=\Theta(n^{\omega-a-b}).
+\]
+Setting this exponent to zero requires $a+b=\omega$. Step 2 already
+gave $a=\alpha$, so $b=\omega-\alpha$. The readout tuple is therefore
+$(\alpha,\omega-\alpha,0)$.
+Unlike hidden features, initial readout logits may vanish; they need
+only remain bounded. Their scale is
+$\Theta(n^{1/2-\omega})$, constant for no readout alignment and vanishing
+as $n^{-1/2}$ for full readout alignment. Initial weights are independent
+of $x_0$, even though they may align with the learned $\Delta x$.
+
+\paragraph{Step 4: fixed-fan-in input matrices.}
+Here we sum over a fixed $d$, not a growing $n$, so neither initialization
+nor update amplification introduces a width factor. Their scales are
+$n^{-a-b}$ and $\eta n^{-a-c}$. Setting both exponents to zero gives
+$a+b=a+c=0$. With the required $a=0$, the input tuple is $(0,0,0)$
+in every case; the external input also has no $\Delta x$.
+
+\paragraph{Step 5: substitute each pair of assumptions.}
+We now plug the four pairs into hidden $(0,1/2,\alpha)$ and readout
+$(\alpha,\omega-\alpha,0)$:
+\begin{enumerate}
+    \item \textbf{Full update, full readout alignment:}
+    $\alpha=1$, $\omega=1$. Hidden $c=1$; readout $a=1$ and
+    $b=1-1=0$. The tuples are $(0,1/2,1)$ and $(1,0,0)$.
+    \item \textbf{Full update, no readout alignment:}
+    $\alpha=1$, $\omega=1/2$. Hidden $c=1$; readout $a=1$ and
+    $b=1/2-1=-1/2$. The tuples are $(0,1/2,1)$ and $(1,-1/2,0)$.
+    \item \textbf{No update, full readout alignment:}
+    $\alpha=1/2$, $\omega=1$. Hidden $c=1/2$; readout $a=1/2$ and
+    $b=1-1/2=1/2$. The tuples are $(0,1/2,1/2)$ and $(1/2,1/2,0)$.
+    \item \textbf{No update, no readout alignment:}
+    $\alpha=1/2$, $\omega=1/2$. Hidden $c=1/2$; readout $a=1/2$ and
+    $b=1/2-1/2=0$. The tuples are $(0,1/2,1/2)$ and $(1/2,0,0)$.
+\end{enumerate}
+Input tuples remain $(0,0,0)$. Table~\ref{tab:p40-abc} summarizes these
+substitutions.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+\shortstack{Update\\alignment} & \shortstack{Readout\\alignment} &
+\shortstack{Hidden\\$(a,b,c)$} & \shortstack{Readout\\$(a,b,c)$} & \shortstack{Input\\$(a,b,c)$} \\
+\midrule
+Full & Full & $(0,\frac12,1)$ & $(1,0,0)$ & $(0,0,0)$ \\
+Full & None & $(0,\frac12,1)$ & $(1,-\frac12,0)$ & $(0,0,0)$ \\
+None & Full & $(0,\frac12,\frac12)$ & $(\frac12,\frac12,0)$ & $(0,0,0)$ \\
+None & None & $(0,\frac12,\frac12)$ & $(\frac12,0,0)$ & $(0,0,0)$ \\
+\bottomrule
+\end{tabular}
+\caption{Exponent choices under the handout's two independent alignment assumptions.}
+\label{tab:p40-abc}
+\end{table}
+
+\paragraph{Takeaway.} The two assumptions have different jobs: update
+alignment sets how strongly to scale down direct updates ($a+c$), while
+readout--feature alignment sets the head's initialization and forward
+scaling ($a+b$). The four cases come from combining these two choices.
+
+\subsection{(b) Forward multiplier, initialization variance, and LR}
+
+Let $m=n/n_0$, with reference width $n_0$, and let $k$ be each hidden
+matrix's actual fan-in. A forward multiplier scales as $m^{-a}$,
+initialization variance as $m^{-2b}$, and LR as $\eta m^{-c}$.
+For example, the full/full readout has $a=1$, $b=0$, $c=0$:
+its forward multiplier is $1/m$, its initialization variance does not change,
+and its LR does not change. The full/none case instead has $b=-1/2$,
+so its variance multiplier is $m^{-2(-1/2)}=m$.
+To match the handout's preceding table at $n_0$, the reference
+initialization variances are $1/d$ for input, $1/k_0$ for hidden, and
+$1/n_0$ for readout, where $k_0$ is the hidden matrix's fan-in at $n_0$.
+Because hidden fan-in scales with width, $k=mk_0$, its variance becomes
+$(1/k_0)m^{-1}=1/k$.
+Table~\ref{tab:p40-rules} gives all three requested quantities for
+every layer type and alignment combination. Case names list update
+alignment first and initial-readout/feature-change alignment second.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Alignment case & Layer & \shortstack{Forward\\multiplier} &
+\shortstack{Initialization\\variance} & LR \\
+\midrule
+Full / full & Input & $1$ & $1/d$ & $\eta$ \\
+ & Hidden & $1$ & $1/k$ & $\eta/m$ \\
+ & Readout & $1/m$ & $1/n_0$ & $\eta$ \\
+\midrule
+Full / none & Input & $1$ & $1/d$ & $\eta$ \\
+ & Hidden & $1$ & $1/k$ & $\eta/m$ \\
+ & Readout & $1/m$ & $m/n_0$ & $\eta$ \\
+\midrule
+None / full & Input & $1$ & $1/d$ & $\eta$ \\
+ & Hidden & $1$ & $1/k$ & $\eta/\sqrt m$ \\
+ & Readout & $1/\sqrt m$ & $1/(mn_0)$ & $\eta$ \\
+\midrule
+None / none & Input & $1$ & $1/d$ & $\eta$ \\
+ & Hidden & $1$ & $1/k$ & $\eta/\sqrt m$ \\
+ & Readout & $1/\sqrt m$ & $1/n_0$ & $\eta$ \\
+\bottomrule
+\end{tabular}
+\caption{Forward multiplier, initialization variance, and LR for each
+layer type. At $n=n_0$ ($m=1$), every case matches the handout's preceding table.}
+\label{tab:p40-rules}
+\end{table}
+
+At $m=1$, all forward multipliers are $1$, all LRs are $\eta$, and
+initialization variances are exactly $1/d$, $1/k_0$, and $1/n_0$.
+
+Removing update alignment changes hidden LR from $\eta/m$ to
+$\eta/\sqrt m$ and the readout multiplier from $1/m$ to $1/\sqrt m$.
+Removing readout alignment instead multiplies its initialization variance
+by $m$ at fixed update alignment. The negative $b$ in the full/none case
+is intentional: readout initialization variance grows, but its forward multiplier
+keeps initial logits bounded.
+
+\paragraph{Interaction check.} The total change is
+\[
+\Delta z=n^{-a}(\Delta W x_0+W_0\Delta x+\Delta W\Delta x).
+\]
+The handout additionally assumes $R(U,\Delta x)=O(n^\alpha)$, giving
+\[
+\|n^{-a}\Delta W\Delta x\|_{\rm RMS}
+=O(\eta n^{\alpha-a-c})=O(\eta)
+\]
+for both hidden and readout matrices in all four cases.
+Without this extra assumption, a general bound proportional to
+$n^{1-a-c}$ would not guarantee bounded interaction in the no-update-
+alignment cases. For hidden matrices, the Gaussian operator-norm bound
+(controlling the largest possible vector amplification by $W_0$)
+also gives $\|n^{-a}W_0\Delta x\|_{\rm RMS}=O(n^{1/2-a-b})=O(1)$,
+even for feature changes dependent on $W_0$. For the readout, this term
+is order one by $a+b=\omega$. Input matrices have $\Delta x=0$.
+Thus all three terms stay bounded under the stated assumptions.
+
+\paragraph{Takeaway.} Full alignment in both places recovers the
+handout's $\mu$P rules: hidden LR $\eta/m$, readout multiplier $1/m$,
+and readout variance $1/n_0$. Other alignment assumptions give different
+width rules; these are conditional predictions, not evidence that a real
+Transformer satisfies the assumptions or transfers LR successfully.
+
+One finite-width caution matters for the experiments below. With readout
+$W\in\mathbb R^{q\times n}$, pooling RMS over all $q$ vocabulary outputs
+gives the exact bound
+\[
+ S(W,h)\le\frac{n\,\|W\|_{\rm op}}{\|W\|_F},
+\]
+where $\|W\|_{\rm op}$ is its largest possible vector amplification and
+$\|W\|_F$ is the square root of its summed squared entries. A Gaussian
+readout with many more outputs than inputs is approximately an isometry
+(see \href{https://arxiv.org/abs/1011.3027}{Vershynin, Corollary 5.35}):
+it gives ratios near $\sqrt n$ for many directions, including directions
+that depend on it. Here $q=4{,}096$, especially large relative to the
+depth experiment's width 64. Thus an observed $\omega_{\rm move}\approx.5$
+does not by itself prove independence or absence of feature learning;
+the pooled ratio is constrained by the initial matrix's finite-width
+geometry. The $.5$ and $1$ lines remain useful reference scales, not
+binary labels for every measured update.
+
+\clearpage
+\section{Problem 4.1: Five-update Transformer stress test}
+
+\paragraph{What is being transferred?} The \emph{base learning rate}
+$\eta$ is one tunable number. A parameterization converts it into actual
+per-layer rates. For example, at width $2{,}560$, $m=n/512=5$, so
+$\mu$P's hidden matrices use $\eta/5$, while embeddings, readout, and
+normalization gains still use $\eta$. Successful transfer means that
+approximately the same \emph{base} LR works at different dimensions;
+it does not mean every matrix receives the same actual LR.
+
+\paragraph{Controlled protocol.} The policies are implemented in
+\path{experiments/a2/p41_policies.py}, using the supplied stress architecture
+and measurement code. Every configuration uses the same five batches of 64
+length-1,024 sequences, the same 64 validation sequences, seed 42,
+constant LR, no warmup, no WD, and no clipping. File hashes verify the
+shared data: the first 320 contiguous training sequences and first 64
+validation sequences of the shared split. Diagnostic probes use one fixed validation sequence, pooling
+all 1,024 token positions; validation loss uses all 64 sequences.
+Microbatches only accumulate gradients to the same full batch.
+All parameters are initialized explicitly; none retain the scaffold's NaNs.
+
+\subsection{(a) Width: transfer and tuned loss}
+
+Depth is two, head dimension is 64, and reference width is 512.
+The width experiment uses FP32 weights, activations, gradients and Adam
+states, math attention and disabled TF32. Embedding variance is one,
+hidden-matrix variance is $1/k$ for actual fan-in $k$, and norm gains start
+at one. Kaiming uses readout variance $1/n$, multiplier one and hidden LR
+$\eta$. Standard $\mu$P instead uses variance $1/512$, multiplier $512/n$
+and hidden LR $512\eta/n$. Other parameter rates remain $\eta$.
+
+Before the full sweeps I predicted that $\mu$P would transfer its base LR
+more reliably, but did not predict that it must achieve lower tuned loss.
+I sweep widths $640$, $2{,}560$ and $5{,}120$. The initial Kaiming grid is
+$\{.0003,.001,.003,.01,.03\}$; the $\mu$P grid is
+$\{.001,.003,.01,.03,.1\}$. Timing pilots are reused, not repeated.
+An endpoint minimum requires an additional bracketing LR before an
+interpolated optimum is reported.
+
+\paragraph{Curve fitting.} To estimate each optimum, I interpolate the
+best measured point and its nearest lower/higher LRs with
+\[
+ L(\eta)=a x^2+b x+c,\qquad x=\log_2(\eta/.003),\qquad
+ \eta^*=.003\,2^{-b/(2a)}.
+\]
+I require $a>0$ and an optimum inside those neighbors. This local fit
+avoids letting a high-loss tail dominate the minimum; a quadratic over
+the entire grid is retained as a sensitivity check. Three points determine
+a quadratic exactly, not an uncertainty estimate. Fitted minimum loss
+and best measured loss are reported separately.
+
+The completed width sweep contains 38 unique configurations: 30 initial
+points and eight lower-LR bracketing points. Figure~\ref{fig:p41-width-fits}
+shows the results:
+\begin{center}
+\begin{tabular}{llrrr}
+\toprule
+Policy & Width & Fitted LR & Fitted loss & Best measured loss \\
+\midrule
+Kaiming & 640 & .001023 & 7.0686 & 7.0688 \\
+Kaiming & 2,560 & .000146 & 7.2700 & 7.3131 \\
+Kaiming & 5,120 & .0000454 & 7.4882 & 7.5375 \\
+$\mu$P & 640 & .001269 & 6.8822 & 6.9094 \\
+$\mu$P & 2,560 & .001155 & 6.7367 & 6.7464 \\
+$\mu$P & 5,120 & .001079 & 6.7417 & 6.7445 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Across an $8\times$ width increase, Kaiming's fitted optimal LR falls
+$22.6\times$; $\mu$P's optima span only $1.18\times$. The best sampled
+$\mu$P LR is $.001$ at every width. Kaiming instead selects $.001$,
+$.0001$ and $.00003$. Transferring its width-640 rate $.001$ costs
+$1.2575$ loss at width 2,560 and $15.2529$ at 5,120, relative to their
+best sampled rates. $\mu$P incurs no sampled-grid transfer penalty.
+It also has lower best measured loss at every width, by $.1594$, $.5667$
+and $.7931$, respectively. These conclusions concern this five-update,
+single-seed protocol, not arbitrary training lengths.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p41_width_fits.png}
+\caption{Five-update width test: measured losses (circles), local
+log-LR fits and fitted optima (stars). Main LR panels zoom into the
+basins; insets retain the full measurement range, including high-loss
+tails. Bottom: optimal base LR and fitted minimum loss versus width.
+The largest width is yellow.}
+\label{fig:p41-width-fits}
+\end{figure}
+
+\paragraph{Takeaway.} In the five-update test, $\mu$P transfers the same
+base LR across an $8\times$ width range and also achieves lower tuned
+loss. Kaiming needs a much smaller LR as width grows.
+
+\subsection{(b) Width diagnostics}
+
+For each best \emph{sampled} LR, I track logit RMS, final-RMSNorm output
+RMS and movement from initialization through all five updates. The norm
+output is measured before the readout multiplier. For every Q/K/V/O,
+FF gate/up/down matrix and readout, the diagnostic uses the actual matrix
+change and its pre-update input:
+\[
+ \alpha_{\rm upd}^{(t)}=\log_k\frac{\|\Delta A_tu_{t-1}\|_{\rm RMS}}
+ {\|\Delta A_t\|_{\rm RMS}\|u_{t-1}\|_{\rm RMS}}.
+\]
+Values near $.5$ resemble the random, unaligned reference; values near
+$1$ resemble full alignment. The second diagnostic
+$\omega_{\rm move}=\log_n S(V_0,h_t-h_0)$ uses the \emph{initial}
+readout and change in normalized features, rather than the trained
+readout or current features. It is omitted at initialization when movement
+is zero. These finite-width measurements test assumptions, not exact
+asymptotic exponents.
+
+Figure~\ref{fig:p41-width-features} separates feature magnitude from
+feature change. Both policies keep the final normalized RMS close to one,
+but their movements differ. At update five, Kaiming movement falls from
+$1.029$ to $.524$ to $.321$ as width increases; $\mu$P retains
+$1.038$, $1.007$ and $.954$. Thus $\mu$P preserves substantial feature
+learning across these widths, while Kaiming's retuned larger models
+change their features less. Three finite widths do not establish a
+vanishing infinite-width limit. Moreover, aggregate movement includes
+embedding, normalization and hidden-weight effects; it does not isolate
+every layer's contribution.
+
+$\mu$P's initial logit RMS decreases from $.893$ to $.447$ to $.316$,
+as expected from its readout multiplier. By update five the values are
+$1.156$, $.986$ and $.889$: the initially smaller logits do not prevent
+learning. Kaiming's retuned logit RMS stays between $1.016$ and $1.237$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p41_width_features.png}
+\caption{Best sampled width configurations through five updates.
+Normalized RMS stays near one under both policies (the second column
+zooms into this small range), but only $\mu$P keeps movement approximately
+width-independent. The last column uses the initial readout, with $.5$
+and $1$ reference lines; zero initial movement has no defined exponent.}
+\label{fig:p41-width-features}
+\end{figure}
+
+Figure~\ref{fig:p41-width-alignment} shows that a single alignment
+assumption does not describe every matrix. At update five, $\mu$P's
+median update alignment is $.678$, $.734$ and $.757$ across the three
+widths. Attention-output projections and the readout are more strongly
+aligned (projection medians about $.907$--$.930$), particularly in the
+later block; query/key and FF projections are generally less aligned.
+Kaiming's overall medians are $.725$, $.714$ and $.720$.
+These measurements support substantial, nonuniform update alignment,
+not exact full alignment everywhere. Readout--movement exponents instead
+stay near $.5$ ($.501$--$.529$ at update five). As discussed in 4.0,
+the finite readout geometry constrains this diagnostic, so it cannot alone
+establish independent features or disprove feature learning.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p41_width_alignment.png}
+\caption{Actual-update alignment for both blocks' Q/K/V/O and FF
+gate/up/down matrices, plus readout, at the best sampled LRs.
+Every matrix uses its pre-update probe input and actual fan-in.
+Attention-output and readout updates are more aligned than most other
+matrices; alignment also differs between blocks and training steps.}
+\label{fig:p41-width-alignment}
+\end{figure}
+
+\paragraph{Takeaway.} Unit normalized RMS is not enough: $\mu$P also
+preserves feature movement. Update alignment varies by matrix, and a
+readout ratio near $.5$ does not mean that features stopped learning.
+
+\subsection{(c) Depth: transfer and tuned loss}
+
+Width and reference width are both 64, head dimension is 64, and reference
+depth is two. Parameters, gradients, optimizer states and residual sums
+remain FP32; branches use BF16 autocast. Write $r=L/2$. The policies are:
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Policy & Branch multiplier & Block LR & Block Adam $\epsilon$ \\
+\midrule
+Standard $\mu$P & $1$ & $\eta$ & $10^{-8}$ \\
+\href{https://arxiv.org/abs/2310.02244}{Depth-$\mu$P} & $r^{-1/2}$ & $\eta r^{-1/2}$ & $10^{-8}r^{-1/2}$ \\
+\href{https://arxiv.org/abs/2505.01618}{CompleteP} & $r^{-1}$ & $\eta$ & $10^{-8}r^{-1}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+``Block'' includes hidden matrices and all within-block norms, including
+Q/K normalization. Embedding, readout and final norm keep their original
+LR and Adam stabilizer. I test depths $2$, $100$, $1{,}000$, initially at
+$\{.001,.003,.01,.03,.1\}$. At depth two the policies coincide, so one
+measured curve is reused for all three. I predicted that stronger
+residual damping would improve transfer, especially CompleteP, but kept
+the tuned-loss comparison separate from that prediction.
+A common $.02$ measurement resolves the wide $.01$--$.03$ bracket before
+comparing interpolated minima; it is added to all seven unique configurations.
+
+\paragraph{Why these multipliers?} As a heuristic, independent branch
+contributions add like $\sqrt r$, while coherent changes can add like $r$.
+Depth-$\mu$P damps each branch by $r^{-1/2}$ and each block's LR by
+$r^{-1/2}$: their product is $r^{-1}$. CompleteP instead puts the whole
+$r^{-1}$ factor on the branch, leaving block LR unchanged. Thus both
+can control accumulated changes without necessarily making feature
+movement vanish. Transformer branches are not independent, so this
+intuition is not a proof; the next probes test it.
+Adam's stabilizer is scaled too because damping a gradient by $s$ scales
+its first moment and square-root second moment by $s$. Replacing
+$\epsilon$ with $s\epsilon$ keeps its relative importance unchanged.
+
+All 42 unique depth configurations are complete, including the common
+$.02$ refinement. Figure~\ref{fig:p41-depth-fits} shows the local fits;
+depth two supplies the same reference curve to all policies.
+\begin{center}
+\begin{tabular}{llrrr}
+\toprule
+Policy & Depth & Fitted LR & Fitted loss & Best measured loss \\
+\midrule
+All & 2 & .01738 & 6.8319 & 6.8462 \\
+Standard $\mu$P & 100 & .01865 & 7.0764 & 7.0774 \\
+Standard $\mu$P & 1,000 & .01747 & 7.0694 & 7.0771 \\
+Depth-$\mu$P & 100 & .01819 & 6.8155 & 6.8225 \\
+Depth-$\mu$P & 1,000 & .01756 & 6.9757 & 6.9786 \\
+CompleteP & 100 & .01682 & 6.8039 & 6.8279 \\
+CompleteP & 1,000 & .01605 & 6.8538 & 6.8999 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Every configuration selects the same sampled LR $.02$. The fitted LR
+ranges are also narrow: about $7\%$ for standard $\mu$P, $5\%$ for
+Depth-$\mu$P and $8\%$ for CompleteP. This does not establish CompleteP
+as a better LR-transfer scheme in this test, contrary to my initial
+prediction. Yet transfer and loss clearly separate: at depth 1,000,
+CompleteP's measured loss is $.1772$ below standard $\mu$P and $.0787$
+below Depth-$\mu$P. At depth 100, Depth-$\mu$P wins the measured comparison
+over CompleteP by only $.0055$, while the fitted minima reverse this
+small ordering. I would not infer a reliable winner there without repeats.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p41_depth_fits.png}
+\caption{Five-update depth test: loss measurements, local log-LR fits
+and fitted optima; depth two is reused across policies. Bottom panels
+separate LR transfer from fitted minimum loss. All best sampled rates
+are $.02$, and the fitted-rate differences are small. Largest depth is yellow.}
+\label{fig:p41-depth-fits}
+\end{figure}
+
+\paragraph{Takeaway.} All three policies transfer approximately the same
+base LR here. Depth corrections improve deep-model loss, but lower loss
+does not imply a noticeably more invariant optimal LR.
+
+\subsection{(d) Depth diagnostics}
+
+At best sampled rates, I compare pre-normalization residual RMS, branch
+RMS \emph{before} its depth multiplier, movement of normalized features
+at the midpoint and final positions, and $\omega_{\rm move}$ over five updates.
+RMSNorm can keep its output near unit scale even when its input residual
+stream grows. Consequently, normalized output RMS alone is not a
+sufficient stability check.
+
+The completed depth-1,000 sweeps give a concrete example. All three
+policies select sampled LR $.02$; after five updates:
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Policy & Residual RMS & Final norm RMS & Movement & $\omega_{\rm move}$ \\
+\midrule
+Standard $\mu$P & 10,219.58 & .961 & 1.047 & .5000 \\
+Depth-$\mu$P & 8.72 & .952 & 1.238 & .4980 \\
+CompleteP & 7.95 & .942 & 1.264 & .4994 \\
+\bottomrule
+\end{tabular}
+\end{center}
+The normalized scales look similar despite over $1{,}000\times$ larger
+residual magnitude without a depth correction. Both corrections retain
+order-one normalized-feature movement rather than simply freezing the
+features. Nearly unchanged normalized RMS does not establish controlled
+residual growth. We also need to check the raw stream.
+
+Figure~\ref{fig:p41-depth-signals} shows how this happens. Between depths
+100 and 1,000, standard $\mu$P's final residual grows $9.92\times$.
+Depth-$\mu$P's grows only $1.75\times$, while CompleteP's remains almost
+unchanged ($7.98$ versus $7.95$). The individual unscaled branches need
+not explode for their sum to grow: standard $\mu$P's last FF branch RMS
+is $12.89$ versus $13.32$ at those depths, despite the much larger
+residual. The branch multiplier controls accumulation across layers,
+not just the magnitude of a single branch.
+
+Figure~\ref{fig:p41-depth-features} checks movement at the midpoint and
+final normalized positions. CompleteP's final movement stays near
+$1.24$--$1.26$ over all depths, and Depth-$\mu$P's near $1.18$--$1.24$.
+At the midpoint, movement also stays substantial; neither policy merely
+suppresses all feature changes. All readout--movement ratios remain close
+to $.5$, subject to the finite-geometry caveat in 4.0.
+Thus the corrected policies strongly reduce residual accumulation while
+retaining feature learning on these probes. Five updates and three depths
+cannot prove asymptotic boundedness. Conversely, standard $\mu$P's good
+LR transfer in (c) does not certify controlled internal signals.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p41_depth_signals.png}
+\caption{Best sampled depth runs: residual RMS before final normalization,
+and FF/attention branch RMS \emph{before} depth multiplication. Branch
+panels use solid lines for the last block and dashed lines for the midpoint.
+Standard $\mu$P accumulates a large stream even without enormous individual
+branches. Vertical scales differ across policies; all RMS panels are logarithmic.}
+\label{fig:p41-depth-signals}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.88\linewidth]{figures/p41_depth_features.png}
+\caption{Normalized-feature movement at final (solid) and midpoint
+(dashed) positions, and initial-readout alignment with final feature
+change. Depth corrections preserve nonzero movement while controlling
+the raw stream in Figure~\ref{fig:p41-depth-signals}. Largest depth is yellow.}
+\label{fig:p41-depth-features}
+\end{figure}
+
+\paragraph{Takeaway.} A good transferred LR and unit normalized outputs
+can hide a growing residual stream. Depth corrections control that
+accumulation without freezing feature changes; CompleteP gives the most
+depth-independent residual magnitude in this test.
+
+\clearpage
+\section{Problem 4.2: Longer-training transfer}
+
+\paragraph{Why repeat the experiment?} Five updates test early feature
+and update scales. They do not establish the best recipe after learning
+from many tokens, with warmup, LR decay, WD and clipping. This experiment
+uses the default LM at 153.6M tokens, with those settings restored.
+Its initialization is intentionally different from the stress test:
+the course baseline has small, shared embedding/readout draws, not
+embedding variance one.
+
+The longer runs have 2,344 optimizer steps and 23 warmup steps. The first
+step uses LR zero, so feature movement is zero and update alignment is
+undefined; the first five checkpoints are still within warmup.
+They are therefore not the same intervention as 4.1's five full-rate
+updates from initialization.
+
+\paragraph{Implementation and controls.} For a shared standard-Gaussian
+matrix $G$ truncated at $\pm3$, the course baseline uses embedding $G/n$,
+readout $G/\sqrt n$, readout multiplier one and hidden LR $\eta$.
+$\mu$P uses embedding $G/512$, readout $G/\sqrt{512}$, multiplier $512/n$
+and hidden LR $512\eta/n$. These are the only four width-policy changes.
+Sharing the initial draws does not tie the weights: embedding and readout
+remain separate trainable matrices.
+Both prescriptions use the same initialization draws, ordered seed-42
+training prefix, architecture, norm $\epsilon=10^{-5}$, clipping at one,
+WD $.1$, Adam betas $(.9,.95)$ and linear schedule with 1\% warmup.
+In a CPU check at width 512 I verified exact agreement with the default model's weights,
+logits and an AdamW update. The supplied width-512 runs and diagnostics
+are reused rather than retrained.
+Feature and alignment diagnostics pool the first eight fixed validation
+sequences (including every token position); final validation loss uses
+all 1,000 sequences. Thus the probe inputs stay fixed within and across
+these comparisons, while the loss is measured on the full validation set.
+
+\subsection{(a) Transfer the reference LR}
+
+Problem 1(a)'s best sampled LR at 153.6M tokens is $.003$.
+I test both prescriptions at widths 128 and 256 with an equal initial grid
+$\{.00075,\allowbreak.0015,\allowbreak.003,\allowbreak.006,\allowbreak.012\}$, including direct $.003$ transfer.
+Before examining the full source sweeps, I predicted better base-LR
+transfer with $\mu$P, with possible shifts from clipping, norm epsilon
+and WD. Update alignment is measured for all matrices throughout
+training, not just during the first five updates.
+
+At width 128, direct $.003$ transfer gives loss $3.6940$ in the baseline
+and $3.6162$ in $\mu$P. Their best sampled losses are $3.6274$ and
+$3.6162$: transfer costs $.0666$ for the baseline but nothing on this
+grid for $\mu$P. At width 256, the corresponding gaps are only $.0006$
+and $.0063$. Thus $\mu$P transfers much better at width 128, but does
+not win every individual comparison (Figure~\ref{fig:p42-source-fits}).
+
+Figures~\ref{fig:p42-align-baseline} and \ref{fig:p42-align-mup} show
+each matrix's update alignment at the transferred rate. The median
+over 57 matrices changes as follows; these are descriptive medians,
+not fitted width exponents or confidence intervals.
+\begin{center}
+\begin{tabular}{llrrr}
+\toprule
+Prescription & Width & Update 2 & Update 5 & Final update \\
+\midrule
+Baseline & 128 & .673 & .799 & .613 \\
+Baseline & 256 & .746 & .905 & .611 \\
+$\mu$P & 128 & .668 & .879 & .597 \\
+$\mu$P & 256 & .731 & .910 & .611 \\
+Both (reference) & 512 & .746 & .919 & .624 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_source_alignment_baseline.png}
+\caption{Baseline update alignment at direct LR $.003$ for every attention,
+FF and readout matrix. Rows are equally spaced \emph{recorded checkpoints},
+not equal time intervals; labels give actual update numbers. The dashed
+boundary separates the first five updates from later training. White at
+update one denotes the zero warmup update, for which alignment is undefined.}
+\label{fig:p42-align-baseline}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_source_alignment_mup.png}
+\caption{$\mu$P update alignment, using the same matrices, source rate,
+color scale and checkpoint convention as Figure~\ref{fig:p42-align-baseline}.
+Strong early alignment weakens later, with substantial differences between
+matrix types. FF down projections use their actual fan-in $3.5n$.}
+\label{fig:p42-align-mup}
+\end{figure}
+
+In the supplied width-512 reference, median update alignment over all
+57 matrices rises from $.746$ at update two to $.919$ at update five,
+then falls to $.624$ at update 2,344. Alignment is therefore stage-dependent,
+not one fixed full/no-alignment choice throughout training.
+Readout--movement alignment instead stays near $.5$: $.4976$ at update
+five and $.5007$ at the end, while normalized-feature movement remains
+nonzero ($1.288$ and $1.335$). A near-random readout ratio does not imply
+vanishing feature changes.
+Figure~\ref{fig:p42-source-omega} shows the same near-$.5$ behavior at
+all three widths under both prescriptions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.9\linewidth]{figures/p42_source_readout_alignment.png}
+\caption{Readout--normalized-feature-change alignment at the transferred
+LR. The horizontal lines are the $.5$ and $1$ reference scales; zero
+movement at initialization/update one has no defined exponent.}
+\label{fig:p42-source-omega}
+\end{figure}
+
+\paragraph{Takeaway.} $\mu$P makes the reference LR a much better recipe
+for width 128. Update alignment is strong early and weaker late, while
+readout--movement alignment stays near $.5$ throughout.
+
+\subsection{(b) Transfer versus tuned performance}
+
+The source curves use the same bracketed log-LR quadratic interpolation
+as 4.1. I compare fitted optimal base LR, fitted minimum validation loss,
+and the measured loss at $.003$. Better LR transfer and lower achievable
+loss are distinct questions.
+
+\begin{center}
+\begin{tabular}{llrrrr}
+\toprule
+Policy & Width & Fitted LR & Fitted loss & Best measured & Loss at $.003$ \\
+\midrule
+Baseline & 128 & .008283 & 3.6200 & 3.6274 & 3.6940 \\
+Baseline & 256 & .004285 & 3.4022 & 3.4075 & 3.4081 \\
+$\mu$P & 128 & .003073 & 3.6162 & 3.6162 & 3.6162 \\
+$\mu$P & 256 & .002033 & 3.4017 & 3.4115 & 3.4178 \\
+Both & 512 & .002378 & 3.2240 & 3.2291 & 3.2291 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Figure~\ref{fig:p42-source-fits} shows the measured curves and the local
+interpolations. Baseline's fitted optimum changes by $3.48\times$ between
+widths 128 and 512, whereas $\mu$P's largest/smallest fitted optima differ
+by $1.51\times$. However, better transfer does not imply uniformly better
+tuned loss: $\mu$P wins the best sampled comparison by $.0113$ at width
+128, while baseline wins by $.0041$ at width 256. The interpolated
+width-256 minima are almost equal and reverse that tiny ordering.
+There are no seed repeats, so such small differences are not evidence
+of a statistically reliable winner.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_source_fits.png}
+\caption{Source-width LR curves (circles), local log-LR quadratics and
+fitted optima (stars). Bottom: fitted LR, fitted minimum loss, and
+\emph{measured} loss at the transferred LR. Width increases from purple
+to yellow; solid/dashed comparison lines distinguish baseline/$\mu$P.}
+\label{fig:p42-source-fits}
+\end{figure}
+
+This is not a controlled change of training length alone: compared with
+4.1's width test, these runs also have eight layers instead of two,
+BF16 branch computations instead of fully FP32 computation, the course's
+small shared initialization, and warmup, decay, WD and clipping.
+It also uses a globally permuted training prefix, rather than the stress
+test's contiguous prefix.
+Any changed transfer behavior cannot be attributed only to more updates.
+
+\paragraph{Takeaway.} $\mu$P improves width transfer, but the two policies
+achieve similar losses after tuning; better transfer is not the same as
+a uniformly better model.
+
+\subsection{(c) Predict width 1,024}
+
+For each prescription, the source-only optimal LRs at widths 128, 256
+and 512 define a fitted rule
+$\eta^*(n)=\eta_{512}(n/512)^p$. Numerical predictions and their source
+measurements are saved before submitting or inspecting width-1,024
+results. The predictions were frozen at 08:16:49 UTC on October 6:
+\[
+ \eta^*_{\rm baseline}(n)=.002350(n/512)^{-.9003},\qquad
+ \eta^*_{\mu\mathrm P}(n)=.002162(n/512)^{-.1852}.
+\]
+Here the coefficient at 512 is estimated by the three-point log--log
+regression, not forced to equal that width's individual fitted optimum.
+They predict $.001259$ and $.001902$ at width 1,024, respectively.
+Doubling width multiplies the fitted base LR by $.536$ for baseline
+and $.880$ for $\mu$P. At the target width I test six rates per policy:
+half the prediction, the prediction, twice the prediction, and
+$\{.0015,.003,.006\}$. This includes direct $.003$ transfer and a local
+bracketing sweep; loss gaps are relative to the best \emph{sampled}
+target LR, not the fitted minimum.
+
+All 12 target runs completed. Figure~\ref{fig:p42-target-fits} shows
+the measured curves and bracketed local optima;
+Figure~\ref{fig:p42-target-scaling} compares the frozen source laws with
+the target results. Both gap columns below subtract that policy's best
+sampled target loss.
+\begin{center}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Policy & Predicted LR & Fitted LR & Best loss & Prediction gap & Direct gap \\
+\midrule
+Baseline & .001259 & .001018 & 3.110527 & .000000 & .118393 \\
+$\mu$P & .001902 & .002425 & 3.101986 & .002921 & .000000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For the baseline, the prediction is the best of the six sampled rates;
+direct $.003$ gives $3.228920$, so fitting width dependence improves loss
+by $.118393$. For $\mu$P, direct $.003$ is already the best sampled rate;
+the prediction gives $3.104907$, slightly worse by $.002921$. Fitting the
+width trend therefore helps the baseline but does not improve $\mu$P
+direct transfer in this experiment. The small $\mu$P difference is a
+single-seed observation, not evidence of a universal disadvantage.
+
+The predicted LRs are $23.7\%$ above and $21.6\%$ below their respective
+local fitted optima. Those optima are interpolations, not additional
+training runs: a prediction can be best sampled without exactly matching
+the fitted optimum. Fitting all six points rather than only the local
+three gives optima $.000987$ and $.002151$. This changes precise LR
+estimates, especially for $\mu$P, but not the measured recipe comparisons.
+
+\paragraph{Paired-seed check.} I repeated the two fixed $\mu$P recipes
+at initialization seeds 43 and 44, keeping data order at seed 42 and
+\emph{not} retuning LR. Prediction-minus-direct loss is $.002921$,
+$.004650$ and $-.001099$ at seeds 42, 43 and 44. The mean is $.002157$,
+with sample SD $.002950$. The small ranking therefore changes sign:
+these repeats support similar performance, not a reliable advantage for
+either $\mu$P recipe. Three seeds are still a small robustness check.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_target_fits.png}
+\caption{Held-out width-1,024 loss--LR measurements and local quadratic
+fits. Stars are interpolated optima, purple outlined circles identify
+direct transfer, and teal hollow diamonds identify frozen predictions.
+All target measurements use yellow, the largest width's color.}
+\label{fig:p42-target-fits}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_target_scaling.png}
+\caption{Left: source fitted optima (stars), source-only power laws
+(solid through width 512, dashed beyond it), frozen width-1,024 predictions
+(teal hollow diamonds), and target fitted optima (yellow stars).
+Right: measured prediction/direct-transfer loss gaps relative to each
+policy's best sampled target LR. Marker colors match the preceding figure.}
+\label{fig:p42-target-scaling}
+\end{figure}
+
+\paragraph{Takeaway.} Width fitting rescues baseline transfer. For
+$\mu$P, direct transfer already works well; the fitted width rule does
+not give a consistent gain across three initialization seeds.
+
+\subsection{(d) Transfer across depth}
+
+I fix width 512 and compare depths 4, 8 and 16 using the three 4.1 depth
+policies, now with $r=L/8$. Depth eight is the reference: all policies
+coincide and reuse the supplied curve. At depths four and sixteen, direct
+$.003$ transfer and tuned loss are compared separately. I initially sweep
+$\eta\in\{.0015,.003,.006\}$, then add $.00075$ wherever the best
+sampled rate is at the lower boundary (21 new runs in total). Each
+configuration's minimum is now bracketed; the fitted curves use the same
+local log-LR quadratic as above.
+At each fixed depth, all three policies start with identical stored
+weights; I verified this through the shared trainer's actual model-builder
+path on CPU. The residual and optimizer multipliers differ, not the
+random initialization draws.
+
+Figure~\ref{fig:p42-depth-fits} shows the curves, fitted optima and losses
+at the directly transferred rate. The direct gap below is measured loss
+at $.003$ minus the best measured loss for that same configuration.
+It is not a difference from the interpolated minimum.
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Policy & Depth & Fitted LR & Best measured loss & Direct gap \\
+\midrule
+All (reference) & 8 & .002378 & 3.2291 & .0000 \\
+Standard $\mu$P & 4 & .002469 & 3.3156 & .0000 \\
+Depth-$\mu$P & 4 & .001793 & 3.3258 & .0222 \\
+CompleteP & 4 & .002517 & 3.3158 & .0000 \\
+Standard $\mu$P & 16 & .001995 & 3.1739 & .0093 \\
+Depth-$\mu$P & 16 & .002778 & 3.1686 & .0000 \\
+CompleteP & 16 & .002057 & 3.1714 & .0046 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At depth 16, Depth-$\mu$P improves \emph{both} comparisons: $.003$ is
+already its best sampled rate, and its best measured loss is $.0053$
+below standard $\mu$P's retuned loss. CompleteP reduces the direct gap
+and improves the best measured loss by $.0025$. However, at depth four,
+Depth-$\mu$P worsens direct transfer and has a higher tuned loss;
+CompleteP and standard $\mu$P are nearly tied. Neither correction wins
+universally. Across depths, the fitted LR spans $1.24\times$ for standard
+$\mu$P, $1.55\times$ for Depth-$\mu$P and $1.22\times$ for CompleteP.
+
+At depth 16 the fitted minimum ranks CompleteP ahead of Depth-$\mu$P
+($3.1607$ versus $3.1681$), whereas the best \emph{measured} loss ranks
+Depth-$\mu$P ahead. This small reversal depends on interpolation between
+only three nearby measurements, so I do not treat interpolated minima
+as a reliable ranking.
+
+\paragraph{Paired-seed check at depth 16.} I repeated the seed-42 best
+\emph{sampled} recipes at initialization seeds 43 and 44, without
+retuning LR: standard $\mu$P and CompleteP use $.0015$, Depth-$\mu$P
+uses $.003$, and data order remains seed 42. Negative differences below
+mean improvement over standard $\mu$P at the same seed.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Seed & Depth-$\mu$P minus standard & CompleteP minus standard \\
+\midrule
+42 & $-.005296$ & $-.002515$ \\
+43 & $-.011058$ & $-.001322$ \\
+44 & $-.011635$ & $+.000305$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Depth-$\mu$P improves in all three seeds, with mean difference $-.009330$
+and sample SD $.003505$. CompleteP's mean difference is only $-.001177$
+(SD $.001415$), and its ranking changes sign. These are fixed-recipe
+robustness checks, not seed-specific optimum sweeps or universal guarantees.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_depth_fits.png}
+\caption{Longer-training depth comparison. Top: measurements (circles),
+local quadratic fits and fitted optima (stars). Bottom: fitted optimal
+base LR, fitted minimum loss and measured loss at directly transferred
+LR $.003$. Colors order depth; depth 16 is yellow. Depth-eight measurements
+are shared by all prescriptions.}
+\label{fig:p42-depth-fits}
+\end{figure}
+
+\paragraph{Takeaway.} Depth-$\mu$P helps transfer and tuned loss at depth
+16, with its selected recipe improving all three tested seeds, but it
+does not help at depth four. CompleteP's small depth-16 advantage is
+less consistent. Depth corrections are not automatic wins at every depth.
+
+\subsection{(e) Diagnose the training regime}
+
+At direct-transfer and best sampled rates, I collect logit RMS, normalized
+feature movement and readout--movement alignment during the first five
+updates and at the end. I also record pre-clipping gradient norm,
+the embedding's share of squared gradient norm and the clipping
+coefficient. In the baseline, the embedding scale $1/n$ can approach
+$\sqrt{10^{-5}}$; then norm epsilon changes feature scale rather than
+acting as a negligible numerical safeguard. Fixed WD also need not be
+equally effective after changing LR, as Problem 2 demonstrated. A shifted
+optimal LR alone therefore does not establish unstable $\mu$P behavior.
+
+\paragraph{Width diagnostics, including the held-out model.}
+Figures~\ref{fig:p42-width-features} and \ref{fig:p42-width-hidden}
+track all four widths, at direct and best sampled rates. At width 1,024,
+the logit, movement and alignment columns give update-five/end pairs; the raw residual
+column gives only the end value. The baseline's best sampled rate is the
+frozen prediction $.001259$, whereas $\mu$P's is direct $.003$.
+\begin{center}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+Recipe & Logit RMS & Movement $M$ & $\omega_{\rm move}$ & Final residual RMS \\
+\midrule
+Baseline, direct & $1.001/4.077$ & $1.325/1.150$ & $.5000/.5011$ & 97.89 \\
+Baseline, best & $.960/3.976$ & $1.328/1.357$ & $.4992/.5026$ & 16.75 \\
+$\mu$P, direct=best & $.733/4.089$ & $1.315/1.394$ & $.5012/.5031$ & 21.26 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Normalized features move substantially under both recipes; their movement
+does not disappear at the held-out width. Yet direct baseline transfer
+has a much larger raw residual than its retuned run, even though their
+early normalized movements are almost identical. Looking only at the
+normalized feature would miss that difference. $\mu$P's direct recipe
+has controlled finite magnitudes and nonzero movement here, without an
+LR change. This is finite-width evidence, not a proof of an infinite-width
+stable regime.
+
+At width 1,024, median update alignment at update five/end is
+$.931/.673$ for direct baseline, $.918/.638$ for retuned baseline and
+$.921/.641$ for direct $\mu$P. Along with the source-width heatmaps,
+this supports strong early, weaker late and matrix-dependent alignment,
+not one universal full-alignment assumption. The readout ratios remain
+near $.5$ while features keep moving. They resemble the random reference
+scale, but the finite-geometry caveat still prevents inferring independence.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_width_features.png}
+\caption{Longer-training width diagnostics at direct and best sampled
+rates, including held-out width 1,024 (yellow). Solid: direct $.003$;
+dashed: best sampled, shown only when different. Columns show logit RMS,
+final normalized-feature movement and initial-readout/movement alignment.
+The horizontal axis labels actual updates and separates the first five
+from later training; line segments join recorded checkpoints.}
+\label{fig:p42-width-features}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_width_features_hidden.png}
+\caption{Width comparison of internal normalized movement and raw final
+residual RMS, using the same rates, probes, colors and line styles as
+Figure~\ref{fig:p42-width-features}. Baseline's larger raw width-1,024
+stream at direct transfer is much smaller after retuning, despite similar
+early normalized movements. Raw magnitude uses a log scale.}
+\label{fig:p42-width-hidden}
+\end{figure}
+
+\paragraph{Depth diagnostics.}
+Figures~\ref{fig:p42-depth-features} and \ref{fig:p42-depth-hidden}
+compare the directly transferred and best sampled rates. At depth 16
+and the best sampled rate, final-feature movement at update five/end
+is $1.315/1.527$ for standard $\mu$P, $1.300/1.357$ for Depth-$\mu$P
+and $1.315/1.525$ for CompleteP. These features change substantially;
+none of these finite models is simply frozen at initialization.
+First-block movement is smaller at update five ($.090$--$.171$),
+but reaches $1.05$--$1.09$ by the end. Movement therefore depends on
+both the layer and the training stage.
+
+At the best sampled rates, median matrix-update alignment at depth 16
+is approximately $.905$--$.911$ at update five and $.616$--$.621$ at
+the final update. Early updates are much closer to the full-alignment
+reference ($1$); late updates are weaker and closer to the random
+reference ($.5$), but not equal to it. The feedforward down-projection
+is especially weakly aligned at the end (median $.535$--$.537$).
+The other depths show the same early-stronger/late-weaker pattern.
+Meanwhile $\omega_{\rm move}$ remains near $.5$ at all depths despite
+nonzero movement. As discussed in 4.0, this pooled readout statistic
+does not establish independence of the initial readout and feature change.
+No single exact full/no-alignment combination describes every layer
+and training stage.
+
+Raw scale also matters. At direct LR $.003$, the final residual RMS at
+depths $4/8/16$ is $14.47/25.44/38.68$ under standard $\mu$P,
+$34.49/25.44/16.00$ under Depth-$\mu$P, and
+$29.16/25.44/18.85$ under CompleteP. Depth corrections change these
+raw scales even when normalized movements look similar. These modest
+depths do not establish asymptotic boundedness; conversely, an altered
+raw scale or fitted optimum alone is not proof of instability.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.95\linewidth]{figures/p42_depth_features.png}
+\caption{Longer-training depth diagnostics: logit RMS, final normalized
+feature movement and $\omega_{\rm move}$ on fixed probes. Solid lines:
+direct LR $.003$; dashed lines: best sampled LR, shown only when different.
+Colors order depth, with depth 16 yellow. The horizontal axis separates
+the first five updates from later training; connecting segments are not
+extra measurements. Undefined zero-movement alignment is omitted.}
+\label{fig:p42-depth-features}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_depth_features_hidden.png}
+\caption{Internal normalized-feature movement at the first, midpoint and
+last blocks, alongside raw final residual RMS (log scale). Each movement
+is measured from that same layer's initial feature on the same fixed
+inputs. Colors and direct/best line styles match
+Figure~\ref{fig:p42-depth-features}. Normalized movement and raw magnitude
+are separate diagnostics.}
+\label{fig:p42-depth-hidden}
+\end{figure}
+
+\paragraph{Normalization, clipping and weight decay.}
+More concretely, RMSNorm divides by
+$\sqrt{\operatorname{mean}(x_i^2)+\epsilon}$, not just the feature RMS.
+If the embedding RMS is $s$, the first normalized-feature RMS is
+approximately $s/\sqrt{s^2+10^{-5}}$. The baseline's $s\approx1/n$
+therefore becomes increasingly attenuated with width; $\mu$P's
+$s\approx1/512$ keeps this particular effect approximately fixed.
+Later normalized layers can still be near unit RMS, hiding this
+first-layer difference.
+
+Figure~\ref{fig:p42-initial-norm} makes this difference visible before
+any training: the baseline's first normalized-feature RMS is $.925$,
+$.773$, $.520$ and $.291$ at widths 128, 256, 512 and 1,024;
+$\mu$P stays approximately $.520$ at all four.
+This is a measured width-dependent normalization
+effect, not just a hypothetical epsilon concern.
+At the source LR and width 128, $\mu$P also has a larger logit RMS at
+update five ($1.843$ versus $.970$), yet a lower final loss ($3.6162$
+versus $3.6940$). A larger early transient alone does not identify a worse
+final training recipe.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.85\linewidth]{figures/p42_initial_normalization.png}
+\caption{Measured first-RMSNorm output at initialization. Baseline's
+embedding scale shrinks with width while norm epsilon stays fixed;
+$\mu$P's fixed-reference embedding scale holds this output nearly constant.
+These are initialization measurements, independent of the tuned LR.}
+\label{fig:p42-initial-norm}
+\end{figure}
+
+There is also an explicit regularization coupling: a hidden $\mu$P weight
+is shrunk by $1-(\eta_t/m)\lambda$ per update, compared with
+$1-\eta_t\lambda$ in the baseline. Depth-$\mu$P adds another $r^{-1/2}$
+to the block rate. Thus fixed $\lambda=.1$ does not hold hidden-weight
+shrinkage fixed across prescriptions. Embeddings and norms have no WD.
+These are competing explanations to check against the diagnostics, not
+causal conclusions from a shifted optimum alone.
+At width 1,024 and direct LR, the initial gradient norm is $33.84$ in
+baseline and $11.84$ in $\mu$P; the embedding accounts for $99.0\%$ and
+$96.4\%$ of their squared norms. Clipping multiplies these gradients by
+$.0296$ and $.0845$, respectively. By the final update both have clipping
+coefficient one and embedding shares below $3\%$.
+Figure~\ref{fig:p42-width-clipping} shows that this strongly
+embedding-dominated, clipped early stage is not the whole training regime.
+The single-norm intervention in Problem~\ref{sec:p5-norm} directly tests
+this normalization effect: removing the first layer's attenuation changes
+initial feature RMS substantially, but does not consistently improve loss.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42_width_features_clipping.png}
+\caption{Gradient and clipping diagnostics for the same width recipes
+as Figure~\ref{fig:p42-width-features}. Left: full pre-clipping norm;
+middle: embedding's fraction of squared norm; right: applied clipping
+coefficient. Early gradients are predominantly embedding gradients and
+strongly clipped; clipping is absent at the final checkpoint. These are
+gradient diagnostics, not direct measurements of Adam's parameter step.}
+\label{fig:p42-width-clipping}
+\end{figure}
+
+Unlike the independent stress-test draws, the course's shared Gaussian
+embedding/readout initialization also means that the initial readout and
+initial features are not strictly independent. The theory's independent-
+initialization reference is therefore not literally this longer-training
+setup; the measured alignment and movement must be interpreted directly.
+For Adam, a smaller clipping coefficient also does not imply the same
+proportional reduction in the parameter update: uniformly scaling a
+gradient largely cancels between its first moment and square-root second
+moment when the stabilizer is negligible. Changing clipping across updates
+can still change those running moments. I therefore measure actual
+parameter updates rather than infer their sizes from gradient norm alone.
+Finally, the early checkpoints occur during warmup and the final update
+occurs near the end of linear LR decay. The stage comparison therefore
+includes a changing step size and a changing model, not just more training
+at one fixed LR. The alignment measurements describe this recipe's actual
+updates; they do not isolate which factor caused the change.
+
+\paragraph{Takeaway.} Alignment changes by matrix and training stage,
+while features keep moving. Judge transfer with losses \emph{and} raw
+signal diagnostics: neither a shifted LR nor a larger early transient
+alone proves instability. Fixed WD, norm epsilon and clipping can change
+the comparison without invalidating the entire $\mu$P recipe.
+
+\subsection{(f) Optional: Muon and width transfer}
+
+Muon treats a whole hidden weight matrix together, rather than dividing
+each gradient coordinate by Adam's running RMS. I reuse the course's
+implementation unchanged: Nesterov momentum $.95$, five BF16
+Newton--Schulz iterations to approximately orthogonalize the momentum
+direction, and the supplied rectangular-matrix correction
+$\sqrt{\max(1,d_{\rm out}/d_{\rm in})}$. Embedding, readout and
+normalization parameters still use auxiliary AdamW with $(.9,.95)$.
+As in the course implementation, WD applies to hidden matrices and the
+readout, but not to the embedding or norm weights.
+The implementation is adapted from
+\href{https://github.com/KellerJordan/Muon/tree/f98f1cacc0263b04290753e32be8d498c1efc806}{Keller Jordan's Muon code}.
+
+An important difference from the required AdamW experiment is that
+\emph{hidden Muon LR stays at the base value across widths}; I do not
+copy Adam's $1/m$ multiplier. An ideal orthogonalized update $Q$ has
+operator norm one, so
+\[
+\operatorname{RMS}(Qx)\leq
+\sqrt{d_{\rm in}/d_{\rm out}}\operatorname{RMS}(x).
+\]
+With the matrix aspect ratio fixed, this bound does not grow with width.
+The supplied rectangular correction is also width-independent at fixed
+aspect ratio. This motivates a constant hidden base LR, rather than an
+extra inverse-width factor. This optimizer-specific distinction is
+also discussed by
+\href{https://proceedings.neurips.cc/paper_files/paper/2025/file/bdcd9f6327db5877dee502cdec183159-Paper-Conference.pdf}{Qiu et al. (2025), Table 1 and Appendix G}.
+The real Newton--Schulz update is approximate; the bound explains the
+scaling choice, not an exact guarantee for every measured update.
+
+The reference pilot's best pair is hidden LR $.02$ and auxiliary AdamW
+LR $.0015$, with loss $3.107776$. Holding hidden LR $.02$ fixed, the
+smaller auxiliary LR $.0003$ gives $3.157971$: the auxiliary choice matters.
+
+I compare the same baseline and $\mu$P initialization/readout policies
+as above, now with Muon in the hidden matrices. The auxiliary AdamW LR
+is separately tuned at reference width 512: hidden LR
+$\{.01,.02,.04\}$ crossed with auxiliary LR $\{.0003,.0015\}$.
+After choosing the best reference pair, auxiliary LR $.0015$ is held fixed
+for source-width sweeps and the held-out width. Only two auxiliary rates
+were tested, so this is a conditional choice, not a fully optimized auxiliary LR.
+All runs keep 153.6M
+tokens, batch 64, WD $.1$, linear decay, 1\% warmup and clipping at one.
+The two policies coincide at width 512, so those reference runs are shared.
+The initial hidden-LR grid at each source width is
+$\{.005,.01,.02,.04,.08\}$; additional endpoint points are added only
+if needed to bracket a minimum. As in the required part, the loss fit is a
+quadratic in log LR through the best measured point and its two neighbors.
+The direct-transfer LR is the best \emph{Muon} reference LR, not AdamW's
+$.003$: changing optimizer does not imply that its best base LR is unchanged.
+All source sweeps completed, giving the optima in
+Figure~\ref{fig:p42f-source}:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Width & Baseline fitted LR & $\mu$P fitted LR \\
+\midrule
+128 & .035666 & .032364 \\
+256 & .030139 & .028663 \\
+512 & .023222 & .023222 \\
+\bottomrule
+\end{tabular}
+\end{center}
+The source-only power laws are
+\[
+\eta^*_{\mathrm{base}}(n)=.023582(n/512)^{-.3095},\qquad
+\eta^*_{\mu\mathrm{P}}(n)=.023569(n/512)^{-.2395}.
+\]
+Their prefactors are least-squares estimates, not forced to equal the
+width-512 quadratic optimum. Predictions at width 1,024 are $.019028$
+and $.019964$, respectively. These were frozen before any held-out
+submission. Direct transfer uses $.02$; the $\mu$P prediction differs
+from it by only $.18\%$, so these are nearly the same recipe.
+As a fitting-sensitivity check, using all five source points rather than
+local neighbors gives about $.0208$ for both held-out LRs. These are
+not separately tested predictions and do not replace the frozen values.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42f_muon_source.png}
+\caption{Muon source loss--LR curves, local quadratic optima (stars),
+and source-only width laws. Solid lines span source widths; dashed lines
+extrapolate to the held-out width, with frozen predictions as hollow diamonds.
+Yellow stars mark held-out fitted optima. Dotted vertical lines mark direct LR $.02$.}
+\label{fig:p42f-source}
+\end{figure}
+
+The largest-to-smallest source optimum ratio is $1.536$ for the baseline
+and $1.394$ for $\mu$P, versus $3.484$ and $1.512$ with AdamW.
+Muon therefore makes the baseline substantially less width-sensitive;
+$\mu$P gives a smaller additional improvement. At direct LR $.02$, the
+loss gaps to the best sampled source point are $.008763$ and $.002842$
+for baseline widths 128 and 256, versus $.003172$ and $.000679$ for
+$\mu$P. Figure~\ref{fig:p42f-performance} also shows lower tuned losses
+for $\mu$P at these two widths. These are conditional comparisons with
+one fixed auxiliary LR and WD, not proof of a universally best prescription.
+At the shared reference width 512, Muon's best sampled loss is $3.107776$
+versus AdamW's $3.229134$: a $.121358$ improvement at the same token budget.
+This is not a compute-matched or equally searched optimizer comparison.
+Cross-optimizer comparisons also retain the LR--WD coupling from Problem 2:
+different hidden LRs at fixed WD give different multiplicative weight
+shrinkage. These runs do not isolate orthogonalization from that difference.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42f_muon_source_performance.png}
+\caption{Muon tuned performance (left, fitted stars) and measured loss
+at the transferred reference LR $.02$ (right, circles). Source width 512
+is shared by both prescriptions and is yellow.}
+\label{fig:p42f-performance}
+\end{figure}
+
+Figures~\ref{fig:p42f-align-base} and \ref{fig:p42f-align-mup} show every
+matrix's update alignment at direct LR $.02$, including held-out width
+1,024. Across source widths, the median is near $.51$ at updates 2 and 5
+and $.50$ at the final update; individual
+readout/rectangular-matrix values can be larger (up to about $.91$ at
+those checkpoints and $.97$ elsewhere in training).
+This differs from assuming maximally aligned hidden updates. But $.5$
+need not mean statistical independence: for a square orthogonal update
+$Q$, $\operatorname{RMS}(QX)=\operatorname{RMS}(X)$ and
+$\operatorname{RMS}(Q)=1/\sqrt n$, hence
+\[
+\frac{\operatorname{RMS}(QX)}{\operatorname{RMS}(Q)\operatorname{RMS}(X)}
+=\sqrt n,\qquad \alpha_{\mathrm{upd}}=.5
+\]
+for \emph{any} $X$. Real updates are only approximately orthogonal and
+include WD; this identity explains the measurement without establishing
+an exact theorem for every matrix shape.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42f_muon_alignment_baseline.png}
+\caption{Muon baseline: update alignment for the three source widths,
+held-out width 1,024, and
+all attention, feedforward and readout matrices. Checkpoint rows are
+ordinal, not evenly spaced in training time; white denotes zero-update
+undefined ratios, including the first warmup update.}
+\label{fig:p42f-align-base}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42f_muon_alignment_mup.png}
+\caption{Muon with $\mu$P: the same per-matrix measurements, direct LR
+and color scale as Figure~\ref{fig:p42f-align-base}.}
+\label{fig:p42f-align-mup}
+\end{figure}
+
+Figure~\ref{fig:p42f-diagnostics} compares feature movement. At the three
+source widths, final normalized movement is $1.52$--$2.00$ for the baseline
+and $1.40$--$1.52$ for $\mu$P. Readout--feature-change alignment stays
+near $.50$; again, this is a measured ratio, not proof of independence.
+Raw residual RMS peaks at $9.80$--$10.16$ around update 234 before
+falling to $2.88$--$3.94$ at the end. These finite transients do not by
+themselves establish asymptotic stability or instability.
+Clipping still affects the source comparison: the initial embedding contributes
+$90$--$99\%$ of squared gradient norm, and clipping coefficients range
+from $.034$ to $.263$. At the end, coefficients are one at all sources.
+Thus Muon's update normalization does not remove the embedding, norm
+epsilon or auxiliary-optimizer confounders.
+At held-out width 1,024, final normalized movement is $1.330$ for the
+baseline and $1.594$ for $\mu$P; hidden update-alignment medians are
+$.508$ and $.506$, and readout movement alignment is about $.501$.
+Raw residual RMS peaks at $10.60$ and $10.34$, respectively. Initial
+clipping coefficients are $.030$ and $.084$, becoming one at the end.
+Both larger models still change features substantially; these finite
+diagnostics do not prove an infinite-width training regime.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42f_muon_diagnostics.png}
+\caption{Muon source and held-out diagnostics at fixed hidden LR $.02$ and auxiliary
+LR $.0015$: normalized feature movement, readout movement alignment and
+raw residual RMS. The readout-alignment axis is zoomed around $.5$;
+its dotted line marks $.5$. Undefined zero-movement points are omitted.
+Yellow denotes held-out width 1,024, the largest width.}
+\label{fig:p42f-diagnostics}
+\end{figure}
+
+\paragraph{Held-out width 1,024.}
+All twelve target runs completed: six rates per policy, consisting of
+the frozen prediction, direct reference LR $.02$, and half/double
+neighbors of each. Figure~\ref{fig:p42f-target} shows the measured
+curves and target fits. Because predicted/direct LRs and their neighbors
+are close, I use a least-squares quadratic in $\log_2(\eta/.003)$ over
+\emph{all six target points}, rather than a local interpolant dominated
+by nearly coincident LRs. This fitting choice was recorded before the
+complete target curves were available. Loss gaps below use actual measured
+losses, not fitted minima:
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Policy & Fitted LR & Best sampled loss & Prediction gap & Direct gap \\
+\midrule
+Baseline & .019503 & 2.974521 & .000000 & .000597 \\
+$\mu$P & .020113 & 2.976238 & .000000 & .001460 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Both predictions are the best sampled rates. Direct transfer is already
+close to the minimum: its losses are $2.975117$ and $2.977699$.
+Unlike AdamW's baseline, where direct transfer incurred a $.118393$ gap,
+Muon needs little correction at this held-out width. The $\mu$P prediction
+and control differ by only $.18\%$ in LR, so their small single-seed
+loss difference does not establish a broadly useful extra scaling correction.
+
+The precise fitted optimum depends on the fitting method. Local
+three-point interpolation instead gives $.017585$ and $.014284$;
+especially for $\mu$P, tiny horizontal gaps turn small loss differences
+into a sharply curved interpolant. The full-grid fit is a descriptive
+estimate, not a confidence interval or another training run. The measured
+recipe comparisons do not depend on which curve is fitted.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/p42f_muon_target.png}
+\caption{Muon at held-out width 1,024. Left/middle: measured losses
+(yellow circles), full-grid least-squares quadratics and fitted optima
+(yellow stars). Purple outlined circles mark direct LR $.02$; teal hollow
+diamonds mark the frozen predictions. Right: their measured loss gaps
+relative to each policy's best sampled target point, using the same colors.}
+\label{fig:p42f-target}
+\end{figure}
+
+\paragraph{Paired-seed check.} At fixed source-selected hidden LR $.02$
+and auxiliary LR $.0015$, I repeated both policies at initialization seeds
+43 and 44, keeping data order at 42 and reusing the seed-42 controls.
+These compare fixed recipes, not independently retuned optima:
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Seed & Baseline loss & $\mu$P loss & $\mu$P minus baseline \\
+\midrule
+42 & 2.975117 & 2.977699 & $+.002581$ \\
+43 & 2.974576 & 2.976628 & $+.002053$ \\
+44 & 2.974340 & 2.975357 & $+.001017$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The mean difference is $+.001884$, with sample SD $.000796$.
+The small source advantage for $\mu$P does not persist at the held-out
+fixed recipe: the baseline is slightly better at all three tested seeds.
+This is not a universal policy ranking; auxiliary LR and WD were not
+retuned, data order is fixed, and three initialization seeds remain a
+small check.
+
+\paragraph{Takeaway.} Muon transfers LR well; width fitting adds little.
+Adding $\mu$P does not improve this held-out fixed recipe in three seeds.
+
+\section{Problem 5: Optional prediction question}
+\label{sec:p5-norm}
+
+\paragraph{Question: when is a numerical stabilizer not negligible?}
+Use the width-1,024 baseline from 4.2, with eight layers, the same
+initialization seed and data, LR $.003$ and 153.6M tokens. Change
+\emph{only} the first block's input RMSNorm epsilon from $10^{-5}$ to
+$10^{-8}$; all other normalization epsilons stay unchanged.
+Measure RMS on the shared logger's fixed eight validation sequences
+(8,192 token positions); final validation loss uses all 1,000 sequences.
+Which statements hold at initialization? Select all that apply.
+\begin{enumerate}
+\item[A.] First-normalized feature RMS lies between $.95$ and $1.05$.
+\item[B.] Its RMS is between $3.1$ and $3.7$ times the original value.
+\item[C.] All stored initialization weights remain identical at a fixed seed.
+\item[D.] Initial logits remain numerically unchanged.
+\end{enumerate}
+
+\paragraph{Recorded prediction.} I predicted A, B and C before
+submitting the intervention. For embedding RMS $s$, the initial
+normalized RMS is approximately $s/\sqrt{s^2+\epsilon}$. Here
+$s\approx1/1024$, so $\epsilon=10^{-5}$ strongly attenuates the feature;
+$10^{-8}$ is much smaller than $s^2$, bringing normalized RMS close to
+one. The code changes a non-parameter scalar, not an initialization
+draw, but changes the first forward branch and hence generally the logits.
+
+The executable intervention, recorded prediction and launch script are
+in \texttt{experiments/a2/p5\_normalization.py} (62 lines, below the
+100-line limit). The focused model change is:
+\begin{verbatim}
+class FirstNormLM(ParameterizedLM):
+    def __init__(self, *args, first_norm_epsilon=1e-8, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.model.layers[0].input_layernorm.variance_epsilon = (
+            first_norm_epsilon)
+\end{verbatim}
+The shared trainer selects this subclass through its existing model-builder
+interface; no optimizer or training-loop change is needed.
+A CPU check at the actual width 1,024 and depth eight (seed 43) confirmed
+exact equality of all 91 stored parameter tensors and exactly one changed
+norm epsilon. I use paired initialization
+seeds 42, 43 and 44, reusing the original seed-42 control, so five new
+runs test the question and any downstream loss change. All five completed.
+The measured first-normalized RMS is $.9946$ at every seed, versus
+$.2908$--$.2916$ before the intervention: a $3.411$--$3.420\times$ increase.
+Initial logit RMS also changes at every seed. Thus the empirical answer
+key is \textbf{A, B and C}, matching the recorded prediction; D is false.
+The direct formula predicts new RMS within about $10^{-5}$ of the
+measured value. Stored-weight equality follows from the shared initializer
+and the separately verified constructor control, not from similar losses.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Seed & Original final loss & New final loss & New minus original \\
+\midrule
+42 & 3.228920 & 3.258916 & $+.029995$ \\
+43 & 3.212946 & 3.231405 & $+.018459$ \\
+44 & 3.231832 & 3.210068 & $-.021763$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Final loss does not improve consistently: mean difference $+.008897$
+with sample SD $.027172$. The robust initialization-scale prediction is
+different from a reliable performance improvement. LR and WD were not
+retuned after changing normalization.
+
+\paragraph{Conceptual takeaway.} Epsilon is harmless only when it is
+small relative to the variance being normalized. Otherwise, changing it
+changes signal scale even with identical stored weights---but removing
+that attenuation is not automatically a better training recipe.
+
+\end{document}
+

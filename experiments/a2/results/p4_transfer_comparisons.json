@@ -1,0 +1,2050 @@
+[
+  {
+    "question": "p41a",
+    "policy": "mup",
+    "width": 2560,
+    "depth": 2,
+    "sampled_rates": [
+      0.003,
+      0.001,
+      0.01,
+      0.03,
+      0.1,
+      0.0003
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.2248181533377913,
+        0.6193140741646361,
+        7.163210511207581
+      ],
+      "optimal_lr": 0.0011547622131076883,
+      "fitted_minimum_loss": 6.7366992211227075,
+      "fitted_domain": [
+        0.0003,
+        0.003
+      ],
+      "local_run_keys": [
+        "mup-w2560-d2-lr0.0003-fp32",
+        "mup-w2560-d2-lr0.001-fp32",
+        "mup-w2560-d2-lr0.003-fp32"
+      ],
+      "best_sampled": {
+        "key": "mup-w2560-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 6.746387988328934
+      },
+      "runs": [
+        {
+          "key": "mup-w2560-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.586808383464813
+        },
+        {
+          "key": "mup-w2560-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 6.746387988328934
+        },
+        {
+          "key": "mup-w2560-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.163210511207581
+        },
+        {
+          "key": "mup-w2560-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.542382299900055
+        },
+        {
+          "key": "mup-w2560-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 18.799710631370544
+        },
+        {
+          "key": "mup-w2560-d2-lr0.1-fp32",
+          "lr": 0.1,
+          "loss": 29.190784335136414
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.6040249099782239,
+          1.4432984993036075,
+          6.396521273416581
+        ],
+        "optimal_lr": 0.0013106007365818893
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.001,
+      "loss": 6.746387988328934,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "completep",
+    "width": 64,
+    "depth": 100,
+    "sampled_rates": [
+      0.003,
+      0.001,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.3851967563233401,
+        -1.9161122363111738,
+        9.186757434489099
+      ],
+      "optimal_lr": 0.0168205020327871,
+      "fitted_minimum_loss": 6.803893325517017,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "completep-w64-d100-lr0.01-mp",
+        "completep-w64-d100-lr0.02-mp",
+        "completep-w64-d100-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "completep-w64-d100-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 6.827925622463226
+      },
+      "runs": [
+        {
+          "key": "completep-w64-d100-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.580942153930664
+        },
+        {
+          "key": "completep-w64-d100-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.985976159572601
+        },
+        {
+          "key": "completep-w64-d100-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.020694077014923
+        },
+        {
+          "key": "completep-w64-d100-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 6.827925622463226
+        },
+        {
+          "key": "completep-w64-d100-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.0722960233688354
+        },
+        {
+          "key": "completep-w64-d100-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 8.46100378036499
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.14080912193399192,
+          -0.5636354311245139,
+          7.551672540183582
+        ],
+        "optimal_lr": 0.012011788822585403
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 6.827925622463226,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41a",
+    "policy": "mup",
+    "width": 5120,
+    "depth": 2,
+    "sampled_rates": [
+      0.003,
+      0.001,
+      0.01,
+      0.03,
+      0.1,
+      0.0003
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.23031182106334974,
+        0.679470504697267,
+        7.242846548557283
+      ],
+      "optimal_lr": 0.0010791179617670448,
+      "fitted_minimum_loss": 6.741699707046955,
+      "fitted_domain": [
+        0.0003,
+        0.003
+      ],
+      "local_run_keys": [
+        "mup-w5120-d2-lr0.0003-fp32",
+        "mup-w5120-d2-lr0.001-fp32",
+        "mup-w5120-d2-lr0.003-fp32"
+      ],
+      "best_sampled": {
+        "key": "mup-w5120-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 6.744479015469551
+      },
+      "runs": [
+        {
+          "key": "mup-w5120-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.527232840657234
+        },
+        {
+          "key": "mup-w5120-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 6.744479015469551
+        },
+        {
+          "key": "mup-w5120-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.2428465485572815
+        },
+        {
+          "key": "mup-w5120-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.260032057762146
+        },
+        {
+          "key": "mup-w5120-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 15.293313831090927
+        },
+        {
+          "key": "mup-w5120-d2-lr0.1-fp32",
+          "lr": 0.1,
+          "loss": 27.261655628681183
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.5703219354994468,
+          1.1577283929522986,
+          5.993367914482813
+        ],
+        "optimal_lr": 0.001484507659900345
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.001,
+      "loss": 6.744479015469551,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "completep",
+    "width": 64,
+    "depth": 1000,
+    "sampled_rates": [
+      0.003,
+      0.001,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.45746112121226035,
+        -2.213576200031799,
+        9.531571439857837
+      ],
+      "optimal_lr": 0.016048616936153455,
+      "fitted_minimum_loss": 6.85379218926133,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "completep-w64-d1000-lr0.01-mp",
+        "completep-w64-d1000-lr0.02-mp",
+        "completep-w64-d1000-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "completep-w64-d1000-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 6.899921953678131
+      },
+      "runs": [
+        {
+          "key": "completep-w64-d1000-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.575573325157166
+        },
+        {
+          "key": "completep-w64-d1000-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.956071853637695
+        },
+        {
+          "key": "completep-w64-d1000-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.066848576068878
+        },
+        {
+          "key": "completep-w64-d1000-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 6.899921953678131
+        },
+        {
+          "key": "completep-w64-d1000-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.226408302783966
+        },
+        {
+          "key": "completep-w64-d1000-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 8.272397637367249
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.12422592623101172,
+          -0.5172156373123828,
+          7.60976600709933
+        ],
+        "optimal_lr": 0.012699647070946599
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 6.899921953678131,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41a",
+    "policy": "kaiming",
+    "width": 640,
+    "depth": 2,
+    "sampled_rates": [
+      0.0003,
+      0.001,
+      0.003,
+      0.01,
+      0.03
+    ],
+    "finished": 5,
+    "submitted_count": 5,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.207947489567409,
+        0.645262978747269,
+        7.569154202938081
+      ],
+      "optimal_lr": 0.001023462248143522,
+      "fitted_minimum_loss": 7.068589958801307,
+      "fitted_domain": [
+        0.0003,
+        0.003
+      ],
+      "local_run_keys": [
+        "kaiming-w640-d2-lr0.0003-fp32",
+        "kaiming-w640-d2-lr0.001-fp32",
+        "kaiming-w640-d2-lr0.003-fp32"
+      ],
+      "best_sampled": {
+        "key": "kaiming-w640-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 7.068822741508484
+      },
+      "runs": [
+        {
+          "key": "kaiming-w640-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.720380425453186
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 7.068822741508484
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.56915420293808
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.844190120697021
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 16.324169516563416
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.44046050587797686,
+          1.1273667008522306,
+          7.039766807314421
+        ],
+        "optimal_lr": 0.0012355928077943407
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.001,
+      "loss": 7.068822741508484,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41a",
+    "policy": "kaiming",
+    "width": 2560,
+    "depth": 2,
+    "sampled_rates": [
+      0.0003,
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.0001,
+      3e-05
+    ],
+    "finished": 7,
+    "submitted_count": 7,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.14397764299867186,
+        1.2553899753412425,
+        10.00651341228236
+      ],
+      "optimal_lr": 0.0001461267960023953,
+      "fitted_minimum_loss": 7.269970506447626,
+      "fitted_domain": [
+        3e-05,
+        0.0003
+      ],
+      "local_run_keys": [
+        "kaiming-w2560-d2-lr3e-05-fp32",
+        "kaiming-w2560-d2-lr0.0001-fp32",
+        "kaiming-w2560-d2-lr0.0003-fp32"
+      ],
+      "best_sampled": {
+        "key": "kaiming-w2560-d2-lr0.0001-fp32",
+        "lr": 0.0001,
+        "loss": 7.313084691762924
+      },
+      "runs": [
+        {
+          "key": "kaiming-w2560-d2-lr3e-05-fp32",
+          "lr": 3e-05,
+          "loss": 8.021174907684326
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.0001-fp32",
+          "lr": 0.0001,
+          "loss": 7.313084691762924
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.425021171569824
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 8.57054591178894
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 9.810385465621948
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 18.860877871513367
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 33.86644959449768
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.5328321581815704,
+          3.96207379640844,
+          12.567901192212192
+        ],
+        "optimal_lr": 0.00022798717215587462
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.001,
+      "loss": 8.57054591178894,
+      "gap_to_best_sampled": 1.2574612200260162
+    }
+  },
+  {
+    "question": "p41a",
+    "policy": "kaiming",
+    "width": 5120,
+    "depth": 2,
+    "sampled_rates": [
+      0.0003,
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.0001,
+      3e-05,
+      1.5e-05
+    ],
+    "finished": 8,
+    "submitted_count": 8,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.13878967535227257,
+        1.6786699502550781,
+        12.564083824288787
+      ],
+      "optimal_lr": 4.5355794964521066e-05,
+      "fitted_minimum_loss": 7.488178871818479,
+      "fitted_domain": [
+        1.5e-05,
+        0.0001
+      ],
+      "local_run_keys": [
+        "kaiming-w5120-d2-lr1.5e-05-fp32",
+        "kaiming-w5120-d2-lr3e-05-fp32",
+        "kaiming-w5120-d2-lr0.0001-fp32"
+      ],
+      "best_sampled": {
+        "key": "kaiming-w5120-d2-lr3e-05-fp32",
+        "lr": 3e-05,
+        "loss": 7.537532866001129
+      },
+      "runs": [
+        {
+          "key": "kaiming-w5120-d2-lr1.5e-05-fp32",
+          "lr": 1.5e-05,
+          "loss": 7.8418498784303665
+        },
+        {
+          "key": "kaiming-w5120-d2-lr3e-05-fp32",
+          "lr": 3e-05,
+          "loss": 7.537532866001129
+        },
+        {
+          "key": "kaiming-w5120-d2-lr0.0001-fp32",
+          "lr": 0.0001,
+          "loss": 7.668752893805504
+        },
+        {
+          "key": "kaiming-w5120-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 13.469678670167923
+        },
+        {
+          "key": "kaiming-w5120-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 22.790476143360138
+        },
+        {
+          "key": "kaiming-w5120-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 13.045358657836914
+        },
+        {
+          "key": "kaiming-w5120-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 25.47777485847473
+        },
+        {
+          "key": "kaiming-w5120-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 64.47594785690308
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.6935166542038875,
+          6.939303766086585,
+          23.434654519065656
+        ],
+        "optimal_lr": 9.355637117471409e-05
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.001,
+      "loss": 22.790476143360138,
+      "gap_to_best_sampled": 15.252943277359009
+    }
+  },
+  {
+    "question": "p41a",
+    "policy": "mup",
+    "width": 640,
+    "depth": 2,
+    "sampled_rates": [
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.0003
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.23039297657007962,
+        0.5720926087830732,
+        7.237392783164978
+      ],
+      "optimal_lr": 0.0012687468453513873,
+      "fitted_minimum_loss": 6.882249629609829,
+      "fitted_domain": [
+        0.0003,
+        0.003
+      ],
+      "local_run_keys": [
+        "mup-w640-d2-lr0.0003-fp32",
+        "mup-w640-d2-lr0.001-fp32",
+        "mup-w640-d2-lr0.003-fp32"
+      ],
+      "best_sampled": {
+        "key": "mup-w640-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 6.909419059753418
+      },
+      "runs": [
+        {
+          "key": "mup-w640-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.879376292228699
+        },
+        {
+          "key": "mup-w640-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 6.909419059753418
+        },
+        {
+          "key": "mup-w640-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.237392783164978
+        },
+        {
+          "key": "mup-w640-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.327460289001465
+        },
+        {
+          "key": "mup-w640-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 12.084709644317627
+        },
+        {
+          "key": "mup-w640-d2-lr0.1-fp32",
+          "lr": 0.1,
+          "loss": 23.865065813064575
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.4929897545973108,
+          0.8004961082134081,
+          5.9848372210536525
+        ],
+        "optimal_lr": 0.0017089183277995343
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.001,
+      "loss": 6.909419059753418,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "mup",
+    "width": 64,
+    "depth": 2,
+    "sampled_rates": [
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.34892190689719393,
+        -1.7687114288646189,
+        9.0732995936756
+      ],
+      "optimal_lr": 0.017381734677893997,
+      "fitted_minimum_loss": 6.831866728070192,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "mup-w64-d2-lr0.01-mp",
+        "mup-w64-d2-lr0.02-mp",
+        "mup-w64-d2-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "mup-w64-d2-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 6.846164524555206
+      },
+      "runs": [
+        {
+          "key": "mup-w64-d2-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.583088755607605
+        },
+        {
+          "key": "mup-w64-d2-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 8.041925072669983
+        },
+        {
+          "key": "mup-w64-d2-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.053823351860046
+        },
+        {
+          "key": "mup-w64-d2-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 6.846164524555206
+        },
+        {
+          "key": "mup-w64-d2-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.048192620277405
+        },
+        {
+          "key": "mup-w64-d2-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 8.463725090026855
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.13870392048118968,
+          -0.5611234009902482,
+          7.5790542161839
+        ],
+        "optimal_lr": 0.012190628237642961
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 6.846164524555206,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "mup",
+    "width": 64,
+    "depth": 100,
+    "sampled_rates": [
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.09880832195009888,
+        -0.5209856335025539,
+        7.763192184121092
+      ],
+      "optimal_lr": 0.018652633280866332,
+      "fitted_minimum_loss": 7.076443272290732,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "mup-w64-d100-lr0.01-mp",
+        "mup-w64-d100-lr0.02-mp",
+        "mup-w64-d100-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "mup-w64-d100-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 7.0774436593055725
+      },
+      "runs": [
+        {
+          "key": "mup-w64-d100-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.211307048797607
+        },
+        {
+          "key": "mup-w64-d100-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.879690051078796
+        },
+        {
+          "key": "mup-w64-d100-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.156367659568787
+        },
+        {
+          "key": "mup-w64-d100-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 7.0774436593055725
+        },
+        {
+          "key": "mup-w64-d100-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.122885584831238
+        },
+        {
+          "key": "mup-w64-d100-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 8.884083986282349
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.13501669486752788,
+          -0.4357652406471101,
+          7.423247686448957
+        ],
+        "optimal_lr": 0.00918136255240527
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 7.0774436593055725,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "depth_mup",
+    "width": 64,
+    "depth": 100,
+    "sampled_rates": [
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.37154407911352844,
+        -1.9322441468728968,
+        9.327711881794766
+      ],
+      "optimal_lr": 0.018192245800258418,
+      "fitted_minimum_loss": 6.815515043648043,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "depth_mup-w64-d100-lr0.01-mp",
+        "depth_mup-w64-d100-lr0.02-mp",
+        "depth_mup-w64-d100-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "depth_mup-w64-d100-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 6.822455644607544
+      },
+      "runs": [
+        {
+          "key": "depth_mup-w64-d100-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.575170040130615
+        },
+        {
+          "key": "depth_mup-w64-d100-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 8.059053659439087
+        },
+        {
+          "key": "depth_mup-w64-d100-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.092437148094177
+        },
+        {
+          "key": "depth_mup-w64-d100-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 6.822455644607544
+        },
+        {
+          "key": "depth_mup-w64-d100-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.009001314640045
+        },
+        {
+          "key": "depth_mup-w64-d100-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 8.454458951950073
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.1373891973750487,
+          -0.5608492901715018,
+          7.585361085132766
+        ],
+        "optimal_lr": 0.012346748516705228
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 6.822455644607544,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "mup",
+    "width": 64,
+    "depth": 1000,
+    "sampled_rates": [
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.20155523540232867,
+        -1.0245070531011624,
+        8.37127282472328
+      ],
+      "optimal_lr": 0.017465874151568708,
+      "fitted_minimum_loss": 7.069378210377403,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "mup-w64-d1000-lr0.01-mp",
+        "mup-w64-d1000-lr0.02-mp",
+        "mup-w64-d1000-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "mup-w64-d1000-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 7.077078640460968
+      },
+      "runs": [
+        {
+          "key": "mup-w64-d1000-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.168549299240112
+        },
+        {
+          "key": "mup-w64-d1000-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.85512387752533
+        },
+        {
+          "key": "mup-w64-d1000-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.1998414397239685
+        },
+        {
+          "key": "mup-w64-d1000-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 7.077078640460968
+        },
+        {
+          "key": "mup-w64-d1000-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.192137658596039
+        },
+        {
+          "key": "mup-w64-d1000-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 9.478217601776123
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.1631988467277105,
+          -0.45295628090758383,
+          7.3288692828759405
+        ],
+        "optimal_lr": 0.007850072679240837
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 7.077078640460968,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p41c",
+    "policy": "depth_mup",
+    "width": 64,
+    "depth": 1000,
+    "sampled_rates": [
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.02
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.08224765775431712,
+        -0.4193832416150176,
+        7.510357438747424
+      ],
+      "optimal_lr": 0.01756312063128983,
+      "fitted_minimum_loss": 6.9757455478140065,
+      "fitted_domain": [
+        0.01,
+        0.03
+      ],
+      "local_run_keys": [
+        "depth_mup-w64-d1000-lr0.01-mp",
+        "depth_mup-w64-d1000-lr0.02-mp",
+        "depth_mup-w64-d1000-lr0.03-mp"
+      ],
+      "best_sampled": {
+        "key": "depth_mup-w64-d1000-lr0.02-mp",
+        "lr": 0.02,
+        "loss": 6.978635549545288
+      },
+      "runs": [
+        {
+          "key": "depth_mup-w64-d1000-lr0.001-mp",
+          "lr": 0.001,
+          "loss": 8.490589261054993
+        },
+        {
+          "key": "depth_mup-w64-d1000-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.9016634821891785
+        },
+        {
+          "key": "depth_mup-w64-d1000-lr0.01-mp",
+          "lr": 0.01,
+          "loss": 7.030048429965973
+        },
+        {
+          "key": "depth_mup-w64-d1000-lr0.02-mp",
+          "lr": 0.02,
+          "loss": 6.978635549545288
+        },
+        {
+          "key": "depth_mup-w64-d1000-lr0.03-mp",
+          "lr": 0.03,
+          "loss": 7.024816334247589
+        },
+        {
+          "key": "depth_mup-w64-d1000-lr0.1-mp",
+          "lr": 0.1,
+          "loss": 8.38684093952179
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.12987804020181495,
+          -0.5169561742641836,
+          7.5317382611263
+        ],
+        "optimal_lr": 0.011918432090932182
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.02,
+      "loss": 6.978635549545288,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p42a",
+    "policy": "mup",
+    "width": 128,
+    "depth": 8,
+    "sampled_rates": [
+      0.003,
+      0.00075,
+      0.0015,
+      0.006,
+      0.012
+    ],
+    "finished": 5,
+    "submitted_count": 5,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.03200781345367379,
+        -0.00223219394683824,
+        3.6161899566650386
+      ],
+      "optimal_lr": 0.003073392485392525,
+      "fitted_minimum_loss": 3.616151038903415,
+      "fitted_domain": [
+        0.0015,
+        0.006
+      ],
+      "local_run_keys": [
+        "mup-w128-d8-lr0.0015",
+        "mup-w128-d8-lr0.003",
+        "mup-w128-d8-lr0.006"
+      ],
+      "best_sampled": {
+        "key": "mup-w128-d8-lr0.003",
+        "lr": 0.003,
+        "loss": 3.616189956665039
+      },
+      "runs": [
+        {
+          "key": "mup-w128-d8-lr0.00075",
+          "lr": 0.00075,
+          "loss": 3.749894142150879
+        },
+        {
+          "key": "mup-w128-d8-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.6504299640655518
+        },
+        {
+          "key": "mup-w128-d8-lr0.003",
+          "lr": 0.003,
+          "loss": 3.616189956665039
+        },
+        {
+          "key": "mup-w128-d8-lr0.006",
+          "lr": 0.006,
+          "loss": 3.645965576171875
+        },
+        {
+          "key": "mup-w128-d8-lr0.012",
+          "lr": 0.012,
+          "loss": 3.69453501701355
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.025720204625810445,
+          -0.01151826381683381,
+          3.6199625219617566
+        ],
+        "optimal_lr": 0.0035036950206918495
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.616189956665039,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p42a",
+    "policy": "baseline",
+    "width": 128,
+    "depth": 8,
+    "sampled_rates": [
+      0.00075,
+      0.0015,
+      0.003,
+      0.006,
+      0.012
+    ],
+    "finished": 5,
+    "submitted_count": 5,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.034495472908018694,
+        -0.10108578205108437,
+        3.694034814834594
+      ],
+      "optimal_lr": 0.008283072974152525,
+      "fitted_minimum_loss": 3.619979189041854,
+      "fitted_domain": [
+        0.003,
+        0.012
+      ],
+      "local_run_keys": [
+        "baseline-w128-d8-lr0.003",
+        "baseline-w128-d8-lr0.006",
+        "baseline-w128-d8-lr0.012"
+      ],
+      "best_sampled": {
+        "key": "baseline-w128-d8-lr0.006",
+        "lr": 0.006,
+        "loss": 3.6274445056915283
+      },
+      "runs": [
+        {
+          "key": "baseline-w128-d8-lr0.00075",
+          "lr": 0.00075,
+          "loss": 4.175268173217773
+        },
+        {
+          "key": "baseline-w128-d8-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.8908185958862305
+        },
+        {
+          "key": "baseline-w128-d8-lr0.003",
+          "lr": 0.003,
+          "loss": 3.6940348148345947
+        },
+        {
+          "key": "baseline-w128-d8-lr0.006",
+          "lr": 0.006,
+          "loss": 3.6274445056915283
+        },
+        {
+          "key": "baseline-w128-d8-lr0.012",
+          "lr": 0.012,
+          "loss": 3.629845142364502
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.05027813570839949,
+          -0.135422015190125,
+          3.7029259749821257
+        ],
+        "optimal_lr": 0.007630042991144531
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.6940348148345947,
+      "gap_to_best_sampled": 0.0665903091430664
+    }
+  },
+  {
+    "question": "p42a",
+    "policy": "baseline",
+    "width": 256,
+    "depth": 8,
+    "sampled_rates": [
+      0.00075,
+      0.0015,
+      0.003,
+      0.006,
+      0.012
+    ],
+    "finished": 5,
+    "submitted_count": 5,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.022277474403380106,
+        -0.022911429405210817,
+        3.4080858230590803
+      ],
+      "optimal_lr": 0.004284690839769037,
+      "fitted_minimum_loss": 3.4021949668079974,
+      "fitted_domain": [
+        0.003,
+        0.012
+      ],
+      "local_run_keys": [
+        "baseline-w256-d8-lr0.003",
+        "baseline-w256-d8-lr0.006",
+        "baseline-w256-d8-lr0.012"
+      ],
+      "best_sampled": {
+        "key": "baseline-w256-d8-lr0.006",
+        "lr": 0.006,
+        "loss": 3.407451868057251
+      },
+      "runs": [
+        {
+          "key": "baseline-w256-d8-lr0.00075",
+          "lr": 0.00075,
+          "loss": 3.684272050857544
+        },
+        {
+          "key": "baseline-w256-d8-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.48942494392395
+        },
+        {
+          "key": "baseline-w256-d8-lr0.003",
+          "lr": 0.003,
+          "loss": 3.408085823059082
+        },
+        {
+          "key": "baseline-w256-d8-lr0.006",
+          "lr": 0.006,
+          "loss": 3.407451868057251
+        },
+        {
+          "key": "baseline-w256-d8-lr0.012",
+          "lr": 0.012,
+          "loss": 3.4513728618621826
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.03987438338143464,
+          -0.05477714538574227,
+          3.4083727427891315
+        ],
+        "optimal_lr": 0.004829366252077964
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.408085823059082,
+      "gap_to_best_sampled": 0.0006339550018310547
+    }
+  },
+  {
+    "question": "p42a",
+    "policy": "mup",
+    "width": 256,
+    "depth": 8,
+    "sampled_rates": [
+      0.00075,
+      0.0015,
+      0.003,
+      0.006,
+      0.012
+    ],
+    "finished": 5,
+    "submitted_count": 5,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.050969600677489575,
+        0.05725884437560949,
+        3.4178292751312247
+      ],
+      "optimal_lr": 0.0020325156684495214,
+      "fitted_minimum_loss": 3.401748242438937,
+      "fitted_domain": [
+        0.00075,
+        0.003
+      ],
+      "local_run_keys": [
+        "mup-w256-d8-lr0.00075",
+        "mup-w256-d8-lr0.0015",
+        "mup-w256-d8-lr0.003"
+      ],
+      "best_sampled": {
+        "key": "mup-w256-d8-lr0.0015",
+        "lr": 0.0015,
+        "loss": 3.4115400314331055
+      },
+      "runs": [
+        {
+          "key": "mup-w256-d8-lr0.00075",
+          "lr": 0.00075,
+          "loss": 3.507189989089966
+        },
+        {
+          "key": "mup-w256-d8-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.4115400314331055
+        },
+        {
+          "key": "mup-w256-d8-lr0.003",
+          "lr": 0.003,
+          "loss": 3.4178292751312256
+        },
+        {
+          "key": "mup-w256-d8-lr0.006",
+          "lr": 0.006,
+          "loss": 3.452418088912964
+        },
+        {
+          "key": "mup-w256-d8-lr0.012",
+          "lr": 0.012,
+          "loss": 3.487511157989502
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.02069897311074348,
+          0.00015203952789316188,
+          3.413899762289865
+        ],
+        "optimal_lr": 0.0029923726835925078
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.4178292751312256,
+      "gap_to_best_sampled": 0.006289243698120117
+    }
+  },
+  {
+    "question": "p42d",
+    "policy": "mup",
+    "width": 512,
+    "depth": 4,
+    "sampled_rates": [
+      0.0015,
+      0.003,
+      0.006
+    ],
+    "finished": 3,
+    "submitted_count": 3,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.03294360637664821,
+        0.018534541130065908,
+        3.315639734268188
+      ],
+      "optimal_lr": 0.0024685355039055423,
+      "fitted_minimum_loss": 3.3130327852067034,
+      "fitted_domain": [
+        0.0015,
+        0.006
+      ],
+      "local_run_keys": [
+        "mup-w512-d4-lr0.0015",
+        "mup-w512-d4-lr0.003",
+        "mup-w512-d4-lr0.006"
+      ],
+      "best_sampled": {
+        "key": "mup-w512-d4-lr0.003",
+        "lr": 0.003,
+        "loss": 3.3156397342681885
+      },
+      "runs": [
+        {
+          "key": "mup-w512-d4-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.3300487995147705
+        },
+        {
+          "key": "mup-w512-d4-lr0.003",
+          "lr": 0.003,
+          "loss": 3.3156397342681885
+        },
+        {
+          "key": "mup-w512-d4-lr0.006",
+          "lr": 0.006,
+          "loss": 3.3671178817749023
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.03294360637664821,
+          0.018534541130065908,
+          3.315639734268188
+        ],
+        "optimal_lr": 0.0024685355039055423
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.3156397342681885,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p42d",
+    "policy": "mup",
+    "width": 512,
+    "depth": 16,
+    "sampled_rates": [
+      0.0015,
+      0.003,
+      0.006,
+      0.00075
+    ],
+    "finished": 4,
+    "submitted_count": 4,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.0525612831115721,
+        0.06183815002441359,
+        3.183216810226439
+      ],
+      "optimal_lr": 0.0019954503725575835,
+      "fitted_minimum_loss": 3.1650287230448306,
+      "fitted_domain": [
+        0.00075,
+        0.003
+      ],
+      "local_run_keys": [
+        "mup-w512-d16-lr0.00075",
+        "mup-w512-d16-lr0.0015",
+        "mup-w512-d16-lr0.003"
+      ],
+      "best_sampled": {
+        "key": "mup-w512-d16-lr0.0015",
+        "lr": 0.0015,
+        "loss": 3.1739399433135986
+      },
+      "runs": [
+        {
+          "key": "mup-w512-d16-lr0.00075",
+          "lr": 0.00075,
+          "loss": 3.2697856426239014
+        },
+        {
+          "key": "mup-w512-d16-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.1739399433135986
+        },
+        {
+          "key": "mup-w512-d16-lr0.003",
+          "lr": 0.003,
+          "loss": 3.1832168102264404
+        },
+        {
+          "key": "mup-w512-d16-lr0.006",
+          "lr": 0.006,
+          "loss": 3.249762535095215
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.040597856044769606,
+          0.03551861047744768,
+          3.1760387539863584
+        ],
+        "optimal_lr": 0.002215324576225289
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.1832168102264404,
+      "gap_to_best_sampled": 0.009276866912841797
+    }
+  },
+  {
+    "question": "p42d",
+    "policy": "depth_mup",
+    "width": 512,
+    "depth": 4,
+    "sampled_rates": [
+      0.0015,
+      0.003,
+      0.006,
+      0.00075
+    ],
+    "finished": 4,
+    "submitted_count": 4,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.045600414276123144,
+        0.0677602291107177,
+        3.3479459285736066
+      ],
+      "optimal_lr": 0.0017925138702442169,
+      "fitted_minimum_loss": 3.322773741423428,
+      "fitted_domain": [
+        0.00075,
+        0.003
+      ],
+      "local_run_keys": [
+        "depth_mup-w512-d4-lr0.00075",
+        "depth_mup-w512-d4-lr0.0015",
+        "depth_mup-w512-d4-lr0.003"
+      ],
+      "best_sampled": {
+        "key": "depth_mup-w512-d4-lr0.0015",
+        "lr": 0.0015,
+        "loss": 3.3257861137390137
+      },
+      "runs": [
+        {
+          "key": "depth_mup-w512-d4-lr0.00075",
+          "lr": 0.00075,
+          "loss": 3.394827127456665
+        },
+        {
+          "key": "depth_mup-w512-d4-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.3257861137390137
+        },
+        {
+          "key": "depth_mup-w512-d4-lr0.003",
+          "lr": 0.003,
+          "loss": 3.3479459285736084
+        },
+        {
+          "key": "depth_mup-w512-d4-lr0.006",
+          "lr": 0.006,
+          "loss": 3.421260356903076
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.03558886051177994,
+          0.04573481082916283,
+          3.341938996315003
+        ],
+        "optimal_lr": 0.0019217472387374546
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.3479459285736084,
+      "gap_to_best_sampled": 0.022159814834594727
+    }
+  },
+  {
+    "question": "p42d",
+    "policy": "depth_mup",
+    "width": 512,
+    "depth": 16,
+    "sampled_rates": [
+      0.0015,
+      0.003,
+      0.006
+    ],
+    "finished": 3,
+    "submitted_count": 3,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.04498755931854069,
+        0.00998651981353832,
+        3.168643951416015
+      ],
+      "optimal_lr": 0.0027778534402902694,
+      "fitted_minimum_loss": 3.1680897394322085,
+      "fitted_domain": [
+        0.0015,
+        0.006
+      ],
+      "local_run_keys": [
+        "depth_mup-w512-d16-lr0.0015",
+        "depth_mup-w512-d16-lr0.003",
+        "depth_mup-w512-d16-lr0.006"
+      ],
+      "best_sampled": {
+        "key": "depth_mup-w512-d16-lr0.003",
+        "lr": 0.003,
+        "loss": 3.1686439514160156
+      },
+      "runs": [
+        {
+          "key": "depth_mup-w512-d16-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.2036449909210205
+        },
+        {
+          "key": "depth_mup-w512-d16-lr0.003",
+          "lr": 0.003,
+          "loss": 3.1686439514160156
+        },
+        {
+          "key": "depth_mup-w512-d16-lr0.006",
+          "lr": 0.006,
+          "loss": 3.2236180305480957
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.04498755931854069,
+          0.00998651981353832,
+          3.168643951416015
+        ],
+        "optimal_lr": 0.0027778534402902694
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.1686439514160156,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p42d",
+    "policy": "completep",
+    "width": 512,
+    "depth": 4,
+    "sampled_rates": [
+      0.0015,
+      0.003,
+      0.006
+    ],
+    "finished": 3,
+    "submitted_count": 3,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.03471195697784368,
+        0.017581820487976088,
+        3.315791130065918
+      ],
+      "optimal_lr": 0.002517007323527974,
+      "fitted_minimum_loss": 3.3135648049132573,
+      "fitted_domain": [
+        0.0015,
+        0.006
+      ],
+      "local_run_keys": [
+        "completep-w512-d4-lr0.0015",
+        "completep-w512-d4-lr0.003",
+        "completep-w512-d4-lr0.006"
+      ],
+      "best_sampled": {
+        "key": "completep-w512-d4-lr0.003",
+        "lr": 0.003,
+        "loss": 3.315791130065918
+      },
+      "runs": [
+        {
+          "key": "completep-w512-d4-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.332921266555786
+        },
+        {
+          "key": "completep-w512-d4-lr0.003",
+          "lr": 0.003,
+          "loss": 3.315791130065918
+        },
+        {
+          "key": "completep-w512-d4-lr0.006",
+          "lr": 0.006,
+          "loss": 3.3680849075317383
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.03471195697784368,
+          0.017581820487976088,
+          3.315791130065918
+        ],
+        "optimal_lr": 0.002517007323527974
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.315791130065918,
+      "gap_to_best_sampled": 0.0
+    }
+  },
+  {
+    "question": "p42d",
+    "policy": "completep",
+    "width": 512,
+    "depth": 16,
+    "sampled_rates": [
+      0.0015,
+      0.003,
+      0.006,
+      0.00075
+    ],
+    "finished": 4,
+    "submitted_count": 4,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.05155658721923803,
+        0.056129693984984914,
+        3.1759984493255597
+      ],
+      "optimal_lr": 0.002057100298300214,
+      "fitted_minimum_loss": 3.1607213396642337,
+      "fitted_domain": [
+        0.00075,
+        0.003
+      ],
+      "local_run_keys": [
+        "completep-w512-d16-lr0.00075",
+        "completep-w512-d16-lr0.0015",
+        "completep-w512-d16-lr0.003"
+      ],
+      "best_sampled": {
+        "key": "completep-w512-d16-lr0.0015",
+        "lr": 0.0015,
+        "loss": 3.1714253425598145
+      },
+      "runs": [
+        {
+          "key": "completep-w512-d16-lr0.00075",
+          "lr": 0.00075,
+          "loss": 3.269965410232544
+        },
+        {
+          "key": "completep-w512-d16-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.1714253425598145
+        },
+        {
+          "key": "completep-w512-d16-lr0.003",
+          "lr": 0.003,
+          "loss": 3.1759984493255615
+        },
+        {
+          "key": "completep-w512-d16-lr0.006",
+          "lr": 0.006,
+          "loss": 3.2748913764953613
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.04935824871063248,
+          0.05129334926605248,
+          3.174679446220397
+        ],
+        "optimal_lr": 0.002092691858133758
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.1759984493255615,
+      "gap_to_best_sampled": 0.00457310676574707
+    }
+  },
+  {
+    "question": "p42c",
+    "policy": "baseline",
+    "width": 1024,
+    "depth": 8,
+    "sampled_rates": [
+      0.0006294920054280699,
+      0.0012589840108561399,
+      0.0015,
+      0.0025179680217122797,
+      0.003,
+      0.006
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.11923432239770257,
+        0.3718656518773838,
+        3.389253996792304
+      ],
+      "optimal_lr": 0.0010178834416130558,
+      "fitted_minimum_loss": 3.0993121825029815,
+      "fitted_domain": [
+        0.0006294920054280699,
+        0.0015
+      ],
+      "local_run_keys": [
+        "baseline-w1024-d8-lr0.0006294920054280699",
+        "baseline-w1024-d8-lr0.0012589840108561399",
+        "baseline-w1024-d8-lr0.0015"
+      ],
+      "best_sampled": {
+        "key": "baseline-w1024-d8-lr0.0012589840108561399",
+        "lr": 0.0012589840108561399,
+        "loss": 3.1105270385742188
+      },
+      "runs": [
+        {
+          "key": "baseline-w1024-d8-lr0.0006294920054280699",
+          "lr": 0.0006294920054280699,
+          "loss": 3.156625986099243
+        },
+        {
+          "key": "baseline-w1024-d8-lr0.0012589840108561399",
+          "lr": 0.0012589840108561399,
+          "loss": 3.1105270385742188
+        },
+        {
+          "key": "baseline-w1024-d8-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.136622667312622
+        },
+        {
+          "key": "baseline-w1024-d8-lr0.0025179680217122797",
+          "lr": 0.0025179680217122797,
+          "loss": 3.1996660232543945
+        },
+        {
+          "key": "baseline-w1024-d8-lr0.003",
+          "lr": 0.003,
+          "loss": 3.2289204597473145
+        },
+        {
+          "key": "baseline-w1024-d8-lr0.006",
+          "lr": 0.006,
+          "loss": 3.323786973953247
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.029759375126844363,
+          0.09544465957951959,
+          3.2092836722741462
+        ],
+        "optimal_lr": 0.0009871600531548342
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.2289204597473145,
+      "gap_to_best_sampled": 0.1183934211730957
+    }
+  },
+  {
+    "question": "p42c",
+    "policy": "mup",
+    "width": 1024,
+    "depth": 8,
+    "sampled_rates": [
+      0.0009507740744632892,
+      0.0015,
+      0.0019015481489265784,
+      0.003,
+      0.003803096297853157,
+      0.006
+    ],
+    "finished": 6,
+    "submitted_count": 6,
+    "fit": {
+      "status": "bracketed",
+      "coefficients": [
+        0.10068376621405149,
+        0.06178813977897608,
+        3.101986169815063
+      ],
+      "optimal_lr": 0.0024252271661019398,
+      "fitted_minimum_loss": 3.092506552690814,
+      "fitted_domain": [
+        0.0019015481489265784,
+        0.003803096297853157
+      ],
+      "local_run_keys": [
+        "mup-w1024-d8-lr0.0019015481489265784",
+        "mup-w1024-d8-lr0.003",
+        "mup-w1024-d8-lr0.003803096297853157"
+      ],
+      "best_sampled": {
+        "key": "mup-w1024-d8-lr0.003",
+        "lr": 0.003,
+        "loss": 3.1019861698150635
+      },
+      "runs": [
+        {
+          "key": "mup-w1024-d8-lr0.0009507740744632892",
+          "lr": 0.0009507740744632892,
+          "loss": 3.188467264175415
+        },
+        {
+          "key": "mup-w1024-d8-lr0.0015",
+          "lr": 0.0015,
+          "loss": 3.1252615451812744
+        },
+        {
+          "key": "mup-w1024-d8-lr0.0019015481489265784",
+          "lr": 0.0019015481489265784,
+          "loss": 3.1049070358276367
+        },
+        {
+          "key": "mup-w1024-d8-lr0.003",
+          "lr": 0.003,
+          "loss": 3.1019861698150635
+        },
+        {
+          "key": "mup-w1024-d8-lr0.003803096297853157",
+          "lr": 0.003803096297853157,
+          "loss": 3.1349217891693115
+        },
+        {
+          "key": "mup-w1024-d8-lr0.006",
+          "lr": 0.006,
+          "loss": 3.2613070011138916
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.07292069182919704,
+          0.06997497829279442,
+          3.1114331764009355
+        ],
+        "optimal_lr": 0.002151228187838132
+      }
+    },
+    "status": "bracketed",
+    "direct_transfer": {
+      "lr": 0.003,
+      "loss": 3.1019861698150635,
+      "gap_to_best_sampled": 0.0
+    }
+  }
+]

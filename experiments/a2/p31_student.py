@@ -1,24 +1,16 @@
-"""Student entry point for P4.1. Complete the two functions below."""
+"""P4.1 entry point with explicit width and depth policy selection."""
 import argparse
+from experiments.a2.p41_policies import Policy
 from experiments.a2.stress import StressConfig, load_tokens, run
 
 
 def initialize(model):
-    """TODO: initialize all weights/gains for the policy you are testing.
-
-    Set model.output_multiplier and each block.residual_multiplier if needed.
-    This function runs under torch.no_grad() with the requested seed.
-    """
-    raise NotImplementedError('Fill in initialization and forward multipliers from your derivation.')
+    """Default width-muP policy; the CLI supports explicit alternatives."""
+    Policy().initialize(model)
 
 
 def parameter_groups(model, base_lr):
-    """TODO: return a list of dicts with params, lr, and eps.
-
-    Every model parameter must occur exactly once. Construct the groups using
-    model.named_parameters(); the runner supplies Adam, fixed betas, and WD=0.
-    """
-    raise NotImplementedError('Fill in the per-group learning rates and Adam stabilizers.')
+    return Policy().parameter_groups(model, base_lr)
 
 
 def main(argv=None):
@@ -34,17 +26,25 @@ def main(argv=None):
                    help='fp32 for width comparisons; mp for depth comparisons')
     p.add_argument('--microbatch', type=int, default=8)
     p.add_argument('--seed', type=int, default=42)
+    p.add_argument('--policy', choices=('kaiming', 'mup', 'depth_mup', 'completep'), default='mup')
+    p.add_argument('--reference-width', type=int,
+                   help='Defaults to512 for width tests,64 for mixed-precision depth tests')
+    p.add_argument('--reference-depth', type=int, default=2)
+    p.add_argument('--probe-sequences', type=int, default=1)
     p.add_argument('--device', default='cuda')
     p.add_argument('--no-alignment', action='store_true')
     p.add_argument('--no-wandb', action='store_true', help='Save diagnostics locally without W&B')
     a = p.parse_args(argv)
     c = StressConfig(width=a.width, depth=a.depth, head_dim=a.head_dim,
-                     microbatch=a.microbatch, seed=a.seed, precision=a.precision)
+                     microbatch=a.microbatch, seed=a.seed, precision=a.precision,
+                     probe_sequences=a.probe_sequences)
     c.validate()
     train = load_tokens(a.train_path, c.steps * c.batch, c.context)
     val = load_tokens(a.val_path, c.batch, c.context)
-    result = run(c, train, val, base_lr=a.lr, initialize_fn=initialize,
-                 groups_fn=parameter_groups, device=a.device,
+    reference_width=a.reference_width if a.reference_width is not None else (64 if a.precision=='mp' else 512)
+    policy = Policy(a.policy, reference_width, a.reference_depth)
+    result = run(c, train, val, base_lr=a.lr, initialize_fn=policy.initialize,
+                 groups_fn=policy.parameter_groups, device=a.device,
                  alignment=not a.no_alignment, output=a.output)
     if not a.no_wandb:
         import wandb

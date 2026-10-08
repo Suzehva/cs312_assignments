@@ -1,0 +1,32 @@
+{
+  "recorded_at_utc": "2026-10-07T01:13:41.898581+00:00",
+  "auxiliary_lr": 0.0015,
+  "pilot_best": {
+    "key": "muon-mup-w512-lr0.02-aux0.0015",
+    "part": "p42f",
+    "prescription": "mup",
+    "width": 512,
+    "depth": 8,
+    "lr": 0.02,
+    "model_seed": 42,
+    "timeout_seconds": 1200,
+    "phase": "pilot",
+    "auxiliary_lr": 0.0015,
+    "overrides": {
+      "optimizer_name": "muon",
+      "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+      "optimizer_kwargs": {
+        "adam_learning_rate": 0.0015,
+        "momentum": 0.95
+      }
+    },
+    "call_id": "fc-01M49NAWQ3X63D5BWTGDA6K6QN",
+    "status": "finished",
+    "submitted_at_utc": "2026-10-06T22:28:49.500979+00:00",
+    "maximum_reserved_gpu_hours": 0.36666666666666664,
+    "startup_shutdown_allowance_seconds": 120,
+    "elapsed_seconds": 253.9896795819999,
+    "final_val_loss": 3.107776165008545
+  },
+  "status": "Reference-only auxiliary selection; fixed for all widths"
+}

@@ -1,0 +1,371 @@
+{
+  "recorded_at_utc": "2026-10-06T08:16:49.150730+00:00",
+  "source_widths": [
+    128,
+    256,
+    512
+  ],
+  "target_width": 1024,
+  "direct_transfer_lr": 0.003,
+  "tokens": 153600000,
+  "source_report": {
+    "baseline": {
+      "width_fits": {
+        "512": {
+          "status": "bracketed",
+          "coefficients": [
+            0.045784473419188135,
+            0.03071975708007859,
+            3.2291338443756104
+          ],
+          "optimal_lr": 0.0023775575165277158,
+          "fitted_minimum_loss": 3.223980877635015,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "yp9czu6i",
+            "jysl6iqh",
+            "dd6phh49"
+          ],
+          "best_sampled": {
+            "key": "jysl6iqh",
+            "lr": 0.003,
+            "loss": 3.2291338443756104
+          },
+          "runs": [
+            {
+              "key": "yp9czu6i",
+              "lr": 0.0015,
+              "loss": 3.2441985607147217
+            },
+            {
+              "key": "jysl6iqh",
+              "lr": 0.003,
+              "loss": 3.2291338443756104
+            },
+            {
+              "key": "dd6phh49",
+              "lr": 0.006,
+              "loss": 3.305638074874878
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.045784473419188135,
+              0.03071975708007859,
+              3.2291338443756104
+            ],
+            "optimal_lr": 0.0023775575165277158
+          }
+        },
+        "128": {
+          "status": "bracketed",
+          "coefficients": [
+            0.034495472908018694,
+            -0.10108578205108437,
+            3.694034814834594
+          ],
+          "optimal_lr": 0.008283072974152525,
+          "fitted_minimum_loss": 3.619979189041854,
+          "fitted_domain": [
+            0.003,
+            0.012
+          ],
+          "local_run_keys": [
+            "baseline-w128-d8-lr0.003",
+            "baseline-w128-d8-lr0.006",
+            "baseline-w128-d8-lr0.012"
+          ],
+          "best_sampled": {
+            "key": "baseline-w128-d8-lr0.006",
+            "lr": 0.006,
+            "loss": 3.6274445056915283
+          },
+          "runs": [
+            {
+              "key": "baseline-w128-d8-lr0.00075",
+              "lr": 0.00075,
+              "loss": 4.175268173217773
+            },
+            {
+              "key": "baseline-w128-d8-lr0.0015",
+              "lr": 0.0015,
+              "loss": 3.8908185958862305
+            },
+            {
+              "key": "baseline-w128-d8-lr0.003",
+              "lr": 0.003,
+              "loss": 3.6940348148345947
+            },
+            {
+              "key": "baseline-w128-d8-lr0.006",
+              "lr": 0.006,
+              "loss": 3.6274445056915283
+            },
+            {
+              "key": "baseline-w128-d8-lr0.012",
+              "lr": 0.012,
+              "loss": 3.629845142364502
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.05027813570839949,
+              -0.135422015190125,
+              3.7029259749821257
+            ],
+            "optimal_lr": 0.007630042991144531
+          }
+        },
+        "256": {
+          "status": "bracketed",
+          "coefficients": [
+            0.022277474403380106,
+            -0.022911429405210817,
+            3.4080858230590803
+          ],
+          "optimal_lr": 0.004284690839769037,
+          "fitted_minimum_loss": 3.4021949668079974,
+          "fitted_domain": [
+            0.003,
+            0.012
+          ],
+          "local_run_keys": [
+            "baseline-w256-d8-lr0.003",
+            "baseline-w256-d8-lr0.006",
+            "baseline-w256-d8-lr0.012"
+          ],
+          "best_sampled": {
+            "key": "baseline-w256-d8-lr0.006",
+            "lr": 0.006,
+            "loss": 3.407451868057251
+          },
+          "runs": [
+            {
+              "key": "baseline-w256-d8-lr0.00075",
+              "lr": 0.00075,
+              "loss": 3.684272050857544
+            },
+            {
+              "key": "baseline-w256-d8-lr0.0015",
+              "lr": 0.0015,
+              "loss": 3.48942494392395
+            },
+            {
+              "key": "baseline-w256-d8-lr0.003",
+              "lr": 0.003,
+              "loss": 3.408085823059082
+            },
+            {
+              "key": "baseline-w256-d8-lr0.006",
+              "lr": 0.006,
+              "loss": 3.407451868057251
+            },
+            {
+              "key": "baseline-w256-d8-lr0.012",
+              "lr": 0.012,
+              "loss": 3.4513728618621826
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.03987438338143464,
+              -0.05477714538574227,
+              3.4083727427891315
+            ],
+            "optimal_lr": 0.004829366252077964
+          }
+        }
+      },
+      "width_law": {
+        "reference": 512,
+        "eta_ref": 0.0023499057415372806,
+        "exponent": -0.9003429282620423,
+        "doubling_multiplier": 0.5357593662597409
+      },
+      "predicted_lr_1024": 0.0012589840108561399
+    },
+    "mup": {
+      "width_fits": {
+        "512": {
+          "status": "bracketed",
+          "coefficients": [
+            0.045784473419188135,
+            0.03071975708007859,
+            3.2291338443756104
+          ],
+          "optimal_lr": 0.0023775575165277158,
+          "fitted_minimum_loss": 3.223980877635015,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "yp9czu6i",
+            "jysl6iqh",
+            "dd6phh49"
+          ],
+          "best_sampled": {
+            "key": "jysl6iqh",
+            "lr": 0.003,
+            "loss": 3.2291338443756104
+          },
+          "runs": [
+            {
+              "key": "yp9czu6i",
+              "lr": 0.0015,
+              "loss": 3.2441985607147217
+            },
+            {
+              "key": "jysl6iqh",
+              "lr": 0.003,
+              "loss": 3.2291338443756104
+            },
+            {
+              "key": "dd6phh49",
+              "lr": 0.006,
+              "loss": 3.305638074874878
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.045784473419188135,
+              0.03071975708007859,
+              3.2291338443756104
+            ],
+            "optimal_lr": 0.0023775575165277158
+          }
+        },
+        "128": {
+          "status": "bracketed",
+          "coefficients": [
+            0.03200781345367379,
+            -0.00223219394683824,
+            3.6161899566650386
+          ],
+          "optimal_lr": 0.003073392485392525,
+          "fitted_minimum_loss": 3.616151038903415,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "mup-w128-d8-lr0.0015",
+            "mup-w128-d8-lr0.003",
+            "mup-w128-d8-lr0.006"
+          ],
+          "best_sampled": {
+            "key": "mup-w128-d8-lr0.003",
+            "lr": 0.003,
+            "loss": 3.616189956665039
+          },
+          "runs": [
+            {
+              "key": "mup-w128-d8-lr0.00075",
+              "lr": 0.00075,
+              "loss": 3.749894142150879
+            },
+            {
+              "key": "mup-w128-d8-lr0.0015",
+              "lr": 0.0015,
+              "loss": 3.6504299640655518
+            },
+            {
+              "key": "mup-w128-d8-lr0.003",
+              "lr": 0.003,
+              "loss": 3.616189956665039
+            },
+            {
+              "key": "mup-w128-d8-lr0.006",
+              "lr": 0.006,
+              "loss": 3.645965576171875
+            },
+            {
+              "key": "mup-w128-d8-lr0.012",
+              "lr": 0.012,
+              "loss": 3.69453501701355
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.025720204625810445,
+              -0.01151826381683381,
+              3.6199625219617566
+            ],
+            "optimal_lr": 0.0035036950206918495
+          }
+        },
+        "256": {
+          "status": "bracketed",
+          "coefficients": [
+            0.050969600677489575,
+            0.05725884437560949,
+            3.4178292751312247
+          ],
+          "optimal_lr": 0.0020325156684495214,
+          "fitted_minimum_loss": 3.401748242438937,
+          "fitted_domain": [
+            0.00075,
+            0.003
+          ],
+          "local_run_keys": [
+            "mup-w256-d8-lr0.00075",
+            "mup-w256-d8-lr0.0015",
+            "mup-w256-d8-lr0.003"
+          ],
+          "best_sampled": {
+            "key": "mup-w256-d8-lr0.0015",
+            "lr": 0.0015,
+            "loss": 3.4115400314331055
+          },
+          "runs": [
+            {
+              "key": "mup-w256-d8-lr0.00075",
+              "lr": 0.00075,
+              "loss": 3.507189989089966
+            },
+            {
+              "key": "mup-w256-d8-lr0.0015",
+              "lr": 0.0015,
+              "loss": 3.4115400314331055
+            },
+            {
+              "key": "mup-w256-d8-lr0.003",
+              "lr": 0.003,
+              "loss": 3.4178292751312256
+            },
+            {
+              "key": "mup-w256-d8-lr0.006",
+              "lr": 0.006,
+              "loss": 3.452418088912964
+            },
+            {
+              "key": "mup-w256-d8-lr0.012",
+              "lr": 0.012,
+              "loss": 3.487511157989502
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.02069897311074348,
+              0.00015203952789316188,
+              3.413899762289865
+            ],
+            "optimal_lr": 0.0029923726835925078
+          }
+        }
+      },
+      "width_law": {
+        "reference": 512,
+        "eta_ref": 0.0021619757740832086,
+        "exponent": -0.18517588733237403,
+        "doubling_multiplier": 0.8795418393311715
+      },
+      "predicted_lr_1024": 0.0019015481489265784
+    }
+  },
+  "source_report_sha256": "2e8feb843aaa22bed5881704dbf7ad41fe4a3e259e1778e2c4721c1e3e6dd2da",
+  "status": "Source-only predictions recorded before target submission/results"
+}

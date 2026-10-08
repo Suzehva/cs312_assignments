@@ -1,0 +1,9 @@
+{
+  "recorded_at_utc": "2026-10-06T05:58:04Z",
+  "status": "Qualitative predictions before full LR sweeps; timing pilots at LR=.003 have already been observed",
+  "p41_width": "muP should have a more width-invariant optimal base LR than Kaiming, because its hidden LR and readout forward factor compensate width. Better transfer need not imply lower tuned loss.",
+  "p41_depth": "CompleteP's 1/r branch scaling should control residual growth most strongly and plausibly transfer the base LR best; Depth-muP should improve on uncorrected muP. The five-step loss winner is not guaranteed by this argument.",
+  "p42_width": "muP should transfer the best sampled width-512 LR (.003) more reliably, but fixed norm epsilon, clipping and weight decay can shift the optimum over long training.",
+  "p42_target": "Numerical width-1024 predictions will be frozen using only source widths128/256/512 before submitting or examining target runs.",
+  "p42_depth": "Depth corrections should limit early residual growth, but may not yield the lowest tuned loss at153.6M tokens. Both transfer and tuned performance must be measured separately."
+}

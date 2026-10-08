@@ -1,0 +1,386 @@
+{
+  "recorded_at_utc": "2026-10-07T02:30:07.378577+00:00",
+  "auxiliary_lr": 0.0015,
+  "source": {
+    "baseline": {
+      "fits": {
+        "128": {
+          "status": "bracketed",
+          "coefficients": [
+            0.013096809387207116,
+            -0.09355044079720463,
+            3.73624402053755
+          ],
+          "optimal_lr": 0.03566556392205285,
+          "fitted_minimum_loss": 3.5691864434856178,
+          "fitted_domain": [
+            0.02,
+            0.08
+          ],
+          "local_run_keys": [
+            "muon-baseline-w128-lr0.02-aux0.0015",
+            "muon-baseline-w128-lr0.04-aux0.0015",
+            "muon-baseline-w128-lr0.08-aux0.0015"
+          ],
+          "best_sampled": {
+            "key": "muon-baseline-w128-lr0.04-aux0.0015",
+            "lr": 0.04,
+            "loss": 3.569545030593872
+          },
+          "runs": [
+            {
+              "key": "muon-baseline-w128-lr0.005-aux0.0015",
+              "lr": 0.005,
+              "loss": 3.699002265930176
+            },
+            {
+              "key": "muon-baseline-w128-lr0.01-aux0.0015",
+              "lr": 0.01,
+              "loss": 3.6181766986846924
+            },
+            {
+              "key": "muon-baseline-w128-lr0.02-aux0.0015",
+              "lr": 0.02,
+              "loss": 3.578307628631592
+            },
+            {
+              "key": "muon-baseline-w128-lr0.04-aux0.0015",
+              "lr": 0.04,
+              "loss": 3.569545030593872
+            },
+            {
+              "key": "muon-baseline-w128-lr0.08-aux0.0015",
+              "lr": 0.08,
+              "loss": 3.5869760513305664
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.016258546284266758,
+              -0.11626657331139745,
+              3.774309597536049
+            ],
+            "optimal_lr": 0.03576595484347559
+          }
+        },
+        "256": {
+          "status": "bracketed",
+          "coefficients": [
+            0.01550650596618631,
+            -0.10323024047802573,
+            3.474851313474208
+          ],
+          "optimal_lr": 0.030139281260096545,
+          "fitted_minimum_loss": 3.3030446767568735,
+          "fitted_domain": [
+            0.02,
+            0.08
+          ],
+          "local_run_keys": [
+            "muon-baseline-w256-lr0.02-aux0.0015",
+            "muon-baseline-w256-lr0.04-aux0.0015",
+            "muon-baseline-w256-lr0.08-aux0.0015"
+          ],
+          "best_sampled": {
+            "key": "muon-baseline-w256-lr0.04-aux0.0015",
+            "lr": 0.04,
+            "loss": 3.3056304454803467
+          },
+          "runs": [
+            {
+              "key": "muon-baseline-w256-lr0.005-aux0.0015",
+              "lr": 0.005,
+              "loss": 3.4108903408050537
+            },
+            {
+              "key": "muon-baseline-w256-lr0.01-aux0.0015",
+              "lr": 0.01,
+              "loss": 3.3375511169433594
+            },
+            {
+              "key": "muon-baseline-w256-lr0.02-aux0.0015",
+              "lr": 0.02,
+              "loss": 3.3084726333618164
+            },
+            {
+              "key": "muon-baseline-w256-lr0.04-aux0.0015",
+              "lr": 0.04,
+              "loss": 3.3056304454803467
+            },
+            {
+              "key": "muon-baseline-w256-lr0.08-aux0.0015",
+              "lr": 0.08,
+              "loss": 3.33380126953125
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.016375456537519217,
+              -0.10824800366496987,
+              3.4801210815365375
+            ],
+            "optimal_lr": 0.029653960732667958
+          }
+        },
+        "512": {
+          "status": "bracketed",
+          "coefficients": [
+            0.016638278961181696,
+            -0.09824675605510802,
+            3.2520371300951973
+          ],
+          "optimal_lr": 0.023221575428848413,
+          "fitted_minimum_loss": 3.1070037240279036,
+          "fitted_domain": [
+            0.01,
+            0.04
+          ],
+          "local_run_keys": [
+            "muon-mup-w512-lr0.01-aux0.0015",
+            "muon-mup-w512-lr0.02-aux0.0015",
+            "muon-mup-w512-lr0.04-aux0.0015"
+          ],
+          "best_sampled": {
+            "key": "muon-mup-w512-lr0.02-aux0.0015",
+            "lr": 0.02,
+            "loss": 3.107776165008545
+          },
+          "runs": [
+            {
+              "key": "muon-mup-w512-lr0.005-aux0.0015",
+              "lr": 0.005,
+              "loss": 3.206798791885376
+            },
+            {
+              "key": "muon-mup-w512-lr0.01-aux0.0015",
+              "lr": 0.01,
+              "loss": 3.131584405899048
+            },
+            {
+              "key": "muon-mup-w512-lr0.02-aux0.0015",
+              "lr": 0.02,
+              "loss": 3.107776165008545
+            },
+            {
+              "key": "muon-mup-w512-lr0.04-aux0.0015",
+              "lr": 0.04,
+              "loss": 3.1172444820404053
+            },
+            {
+              "key": "muon-mup-w512-lr0.08-aux0.0015",
+              "lr": 0.08,
+              "loss": 3.155125856399536
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.01853343418666302,
+              -0.11321932290431257,
+              3.2776828661338375
+            ],
+            "optimal_lr": 0.024923314120803283
+          }
+        }
+      },
+      "law": {
+        "reference": 512,
+        "eta_ref": 0.023581921077885915,
+        "exponent": -0.30953296600112246,
+        "doubling_multiplier": 0.8069029302252632
+      },
+      "predicted_lr": 0.019028321218087042,
+      "direct_lr": 0.02
+    },
+    "mup": {
+      "fits": {
+        "128": {
+          "status": "bracketed",
+          "coefficients": [
+            0.008158087730407274,
+            -0.05598658095282346,
+            3.6344419966640436
+          ],
+          "optimal_lr": 0.032363975519186045,
+          "fitted_minimum_loss": 3.538387095369467,
+          "fitted_domain": [
+            0.02,
+            0.08
+          ],
+          "local_run_keys": [
+            "muon-mup-w128-lr0.02-aux0.0015",
+            "muon-mup-w128-lr0.04-aux0.0015",
+            "muon-mup-w128-lr0.08-aux0.0015"
+          ],
+          "best_sampled": {
+            "key": "muon-mup-w128-lr0.04-aux0.0015",
+            "lr": 0.04,
+            "loss": 3.539149045944214
+          },
+          "runs": [
+            {
+              "key": "muon-mup-w128-lr0.005-aux0.0015",
+              "lr": 0.005,
+              "loss": 3.6417393684387207
+            },
+            {
+              "key": "muon-mup-w128-lr0.01-aux0.0015",
+              "lr": 0.01,
+              "loss": 3.5744097232818604
+            },
+            {
+              "key": "muon-mup-w128-lr0.02-aux0.0015",
+              "lr": 0.02,
+              "loss": 3.542320728302002
+            },
+            {
+              "key": "muon-mup-w128-lr0.04-aux0.0015",
+              "lr": 0.04,
+              "loss": 3.539149045944214
+            },
+            {
+              "key": "muon-mup-w128-lr0.08-aux0.0015",
+              "lr": 0.08,
+              "loss": 3.552293539047241
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.01356182779584618,
+              -0.09565174575453629,
+              3.7030629727807844
+            ],
+            "optimal_lr": 0.034570484726523215
+          }
+        },
+        "256": {
+          "status": "bracketed",
+          "coefficients": [
+            0.017700076103210092,
+            -0.1152683292522893,
+            3.4762080266916455
+          ],
+          "optimal_lr": 0.02866296586924253,
+          "fitted_minimum_loss": 3.288542340240099,
+          "fitted_domain": [
+            0.02,
+            0.08
+          ],
+          "local_run_keys": [
+            "muon-mup-w256-lr0.02-aux0.0015",
+            "muon-mup-w256-lr0.04-aux0.0015",
+            "muon-mup-w256-lr0.08-aux0.0015"
+          ],
+          "best_sampled": {
+            "key": "muon-mup-w256-lr0.04-aux0.0015",
+            "lr": 0.04,
+            "loss": 3.2926342487335205
+          },
+          "runs": [
+            {
+              "key": "muon-mup-w256-lr0.005-aux0.0015",
+              "lr": 0.005,
+              "loss": 3.3977205753326416
+            },
+            {
+              "key": "muon-mup-w256-lr0.01-aux0.0015",
+              "lr": 0.01,
+              "loss": 3.322471857070923
+            },
+            {
+              "key": "muon-mup-w256-lr0.02-aux0.0015",
+              "lr": 0.02,
+              "loss": 3.293313503265381
+            },
+            {
+              "key": "muon-mup-w256-lr0.04-aux0.0015",
+              "lr": 0.04,
+              "loss": 3.2926342487335205
+            },
+            {
+              "key": "muon-mup-w256-lr0.08-aux0.0015",
+              "lr": 0.08,
+              "loss": 3.327355146408081
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.017744166510445674,
+              -0.11418719309114475,
+              3.470815943703767
+            ],
+            "optimal_lr": 0.02790710577254034
+          }
+        },
+        "512": {
+          "status": "bracketed",
+          "coefficients": [
+            0.016638278961181696,
+            -0.09824675605510802,
+            3.2520371300951973
+          ],
+          "optimal_lr": 0.023221575428848413,
+          "fitted_minimum_loss": 3.1070037240279036,
+          "fitted_domain": [
+            0.01,
+            0.04
+          ],
+          "local_run_keys": [
+            "muon-mup-w512-lr0.01-aux0.0015",
+            "muon-mup-w512-lr0.02-aux0.0015",
+            "muon-mup-w512-lr0.04-aux0.0015"
+          ],
+          "best_sampled": {
+            "key": "muon-mup-w512-lr0.02-aux0.0015",
+            "lr": 0.02,
+            "loss": 3.107776165008545
+          },
+          "runs": [
+            {
+              "key": "muon-mup-w512-lr0.005-aux0.0015",
+              "lr": 0.005,
+              "loss": 3.206798791885376
+            },
+            {
+              "key": "muon-mup-w512-lr0.01-aux0.0015",
+              "lr": 0.01,
+              "loss": 3.131584405899048
+            },
+            {
+              "key": "muon-mup-w512-lr0.02-aux0.0015",
+              "lr": 0.02,
+              "loss": 3.107776165008545
+            },
+            {
+              "key": "muon-mup-w512-lr0.04-aux0.0015",
+              "lr": 0.04,
+              "loss": 3.1172444820404053
+            },
+            {
+              "key": "muon-mup-w512-lr0.08-aux0.0015",
+              "lr": 0.08,
+              "loss": 3.155125856399536
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.01853343418666302,
+              -0.11321932290431257,
+              3.2776828661338375
+            ],
+            "optimal_lr": 0.024923314120803283
+          }
+        }
+      },
+      "law": {
+        "reference": 512,
+        "eta_ref": 0.02356892630722433,
+        "exponent": -0.2394614916860245,
+        "doubling_multiplier": 0.8470614321861092
+      },
+      "predicted_lr": 0.019964328472886306,
+      "direct_lr": 0.02
+    }
+  },
+  "source_sha256": "2c6259387983d20f0cf9f007b3d46954bba82bc0fe01707b1049cf1e503e49c7",
+  "status": "Source-only Muon predictions frozen before width1024"
+}

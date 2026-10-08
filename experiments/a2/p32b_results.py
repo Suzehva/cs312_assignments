@@ -21,7 +21,7 @@ WD_TARGET_PATH = RESULTS_DIR / "p32b_wd_target_runs.json"
 PREDICTION_PATH = RESULTS_DIR / "p32b_predictions.json"
 
 
-def completed_row(run, batch, lr, wd):
+def completed_row(run, batch, lr, wd, *, beta1=.9):
     config, summary = run.config, dict(run.summary)
     settings = {
         "num_train_sequences": TARGET_TOKENS // 1024, "num_epochs": 1,
@@ -30,7 +30,7 @@ def completed_row(run, batch, lr, wd):
         "optimizer_builder": None, "model_builder": None,
         "init_checkpoint_path": None, "perturb_one_token": False,
         "deterministic": False, "lr_schedule": "linear", "warmup_percent": .01,
-        "beta1": .9, "beta2": .95, "model_seed": 42, "data_seed": 42,
+        "beta1": beta1, "beta2": .95, "model_seed": 42, "data_seed": 42,
         "qk_norm": True, "tie_word_embeddings": False,
         "precision": "mp", "dropout": 0, "grad_norm": 1,
     }

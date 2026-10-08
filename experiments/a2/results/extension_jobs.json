@@ -1,0 +1,1585 @@
+{
+  "jobs": [
+    {
+      "key": "mup-w1024-d8-direct-ms43",
+      "part": "p42c-repeat",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 43,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M49N6VKNQ0EXWBSDNTT6JXR7",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:26:37.282969+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 646.406710688,
+      "final_val_loss": 3.1035094261169434
+    },
+    {
+      "key": "mup-w1024-d8-predicted-ms43",
+      "part": "p42c-repeat",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.0019015481489265784,
+      "model_seed": 43,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M49N6VQN4C46R70SKHQ8ZB8A",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:26:37.434819+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 633.200420219,
+      "final_val_loss": 3.1081595420837402
+    },
+    {
+      "key": "mup-w1024-d8-direct-ms44",
+      "part": "p42c-repeat",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 44,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M49N6VX0HZP7EPNXH2MYZRCG",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:26:37.587690+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 521.065954603,
+      "final_val_loss": 3.1075761318206787
+    },
+    {
+      "key": "mup-w1024-d8-predicted-ms44",
+      "part": "p42c-repeat",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.0019015481489265784,
+      "model_seed": 44,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M49N6W161SX6EX5ESTJ5JQ4V",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:26:37.722898+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 520.0720593100001,
+      "final_val_loss": 3.1064767837524414
+    },
+    {
+      "key": "mup-w512-d16-best-ms43",
+      "part": "p42d-repeat",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 16,
+      "lr": 0.0015,
+      "model_seed": 43,
+      "timeout_seconds": 1000,
+      "call_id": "fc-01M49N83HG6C74SYHXP6Z9H0KW",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:27:18.173589+00:00",
+      "maximum_reserved_gpu_hours": 0.3111111111111111,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 551.970915493,
+      "final_val_loss": 3.1763689517974854
+    },
+    {
+      "key": "depth_mup-w512-d16-best-ms43",
+      "part": "p42d-repeat",
+      "prescription": "depth_mup",
+      "width": 512,
+      "depth": 16,
+      "lr": 0.003,
+      "model_seed": 43,
+      "timeout_seconds": 1000,
+      "call_id": "fc-01M49N83NDNJ8NVTMGGT1QVXQH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:27:18.376039+00:00",
+      "maximum_reserved_gpu_hours": 0.3111111111111111,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 563.21422043,
+      "final_val_loss": 3.1653106212615967
+    },
+    {
+      "key": "completep-w512-d16-best-ms43",
+      "part": "p42d-repeat",
+      "prescription": "completep",
+      "width": 512,
+      "depth": 16,
+      "lr": 0.0015,
+      "model_seed": 43,
+      "timeout_seconds": 1000,
+      "call_id": "fc-01M49N83VR1DBCANEBJX5GTX5D",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:27:18.504060+00:00",
+      "maximum_reserved_gpu_hours": 0.3111111111111111,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 497.6861667940001,
+      "final_val_loss": 3.175046920776367
+    },
+    {
+      "key": "mup-w512-d16-best-ms44",
+      "part": "p42d-repeat",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 16,
+      "lr": 0.0015,
+      "model_seed": 44,
+      "timeout_seconds": 1000,
+      "call_id": "fc-01M49N83ZVAJGRFCG90FM7HMRA",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:27:18.791292+00:00",
+      "maximum_reserved_gpu_hours": 0.3111111111111111,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 501.00181100199995,
+      "final_val_loss": 3.16788911819458
+    },
+    {
+      "key": "depth_mup-w512-d16-best-ms44",
+      "part": "p42d-repeat",
+      "prescription": "depth_mup",
+      "width": 512,
+      "depth": 16,
+      "lr": 0.003,
+      "model_seed": 44,
+      "timeout_seconds": 1000,
+      "call_id": "fc-01M49N848Q4BKXTQYH780S3GRN",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:27:18.917523+00:00",
+      "maximum_reserved_gpu_hours": 0.3111111111111111,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 512.3108596,
+      "final_val_loss": 3.1562540531158447
+    },
+    {
+      "key": "completep-w512-d16-best-ms44",
+      "part": "p42d-repeat",
+      "prescription": "completep",
+      "width": 512,
+      "depth": 16,
+      "lr": 0.0015,
+      "model_seed": 44,
+      "timeout_seconds": 1000,
+      "call_id": "fc-01M49N84CRJ7XGG4PD9KTRPYHM",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:27:19.048507+00:00",
+      "maximum_reserved_gpu_hours": 0.3111111111111111,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 519.668056853,
+      "final_val_loss": 3.168194055557251
+    },
+    {
+      "key": "muon-mup-w512-lr0.01-aux0.0003",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "pilot",
+      "auxiliary_lr": 0.0003,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0003,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49NAW5TVM14DRNSG8PVE3A9",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:28:48.938555+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 375.56241172700004,
+      "final_val_loss": 3.186502456665039
+    },
+    {
+      "key": "muon-mup-w512-lr0.02-aux0.0003",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "pilot",
+      "auxiliary_lr": 0.0003,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0003,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49NAW9T6GNYRN7KHA7EDW8F",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:28:49.061239+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 327.199698696,
+      "final_val_loss": 3.157970666885376
+    },
+    {
+      "key": "muon-mup-w512-lr0.04-aux0.0003",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "pilot",
+      "auxiliary_lr": 0.0003,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0003,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49NAWDTEYQF9S2J15AV7RPM",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:28:49.207468+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 254.06444944099997,
+      "final_val_loss": 3.168970823287964
+    },
+    {
+      "key": "muon-mup-w512-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "pilot",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49NAWJGMXAAXAGBPYV0DVWA",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:28:49.354865+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 272.770699421,
+      "final_val_loss": 3.131584405899048
+    },
+    {
+      "key": "muon-mup-w512-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "pilot",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49NAWQ3X63D5BWTGDA6K6QN",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:28:49.500979+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 253.9896795819999,
+      "final_val_loss": 3.107776165008545
+    },
+    {
+      "key": "muon-mup-w512-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "pilot",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49NAWVXB8JFDR5WMFDV6GNQ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:28:49.647921+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 274.66341822900006,
+      "final_val_loss": 3.1172444820404053
+    },
+    {
+      "key": "cosine-w512-d8-D1228m-lr0.0015",
+      "part": "p1e",
+      "prescription": "baseline",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.0015,
+      "tokens": 1228800000,
+      "model_seed": 42,
+      "timeout_seconds": 2400,
+      "overrides": {
+        "lr_schedule": "cos"
+      },
+      "call_id": "fc-01M49ND3YR71QBWB9BYF5DGGMN",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:30:02.462166+00:00",
+      "maximum_reserved_gpu_hours": 0.7,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 1229.1029214379998,
+      "final_val_loss": 2.855853796005249
+    },
+    {
+      "key": "cosine-w512-d8-D1228m-lr0.003",
+      "part": "p1e",
+      "prescription": "baseline",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.003,
+      "tokens": 1228800000,
+      "model_seed": 42,
+      "timeout_seconds": 2400,
+      "overrides": {
+        "lr_schedule": "cos"
+      },
+      "call_id": "fc-01M49ND43SQRCCE2VW4B82AYBG",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:30:02.614380+00:00",
+      "maximum_reserved_gpu_hours": 0.7,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 1203.700197113,
+      "final_val_loss": 2.840015172958374
+    },
+    {
+      "key": "cosine-w512-d8-D1228m-lr0.0037227960179964923",
+      "part": "p1e",
+      "prescription": "baseline",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.0037227960179964923,
+      "tokens": 1228800000,
+      "model_seed": 42,
+      "timeout_seconds": 2400,
+      "overrides": {
+        "lr_schedule": "cos"
+      },
+      "call_id": "fc-01M49ND48HJRNP77J5GMXSN24M",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:30:02.766437+00:00",
+      "maximum_reserved_gpu_hours": 0.7,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 1167.2278283519997,
+      "final_val_loss": 2.837759017944336
+    },
+    {
+      "key": "cosine-w512-d8-D1228m-lr0.006",
+      "part": "p1e",
+      "prescription": "baseline",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.006,
+      "tokens": 1228800000,
+      "model_seed": 42,
+      "timeout_seconds": 2400,
+      "overrides": {
+        "lr_schedule": "cos"
+      },
+      "call_id": "fc-01M49ND4DA63YEX0V5P7C1NDPD",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:30:02.902032+00:00",
+      "maximum_reserved_gpu_hours": 0.7,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 1189.7048390839998,
+      "final_val_loss": 2.837329149246216
+    },
+    {
+      "key": "first-norm-eps1e-8-baseline-w1024-ms42",
+      "part": "p5",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 42,
+      "timeout_seconds": 900,
+      "overrides": {
+        "model_builder": "experiments.a2.p5_normalization:FirstNormLM",
+        "model_builder_kwargs": {
+          "prescription": "baseline",
+          "first_norm_epsilon": 1e-08
+        }
+      },
+      "call_id": "fc-01M49NVM0Y8ABB8M5H3HP9V5Q8",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:37:57.644038+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 622.6152963850001,
+      "final_val_loss": 3.258915662765503
+    },
+    {
+      "key": "first-norm-eps1e-8-baseline-w1024-ms43",
+      "part": "p5",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 43,
+      "timeout_seconds": 900,
+      "overrides": {
+        "model_builder": "experiments.a2.p5_normalization:FirstNormLM",
+        "model_builder_kwargs": {
+          "prescription": "baseline",
+          "first_norm_epsilon": 1e-08
+        }
+      },
+      "call_id": "fc-01M49NVM5KQX44VEP6JAP7HG7A",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:37:57.802798+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 516.440187814,
+      "final_val_loss": 3.2314045429229736
+    },
+    {
+      "key": "first-norm-eps1e-8-baseline-w1024-ms44",
+      "part": "p5",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 44,
+      "timeout_seconds": 900,
+      "overrides": {
+        "model_builder": "experiments.a2.p5_normalization:FirstNormLM",
+        "model_builder_kwargs": {
+          "prescription": "baseline",
+          "first_norm_epsilon": 1e-08
+        }
+      },
+      "call_id": "fc-01M49NVMA3565R1K0356N2DP8E",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:37:57.935084+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 626.5758655679999,
+      "final_val_loss": 3.210068464279175
+    },
+    {
+      "key": "first-norm-control-baseline-w1024-ms43",
+      "part": "p5",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 43,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M49NVMEDTDWXXDCVXJWB3XFJ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:37:58.072947+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 562.0252353239998,
+      "final_val_loss": 3.2129456996917725
+    },
+    {
+      "key": "first-norm-control-baseline-w1024-ms44",
+      "part": "p5",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.003,
+      "model_seed": 44,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M49PCSFG1HAX2C3MPP5WW8VX",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T22:47:20.369409+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 606.461884404,
+      "final_val_loss": 3.2318315505981445
+    },
+    {
+      "key": "cosine-w512-d8-D1228m-lr0.012",
+      "part": "p1e",
+      "prescription": "baseline",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.012,
+      "tokens": 1228800000,
+      "model_seed": 42,
+      "timeout_seconds": 2400,
+      "overrides": {
+        "lr_schedule": "cos"
+      },
+      "call_id": "fc-01M49YPMJZ61BBJ7JKGFE99YZV",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:12:31.632583+00:00",
+      "maximum_reserved_gpu_hours": 0.7,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 1212.4349926369998,
+      "final_val_loss": 2.8609530925750732
+    },
+    {
+      "key": "muon-baseline-w128-lr0.005-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.005,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YSXXJXS65KD1C1YAV4F5C",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:14:19.487118+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 212.88473819799998,
+      "final_val_loss": 3.699002265930176
+    },
+    {
+      "key": "muon-baseline-w128-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YSY1HSM4PYR3EZG8TCAFT",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:14:19.609057+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 106.31391307499999,
+      "final_val_loss": 3.6181766986846924
+    },
+    {
+      "key": "muon-baseline-w128-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YSY5KG7N8K6E99JASR81Z",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:14:19.742242+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 108.22921107999997,
+      "final_val_loss": 3.578307628631592
+    },
+    {
+      "key": "muon-baseline-w128-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YSY9JFMXHYMC0G2WMD9HV",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:14:19.873812+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 106.47226952900007,
+      "final_val_loss": 3.569545030593872
+    },
+    {
+      "key": "muon-baseline-w128-lr0.08-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.08,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YWV713ZSRK4AZFFKEEZ9E",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:15:55.045862+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 231.86039184,
+      "final_val_loss": 3.5869760513305664
+    },
+    {
+      "key": "muon-mup-w128-lr0.005-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.005,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YWVC12NEPA11SQFT35DP6",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:15:55.179291+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 179.463149509,
+      "final_val_loss": 3.6417393684387207
+    },
+    {
+      "key": "muon-mup-w128-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YWVG4MHM9B6N73JK6ZGEZ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:15:55.309535+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 112.03315673999998,
+      "final_val_loss": 3.5744097232818604
+    },
+    {
+      "key": "muon-mup-w128-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YWVM592RHHYFTJSAD6NPJ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:15:55.446817+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 111.60678584899995,
+      "final_val_loss": 3.542320728302002
+    },
+    {
+      "key": "muon-mup-w128-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YZPXZR9B0D7AY4S71FKYZ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:17:28.945928+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 251.54444745199999,
+      "final_val_loss": 3.539149045944214
+    },
+    {
+      "key": "muon-mup-w128-lr0.08-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 128,
+      "depth": 8,
+      "lr": 0.08,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YZQ2JETXCK6RFXQQGX4MC",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:17:29.077077+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 129.79891240199998,
+      "final_val_loss": 3.552293539047241
+    },
+    {
+      "key": "muon-baseline-w256-lr0.005-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.005,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YZQ6FBNZHEGAAH0WS9AEZ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:17:29.215391+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 250.939685945,
+      "final_val_loss": 3.4108903408050537
+    },
+    {
+      "key": "muon-baseline-w256-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49YZQARCFXSC4X29HBGPGWM",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:17:29.341520+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 174.33410001599998,
+      "final_val_loss": 3.3375511169433594
+    },
+    {
+      "key": "muon-baseline-w256-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49Z8NGMTYZDCWQ5TWPTJ4ZF",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:22:22.397361+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 243.227747303,
+      "final_val_loss": 3.3084726333618164
+    },
+    {
+      "key": "muon-baseline-w256-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49Z8NN056XYQ5TDVQ7FHM7G",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:22:22.537998+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 157.166809312,
+      "final_val_loss": 3.3056304454803467
+    },
+    {
+      "key": "muon-baseline-w256-lr0.08-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.08,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49Z8NSBQN3BGANJYA8SG2EF",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:22:22.680885+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('Deadline exceeded')",
+      "elapsed_seconds": 156.94556930599998,
+      "final_val_loss": 3.33380126953125
+    },
+    {
+      "key": "muon-mup-w256-lr0.005-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.005,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M49Z8NXKY1DNRBWJE72H2D8T",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:22:22.811406+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 202.75449341799992,
+      "final_val_loss": 3.3977205753326416
+    },
+    {
+      "key": "muon-mup-w256-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A041B1FW1GPGQ5REMTEG6M",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:37:19.245795+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 277.67457656,
+      "final_val_loss": 3.322471857070923
+    },
+    {
+      "key": "muon-mup-w256-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A041FAGHN909K5Z57RAXZJ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:37:19.383258+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 165.21182125800004,
+      "final_val_loss": 3.293313503265381
+    },
+    {
+      "key": "muon-mup-w256-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A041KYK1FE9E6E21Z2GBSA",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:37:19.525425+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "last_collection_error": "ConnectionError('[Errno 8] nodename nor servname provided, or not known')",
+      "elapsed_seconds": 162.74249804200002,
+      "final_val_loss": 3.2926342487335205
+    },
+    {
+      "key": "muon-mup-w256-lr0.08-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 256,
+      "depth": 8,
+      "lr": 0.08,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A041R61F1X73YYV3P8H46B",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:37:19.691940+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 298.190476249,
+      "final_val_loss": 3.327355146408081
+    },
+    {
+      "key": "muon-mup-w512-lr0.005-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.005,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A08W570VGGSFDDHPT2GYBD",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:39:57.775734+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 363.400749894,
+      "final_val_loss": 3.206798791885376
+    },
+    {
+      "key": "muon-mup-w512-lr0.08-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 512,
+      "depth": 8,
+      "lr": 0.08,
+      "model_seed": 42,
+      "timeout_seconds": 1200,
+      "phase": "source",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A08WA2SF2YMWS62W60441F",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T01:39:58.375454+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 273.90769574100005,
+      "final_val_loss": 3.155125856399536
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.009514160609043521-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.009514160609043521,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A35AQK00Y0W73KA3BKDND8",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:30:27.339136+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 631.6044399880001,
+      "final_val_loss": 2.99489164352417
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.019028321218087042-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.019028321218087042,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A35AVYGSM0V9BP8HPZ4GMG",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:30:27.475748+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 642.386472135,
+      "final_val_loss": 2.9745209217071533
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.038056642436174085-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.038056642436174085,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A35B0C8X6QCB9447SPN4CK",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:30:27.620876+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 548.505248932,
+      "final_val_loss": 2.9923653602600098
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A35B4PPZWTA8MFZ4FF1QC3",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:30:27.752619+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 552.7270564690001,
+      "final_val_loss": 2.9925451278686523
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A38A0H67Q3Q82WAETTHM1V",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:32:04.917179+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 691.313316305,
+      "final_val_loss": 2.9751174449920654
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A38A54MB7BX4QKEWT3X1EH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:32:05.058282+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 558.4549668059999,
+      "final_val_loss": 2.9950883388519287
+    },
+    {
+      "key": "muon-mup-w1024-lr0.009982164236443153-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.009982164236443153,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A38A984ZJG0M02VQCR60RC",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:32:05.185988+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 650.314800504,
+      "final_val_loss": 2.9949605464935303
+    },
+    {
+      "key": "muon-mup-w1024-lr0.019964328472886306-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.019964328472886306,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A3TSH5VSD6KQ78W7VFK8HZ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:42:10.620631+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 715.8801783920001,
+      "final_val_loss": 2.976238489151001
+    },
+    {
+      "key": "muon-mup-w1024-lr0.03992865694577261-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.03992865694577261,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A4AWDM03A6T58QAQBHC7PT",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:50:57.858570+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 709.0054287080001,
+      "final_val_loss": 2.9933125972747803
+    },
+    {
+      "key": "muon-mup-w1024-lr0.01-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.01,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A4DVTQ2W2HQJSDY8Q80QZ1",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T02:52:35.578829+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 720.396133067,
+      "final_val_loss": 2.9945054054260254
+    },
+    {
+      "key": "muon-mup-w1024-lr0.02-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A56N0S9G1A482E9Q0ZA8RQ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T03:06:07.795875+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 657.1665237450001,
+      "final_val_loss": 2.977698802947998
+    },
+    {
+      "key": "muon-mup-w1024-lr0.04-aux0.0015",
+      "part": "p42f",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.04,
+      "model_seed": 42,
+      "timeout_seconds": 1800,
+      "phase": "target",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A5WZ89488DC7CK166ZR25H",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T03:18:19.172175+00:00",
+      "maximum_reserved_gpu_hours": 0.5333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 701.52969063,
+      "final_val_loss": 2.9948363304138184
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.02-aux0.0015-ms43",
+      "part": "p42f-repeat",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 43,
+      "timeout_seconds": 1200,
+      "phase": "repeat",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A7BC9W84N6GZXPS26C2KN4",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T03:43:39.888815+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 632.788656561,
+      "final_val_loss": 2.9745755195617676
+    },
+    {
+      "key": "muon-mup-w1024-lr0.02-aux0.0015-ms43",
+      "part": "p42f-repeat",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 43,
+      "timeout_seconds": 1200,
+      "phase": "repeat",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A7BCFPDN02STXWAN027ZE2",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T03:43:40.073053+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 641.637072193,
+      "final_val_loss": 2.976628303527832
+    },
+    {
+      "key": "muon-baseline-w1024-lr0.02-aux0.0015-ms44",
+      "part": "p42f-repeat",
+      "prescription": "baseline",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 44,
+      "timeout_seconds": 1200,
+      "phase": "repeat",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A7BCKXNQYQBPGXJNB3XR5H",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T03:43:40.211298+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 547.054269253,
+      "final_val_loss": 2.9743404388427734
+    },
+    {
+      "key": "muon-mup-w1024-lr0.02-aux0.0015-ms44",
+      "part": "p42f-repeat",
+      "prescription": "mup",
+      "width": 1024,
+      "depth": 8,
+      "lr": 0.02,
+      "model_seed": 44,
+      "timeout_seconds": 1200,
+      "phase": "repeat",
+      "auxiliary_lr": 0.0015,
+      "overrides": {
+        "optimizer_name": "muon",
+        "optimizer_builder": "experiments.a2.p42_muon:build_optimizer",
+        "optimizer_kwargs": {
+          "adam_learning_rate": 0.0015,
+          "momentum": 0.95
+        }
+      },
+      "call_id": "fc-01M4A7BCR4VKE2F0H2TFTNN4JD",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-07T03:43:40.340871+00:00",
+      "maximum_reserved_gpu_hours": 0.36666666666666664,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 553.270708295,
+      "final_val_loss": 2.9753570556640625
+    }
+  ]
+}

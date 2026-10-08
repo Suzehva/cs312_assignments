@@ -1,0 +1,86 @@
+{
+  "baseline": {
+    "128": {
+      "first_normalized_feature_rms": 0.9246929287910461,
+      "embedding_residual_rms": 0.007724059280008078,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 3.797147147075878,
+        "embedding_fraction_squared_norm": 0.9041677136634346,
+        "clip_coefficient": 0.26335553980691634
+      }
+    },
+    "256": {
+      "first_normalized_feature_rms": 0.7726753950119019,
+      "embedding_residual_rms": 0.003857345087453723,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 8.838210972365165,
+        "embedding_fraction_squared_norm": 0.9578663890045098,
+        "clip_coefficient": 0.11314505729515711
+      }
+    },
+    "512": {
+      "first_normalized_feature_rms": 0.5201703906059265,
+      "embedding_residual_rms": 0.0019269367912784219,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 15.775455270449248,
+        "embedding_fraction_squared_norm": 0.9813512977276831,
+        "clip_coefficient": 0.06338960869697384
+      }
+    },
+    "1024": {
+      "first_normalized_feature_rms": 0.2910727262496948,
+      "embedding_residual_rms": 0.0009622031939215958,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 33.83928935133114,
+        "embedding_fraction_squared_norm": 0.9904810651934636,
+        "clip_coefficient": 0.029551447137858285
+      }
+    }
+  },
+  "mup": {
+    "128": {
+      "first_normalized_feature_rms": 0.5204801559448242,
+      "embedding_residual_rms": 0.0019310148200020194,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 29.243932220123174,
+        "embedding_fraction_squared_norm": 0.9915362463191358,
+        "clip_coefficient": 0.03419512664294711
+      }
+    },
+    "256": {
+      "first_normalized_feature_rms": 0.5203282237052917,
+      "embedding_residual_rms": 0.0019286725437268615,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 25.283729838587586,
+        "embedding_fraction_squared_norm": 0.9881814460742939,
+        "clip_coefficient": 0.03955112504495648
+      }
+    },
+    "512": {
+      "first_normalized_feature_rms": 0.5201703906059265,
+      "embedding_residual_rms": 0.0019269367912784219,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 15.775455270449248,
+        "embedding_fraction_squared_norm": 0.9813512977276831,
+        "clip_coefficient": 0.06338960869697384
+      }
+    },
+    "1024": {
+      "first_normalized_feature_rms": 0.519741415977478,
+      "embedding_residual_rms": 0.0019244063878431916,
+      "first_gradient": {
+        "step": 1,
+        "pre_clip_norm": 11.838339939339656,
+        "embedding_fraction_squared_norm": 0.9636794125673335,
+        "clip_coefficient": 0.08447129586181526
+      }
+    }
+  }
+}

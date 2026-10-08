@@ -1,0 +1,91 @@
+AUTHORIZED EXTENSION — October6,2026
+
+User authorized up to10additional GPUh after required completion. Baseline
+conservative usage31.47345039319GPUh; total extension ceiling41.47345039319.
+Every submitted job reserves its full hard timeout plus120sec overhead.
+Completed jobs count observed elapsed time plus30sec; failures count the
+full reservation. Billing is independently checked before every batch.
+No quota changes, automatic retries, existing-run resubmissions or ledger
+overwrites. Required prediction caches remain frozen and unchanged.
+
+Priority1: robustness checks for small required-result differences.
+Data order stays seed42. Initialization seeds43/44 repeat the frozen muP
+width1024 prediction and direct .003 (4jobs,900sec timeout each).
+At depth16, repeat each recipe's seed42 best sampled LR at both new seeds:
+standard muP .0015, Depth-muP .003, CompleteP .0015 (6jobs,1000sec each).
+These compare fixed recipes, not seed-specific reselected optima. Pair by
+initialization seed and report each difference, mean and sample spread;
+three seeds are still insufficient for strong universal claims.
+
+Priority2: optional P1(e), cosine schedule transfer.
+Use all9supplied cosine source measurements, no new source GPU runs.
+Fit the same log-LR quadratic and token-budget power law as linear P1(a).
+Freeze cosine prediction at1.2288B before any new target submission.
+Test .0015,.003,predicted cosineLR,.006 at the target, linear controls
+reused from supplied P1(b). Same shared baseline, data, WD and warmup.
+This tests schedule transfer, not a jointly retuned schedule/WD winner.
+
+Priority3: optional P4.2(f), Muon and width transfer.
+Reuse the supplied Muon implementation unchanged: hidden linear matrices
+use five BF16 Newton-Schulz iterations and Nesterov momentum .95;
+embedding/readout/norms use auxiliary AdamW (.9,.95),epsilon1e-8.
+Tune the auxiliary LR independently at width512 via a6-run pilot:
+MuonLR .01,.02,.04 crossed with auxiliaryLR .0003,.0015.
+Then fix selected auxiliary LR for the width sweeps, including shared
+reference512 and source widths128/256 under baseline and muP initialization/
+readout policies. Freeze new source-only predictions before testing1024.
+All runs153.6Mtokens, batch64,WD.1,linear schedule,1%warmup and clip1.
+
+IMPORTANT: Adam's hidden LR1/m is NOT reused blindly for original Muon.
+At fixed aspect ratio its normalized update has width-independent operator
+scale, so hidden Muon LR stays at the base value across widths. Auxiliary
+AdamW rates stay fixed for the single-width-dimension and norm parameters.
+Source: Qiu etal.,NeurIPS2025,Table1 and AppendixG:
+https://proceedings.neurips.cc/paper_files/paper/2025/file/bdcd9f6327db5877dee502cdec183159-Paper-Conference.pdf
+The course's rectangular factor sqrt(max(1,rows/columns)) is unchanged;
+this exploration is not an exact replication of the paper's architectures.
+
+Manual CPU checks (no new test files): unique/exhaustive parameter routing,
+correct hidden and auxiliary rates at both widths/policies, finite updates,
+preserved recorded gradients, and exact cosine target configuration.
+
+Results and exceptions go in extension_jobs.json and results/extension/;
+methods/findings will be added to main.tex and quiz notes after collection.
+Stop optional submissions before the new10h cap, not merely when required
+work is complete. Stage grids if full-timeout reservations exceed headroom.
+
+Additional focused P4.2(e)/P5 check: change ONLY first block's input
+RMSNormepsilon1e-5->1e-8 at baselinewidth1024/directLR.003. Allstored
+initialization weights and every other norm epsilon remain unchanged.
+Three paired initialization seeds42/43/44; reuse requiredseed42control,
+so5new jobs,900sec timeout each. Freeze a multiple-answer quiz prediction
+before submission: initialnormalizedRMS~1 and3.1–3.7xoriginal, unchanged
+storedweights, but changed initiallogits. Final loss improvement is not
+assumed. Executable intervention/prediction/launch file has62lines (<100).
+Manual shared-builder CPU check confirms identical weights and exactly
+one changed normalization epsilon. This tests an actual normalization
+confounder rather than adding unnecessary points to bracketed LR curves.
+
+Contingent final Muon robustness check (planned03:20UTC, before new seeds):
+The held-out baseline/predicted-muP losses differ by only~.0017 and the
+predicted rates are close to the reference .02. If the completed grid leaves
+headroom including all hard timeouts, compare both policies at EXACTLY the
+source-selected direct LR .02 and auxiliary .0015, at initialization seeds
+43/44 with data seed42 fixed. Reuse both seed42 target controls. Four unique
+new calls,1200sec timeout each (+120sec reservation), no new LR fitting or
+seed-specific retuning. Compare muP-minus-baseline loss per seed and report
+mean/sample spread. This checks whether a tiny held-out policy ranking is
+reproducible; do not spend remaining compute simply to exhaust the cap.
+Script:p42f_repeat_grid.py. Launch only after the original monitor terminates
+and a fresh four-job budget audit passes; no overlapping ledger writers.
+
+Completion outcome (2026-10-07): all64unique extensioncalls finished.
+Counts:10required robustness repeats,5cosine targets,5normalization
+checks,44Muon pilot/source/target/repeat calls. Allfour analysis sections
+complete; no pending/failed results, GPU retries, or quota changes.
+Allpredictions remain frozen before target submissions. Actual runtime
+configurations, token budgets, data hashes and optimizer groups verified.
+Finalconservative usage40.504527h versus baseline31.473450h:
+9.031076additional GPUh,below10hcap;7.495473h of48remain.
+Alltraining apps stopped. Maintext, figures,quiznotes and compiled draft
+updated. No further experiments planned simply to exhaust the budget.

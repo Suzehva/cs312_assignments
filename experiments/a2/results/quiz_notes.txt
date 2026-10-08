@@ -1,0 +1,293 @@
+QUIZ NOTES — CONCEPTS AND COMPLETED RESULTS
+
+This is a companion to main.tex, not an additional experiment. It includes
+all required numerical comparisons. Most LM sweeps use one seed; the stated
+paired checks use three initialization seeds with data order held fixed.
+Small loss differences do not establish significance or universal rules.
+
+1. What is being scaled?
+Problems1–2 vary training-token budget D, not model size: the model stays
+the same. Problem3 varies batch B at fixed total examples/tokens, hence
+larger B means fewer optimizer updates. Problem4 varies width n or depth L.
+Do not interpret a token-budget exponent as a width exponent.
+
+2. Two different fits
+Loss versus LR: a local quadratic in x=log2(LR/reference LR),
+L=a*x^2+b*x+c. The fitted optimum is reference LR*2^(-b/(2a)).
+This is an interpolation choice, not a universal power law for loss.
+Three points determine a quadratic exactly; that is not evidence of small
+uncertainty. A boundary minimum needs another measurement to bracket it.
+Optimal LR versus budget/batch/width: fit log(optimal LR) versus log(scale).
+If eta*=eta_ref*(scale/scale_ref)^p, doubling scale multiplies LR by2^p.
+p=.5 means four times the batch calls for twice the LR; p=1 means twice
+the batch calls for twice the LR. A fitted exponent is conditional on the
+optimizer, schedule, budget, data, and sampled range.
+
+3. Problem1: extrapolation is the hard part
+The three smallest AdamW budgets suggest LR grows with tokens (p=.2125,
+doubling multiplier1.16), but larger supplied budgets reverse that trend.
+At4.9152B, the recent-three-budget prediction(.002226) beats the
+all-six-budget prediction(.003728) in this one-seed comparison.
+Both extrapolate2x beyond their largest source budget. Their source spans
+are4x versus32x; including smaller sources does not change that target
+extrapolation distance. More data reduces fitting variance but can increase
+bias if one power law is a poor description across the entire range.
+Hyperball's small-budget fitted LR decreases with tokens, but this alone
+does not establish more reliable extrapolation than AdamW.
+
+4. Problem2: LR and weight decay interact
+AdamW applies decoupled shrinkage1-eta_t*lambda each update. Eta*lambda
+describes instantaneous shrinkage, not the complete optimization trajectory:
+changing eta also changes the gradient update. Identical products therefore
+do not guarantee identical loss. In the source sweeps, WD's token-budget
+power law is tighter than the product's; the product is tighter than LR's.
+The product-derived target recipe is practically close to the WD=.1 control,
+not demonstrably better (.000416 higher measured loss in one seed).
+
+5. Problem3: noise competes with fewer updates
+At fixed training tokens, a larger batch averages out more gradient noise
+but gives fewer updates. Larger LR can partly compensate; it cannot create
+the missing update opportunities. In the LM source sweep, eta*(B) has
+p=.5878, so doubling batch multiplies fitted LR by1.503: near, but not
+exactly, square-root scaling. Fixed-LR WD scaling has p=.7012 (factor1.626).
+The fixed-LR/scaled-WD target recipes outperform the fixed-WD/scaled-LR
+recipes at128 and256 in the measured runs. Both fitted LR and WD increase
+with batch, but they were fitted in separate conditional sweeps, not jointly.
+
+6. What the noisy quadratic model (NQM) does and does not predict
+It isolates curvature, gradient noise, initialization, and update count.
+It is not a miniature language model. SGD/RMSprop/Adam source exponents
+need not imply the same accuracy when transferred to a held-out batch.
+In the high-noise adaptive-optimizer experiments, exponents approach .5;
+near-linear scaling in a lower-noise setup does not contradict that.
+Adam's v_i is a running estimate of E[g_i^2], including squared mean
+gradient and noise variance; it is not just the gradient variance.
+Bias correction compensates for initializing moving averages at zero.
+The original NQM has no WD, so it cannot directly validate a WD scaling law.
+
+7. Momentum: compare like with like
+For the LM momentum sweep, LR and WD stay fixed within each batch.
+Best sampled beta1 is .95 atB8 and .9 atB256. Gains over zero momentum
+are .04124 and .17521 loss, respectively. Very high momentum(.99) hurtsB256.
+The toy sweep retuned LR at every coefficient; the LM sweep did not.
+Do not transfer exact best coefficients from the toy loss to an LM.
+Momentum can smooth noise and preserve useful directions, but excessive
+memory slows adaptation, especially when a fixed token budget gives few steps.
+
+8. Problem4.0: three constraints, two independent assumptions
+The abc layer has z=n^(-a)*W*x, Var(W0)=sigma^2*n^(-2b), LR=eta*n^(-c).
+Let alpha describe update/input alignment and omega describe initial
+readout/feature-change alignment. Full alignment has exponent1; the
+independent random reference has exponent.5. These assumptions are separate.
+Hidden initialization: a+b=.5. Direct update: a+c=alpha.
+Readout response to feature movement: a+b=omega.
+With hidden a=0 and readout c=0, hidden=(0,.5,alpha),
+readout=(alpha,omega-alpha,0); fixed-fan-in input=(0,0,0).
+LR exponents are c; initialization VARIANCE exponents are2b, not b.
+The full/full case gives hidden LR eta/m, readout multiplier1/m,
+readout variance1/n0, with m=n/n0. At m=1 the reference recipe is unchanged.
+The interaction term also needs the stated alignment bound to stay bounded.
+
+9. Problem4.1: transfer is not the same as best achievable loss
+A base LR is the tunable scalar before the per-layer multipliers.
+Width muP changes readout initialization, forward scale and hidden LR;
+it does not assign eta/m to embeddings or normalization gains.
+Depth-muP adds residual r^(-.5), block LR r^(-.5), block epsilon r^(-.5).
+CompleteP adds residual r^(-1), unchanged block LR, block epsilon r^(-1).
+Depth block rules include within-block norms, not embedding/readout/final norm.
+Compare transferred-LR loss and retuned loss separately.
+Bounded means not exploding. Nonvanishing means not shrinking to zero.
+Unit RMSNorm output can hide a growing pre-normalization residual stream.
+Measure branch RMS BEFORE its depth multiplier and movement from initial
+features, not just the current feature magnitude.
+
+10. Readout alignment is not a yes/no detector
+The ratio omega_move uses the INITIAL readout and feature CHANGE h_t-h_0.
+It is undefined before features move. Actual-update alpha uses the matrix
+change, its PRE-update input, and that matrix's actual fan-in.
+Pooling over a vocabulary much larger than width can constrain omega near
+.5 even for readout-dependent directions. A .5 measurement alone is not
+proof of independence or absent feature learning; inspect movement too.
+The width-law exponent p is fitted across widths. Alpha and omega instead
+come from matrix/probe ratios at one width and update; don't confuse them.
+
+11. Problem4.2: longer training adds confounders to interpret
+Source-only width predictions must be recorded before held-out target runs.
+At n0=512, the baseline and width-muP models exactly coincide.
+The longer runs have2344updates and23warmupsteps; the first LR iszero.
+Their first-five-update probes are not the same full-rate intervention
+as the constant-LR stress test. Shared embedding/readout Gaussian draws
+also mean initial features and initial readout are not strictly independent.
+RMSNorm divides by sqrt(mean(x^2)+epsilon). If feature scale is comparable
+to sqrt(epsilon), epsilon changes signal scale rather than being negligible.
+Baseline embedding RMS~1/n approaches that threshold as width grows;
+muP embedding RMS~1/512 holds this particular effect approximately fixed.
+Clipping, normalization, WD, warmup and decay are held fixed as instructed,
+not removed to force theory to fit. Above the reference width, muP's smaller
+hidden LR weakens per-step hidden WD shrinkage at fixed lambda; below it,
+the larger hidden LR strengthens shrinkage. A shifted best LR alone does
+not establish that a model is outside a stable muP regime.
+Adam normalizes by running moments: clipping a gradient by a factor does
+not generally shrink the parameter update by that same factor. Measure
+actual updates rather than inferring them from gradient norms alone.
+
+12. The handout's copied-model example is a different construction
+Copying width640 by k replicates features/heads and uses W/k in every
+hidden block and V/k in each readout copy, with NO extra forward multiplier.
+For negligible Adam epsilon, positive gradient scaling cancels in the
+normalized update. To preserve the stored weights'1/k relation, both
+hidden and readout LRs must be .001/k; embedding and norm LRs stay .001.
+Thus k4 uses .00025/.00025/.001 (option3), and k8 uses
+.000125/.000125/.001 (option2). QK norm gains are shared within each
+64-dimensional head and remain unscaled. Copies are separate parameters,
+not tied weights. Standard muP instead stores an unscaled readout and puts
+1/m in the forward pass, so its readout LR stays eta. Do not combine the
+copied-model LR rule with the independent-initialization muP recipe blindly.
+This is the handout's analytical answer, not an additional measured run.
+
+13. Completed longer-training source comparison
+Baseline fitted optimal base LRs at128/256/512 are .008283/.004285/.002378;
+muP .003073/.002033/.002378. MuP's fitted LR varies less, but is not exactly
+constant. Width-law exponents are -.9003 vs -.1852; doubling width multiplies
+base LR by .536 vs .880. Source-only1024 predictions are .001259/.001902.
+Better transfer is not a guarantee of uniformly lower tuned loss: muP wins
+best sampled at128 by .0113, baseline wins at256 by .0041. Tiny fitted-loss
+rankings can reverse the measured ranking; no repeated seeds establish
+the significance of these small differences. See16for completed target evidence.
+Across the source prescriptions, median matrix update alignment is about
+.80–.92 at update5 but .60–.62 at the final update. Readout-movement omega
+stays near.5 despite clearly nonzero normalized-feature movement.
+
+14. Completed five-update width and depth tests
+Width640->5120 is8x: Kaiming optimal LR falls22.6x; muP fitted LRs span
+only1.18x and sampled best is .001 at every width. MuP also has lower
+best measured loss at all three widths. Retuned Kaiming feature movement
+falls1.029->.321; muP stays1.038->.954 even though both have unit normalized RMS.
+Not every matrix has full update alignment; attention output and readout
+are more aligned than most query/key/FF matrices.
+Depth2/100/1000: ALL three policies choose sampled LR .02; fitted LR spans
+only5–8%. CompleteP does not clearly improve LR invariance over standard muP.
+At1000 layers losses are7.0771/6.9786/6.8999 for standard/Depth-muP/CompleteP.
+Final residual RMS is10219.6/8.72/7.95 while normalized RMS stays near1.
+CompleteP residuals almost match at100/1000 layers, with nonzero movement.
+Standard's last FF branches are only12.89/13.32 at those depths: a sum
+of many ordinary branches can explode even without exploding branches.
+Good LR transfer and unit normalized activations do NOT prove controlled
+raw signals. Depth scaling should be checked with both residual magnitude
+and feature change, not a loss curve alone. These are finite single-seed
+observations, not a proof of asymptotic stability.
+
+15. Completed longer-training depth comparison
+Atdepth16, Depth-muP's direct .003 rate is its best sampled rate and its
+measured loss3.16864 beats retuned standard-muP3.17394 by.00530.
+CompleteP's best measured3.17143 lies between them. Atdepth4, Depth-muP
+has a worse transferred-rate gap(.02216) and worse tuned loss than
+standard-muP; CompleteP and standard are almost tied. Depth corrections
+do not improve every depth. Fitted LR spans1.24x/1.55x/1.22x for
+standard/Depth-muP/CompleteP. Fitted loss interpolation reverses the
+tiny measured ranking of Depth-muP and CompleteP at16: don't oversell it.
+Best-rate depth16 update alignment median changes~.91 atupdate5 to~.62
+atend. Final normalized-feature movement staysnonzero,~1.36–1.53 atend;
+omega remains~.5. Alignment changes by stage; neither exact full nor
+exact random alignment describes every matrix and step.
+Extension: paired seeds42/43/44 at fixed seed42-best recipes give Depth-muP
+minus standard losses-.005296/-.011058/-.011635 (mean-.009330,SD.003505).
+CompleteP differences-.002515/-.001322/+.000305 (mean-.001177,SD.001415).
+Depth-muP's depth16 recipe improves all three seeds; CompleteP's tiny gain
+is less consistent. This repeats recipes, not seed-specific LR tuning.
+
+16. Completed held-out-width predictions
+At1024, baseline's frozen width-law LR .001259 gives loss3.110527 and is
+best ofits six sampled rates. Direct .003 transfer gives3.228920, a.118393
+loss gap. Local fitted LR .001018 is an interpolation, not a trained run.
+A prediction can bebest sampled without exactlymatching the fitted optimum.
+MuP direct .003 instead gives3.101986 and is its best sampled rate; frozen
+prediction .001902 gives3.104907, .002921 worse. Local fitted LR .002425
+is close to the reference512fit .002378. The baseline benefits from fitting
+width dependence; muP alreadytransfers well and its fitted law doesnot
+improve direct transfer here. Fitting allsix targetpoints instead of local
+neighbors changes the interpolated LR, not these measured comparisons.
+Extension: muP prediction-minus-direct differences at seeds42/43/44 are
++.002921/+.004650/-.001099 (mean+.002157,SD.002950). Ranking changes sign:
+neither recipe has a reliable small-loss advantage from these three seeds.
+
+17. Diagnose stability with more than a shifted LR
+At1024, directbaseline ends with rawresidualRMS97.89; retuning reduces it
+to16.75, while directmuP has21.26. Allhave nonzero normalized movement.
+Median updatealignment is~.92–.93 early/~.64–.67 late; omega staysnear.5.
+The first normalized feature atinitialization falls.925->.291 overbaseline
+width128->1024, but stays~.520 inmuP because its embedding scale staysfixed.
+An early larger logitRMS can still accompany better final loss (muP128
+versusbaseline128). Normepsilon, clipping, fixed-WD/actual-layer-LR coupling,
+warmup and decay all matter. These finite runs support useful transfer;
+they do not prove an infinite-width stable regime or one alignment choice
+for all matrices and stages.
+
+18. Optional normalization intervention / quiz question
+Change ONLY first input RMSNormepsilon1e-5->1e-8, baselinewidth1024/directLR.003.
+Stored initialization weights are unchanged; first normalized RMS changes
+from~.291 to~.9946, a3.41–3.42x increase at all three seeds. The formula
+s/sqrt(s^2+epsilon) predicts this change within~1e-5. Initial logits change.
+The frozen multiple-answer question's measured answer key is A,B,C.
+Final loss changes+.0300/+.0185/-.0218: fixing this initialization attenuation
+does NOT consistently improve loss without LR/WD retuning.
+Epsilon is negligible only relative to the variance it stabilizes.
+
+19. Optional schedule transfer / Muon source and target transfer
+Supplied cosine source law exponent.2500 versus linear.2125; doubling tokens
+increases predicted LR1.19x versus1.16x. Source grids allchoose sampledLR.003.
+Cosine frozen1.2288B prediction.0037228; allfive target runs complete,
+including.012 to bracket the best sampledLR.006. LocalfitLR.004798,
+allfive-point fit.004059: exactoptimum is sensitive to interpolation.
+Predictedloss2.837759 is only.000430 above bestsampled2.837329;
+directLR.003 loss2.840015, gap.002686. The prediction transfers well inloss.
+Bestcosine-minus-linear loss-.000460 does not establish a schedule winner
+from single-seed,unequally dense grids. AtfixedLR.003 cosine is.002226 worse.
+Retuning can change a ranking observed at one fixed LR.
+Muon hidden updates are approximately orthogonalized whole matrices;
+they have width-independent operator scale at fixed aspect ratio.
+Do NOT blindly copy Adam's hidden-LR1/m into original Muon. Its hidden LR
+stays at the base value, while embedding/readout/norms use auxiliaryAdamW.
+Reference pilot best: MuonLR.02,auxiliaryAdamWLR.0015,loss3.107776.
+AtMuonLR.02,auxiliary.0003 gives3.157971, so tune the auxiliary rate too.
+AllMuonsource curves bracketed. Baseline fittedLRs atwidth128/256/512:
+.035666/.030139/.023222;muP:.032364/.028663/.023222.
+Source optimum max/min:Muonbaseline1.536 vsAdambaseline3.484;
+MuonmuP1.394 vsAdammuP1.512. Muon makes baseline LR lesswidth-sensitive;
+muP gives a modest further source improvement, conditional onauxLR/WD.
+FixedWD doesnot matchmultiplicative shrinkage when optimizerLRs differ:
+eta*lambda remainsa confounder,so this doesnot isolateorthogonalization alone.
+Frozenwidthlaws:baseline.023582(n/512)^(-.3095),muP.023569(n/512)^(-.2395).
+Heldout1024predictions.019028/.019964 versusdirect.02. Frozenbeforeall
+targetsubmissions; all12target runs complete. Both predictions are the best
+sampled rates, with losses2.974521/2.976238. Direct-loss gaps are only
+.000597/.001460, versusAdamWbaseline's.118393. Muon already transfers well.
+Full-grid target fittedLRs are.019503/.020113. Local interpolation instead
+gives.017585/.014284: tiny gaps between nearly coincident LRs amplify small
+loss differences into curvature. A fit is not another training measurement.
+muPpredictionanddirect differ only.18%, so this single-seed improvement is
+not strong evidence that an extra width correction is generally useful.
+At exactdirectLR.02,seed42muP-minus-baseline is+.002581. Four additional
+calls compare both policies atseeds43/44, fixedauxiliary.0015/data42,
+without any seed-specificLRretuning. Allfour calls finished; muP-minus-
+baseline is+.002581/+.002053/+.001017 acrossseeds42/43/44,mean+.001884,
+sampleSD.000796. Baseline is slightlybetter at allthree testedseeds for
+this fixed recipe. The smallmuPsource advantage doesnot persist here;
+auxiliaryLR/WD werenotretuned,so this isnot a universalpolicy ranking.
+Allfive-source-point fitting sensitivity gives~.0208 at1024 forboth;
+this is not a separately tested prediction or a confidence interval.
+Medianhiddenupdatealignment~.5 is notproof ofindependence. A square
+orthogonalQ preservesnorms andhasRMS1/sqrt(n), givingratio sqrt(n) and
+alpha=.5 forANYinputX. ApproximateMuonupdates/rectangularmatrices/WD
+neednot obey this exactidentity. Readout omega_move also stays~.5 while
+features move substantially. Rawresiduals peak~10 atupdate234 thenfall;
+clipping/embedding/normepsilon remainfinite-width confounders. The heldout
+direct controls also move features substantially (1.330baseline/1.594muP),
+with hiddenalpha medians.508/.506 andreadoutomega~.501. These observations
+do not prove an infinite-width stable regime.
+This .5 is a matrix-alignment exponent in fan-in,not the batch–LR exponent.
+
+EVIDENCE
+main.tex and the p1*,p2*,p31*,p32* analysis JSON files in this directory.
+P4 job ledgers, raw p41/ and p42/ caches, source predictions and analysis
+files retain configurations, call IDs, data hashes and completed-budget loss.

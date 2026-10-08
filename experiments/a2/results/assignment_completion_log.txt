@@ -1,0 +1,722 @@
+ASSIGNMENT COMPLETION PLAN AND AUDIT
+
+Scope
+Complete all required questions, especially 3.2(c-d), 4.1(a-d), and
+4.2(a-e). No optional schedule/Muon/bonus/example replication runs unless
+required comparisons are complete and measured GPU headroom permits them.
+All experiment implementation stays in experiments/a2. Methods, settings,
+run IDs, predictions, timings, and limitations are recorded in results/.
+The write-up is 6abdc5b0bad58b38dfd83f81/main.tex. Compilation is authorized;
+this is an initial draft, so defer the20-page submission limit.
+
+Initial audit (2026-10-05 America/Los_Angeles)
+Modal billing since 2026-09-29: estimated H100 time 23h 36m 49s used,
+24h 23m 11s remaining out of 48 hours. Billing includes startup/shutdown.
+No active GPU apps. The completed a2-p32c app used 4h 6m 31s.
+The handout recommends 36 hours of experiments and 12 hours of reserve.
+Initial additional-experiment target: approximately 12 GPU hours. This is
+an allocation target, not a runtime guarantee; re-evaluate after pilots.
+Never change the course concurrency quota of two GPUs. Billing may lag:
+account for in-flight jobs and measured elapsed runtimes before admitting
+more work. Keep safety headroom and avoid speculative broad sweeps.
+
+Order of work
+1. Validate and cache the 12 completed P3.2(c) runs; reuse both beta1=.9
+   controls. Hold each batch's LR/WD and beta2 fixed. Complete its plots
+   and LM conclusions; put comparisons with retuned-LR NQM in 3.2(d).
+2. P4.1: implement explicit Kaiming/muP width policies and standard muP,
+   Depth-muP, CompleteP depth policies. Verify initialization, forward
+   multipliers, exact parameter-group coverage, LR, epsilon, and FP32/BF16
+   behavior locally before using GPUs. Use shared five training batches
+   and 64 fixed validation sequences, preserving data hashes and seeds.
+   Time representative width/depth pilots. Use compact log-LR sweeps;
+   expand only when needed to bracket minima. Reuse depth-two duplicates.
+   Collect alignment and feature diagnostics from these same runs.
+3. P4.2: implement shared clipped Gaussian initialization and checkpoint-
+   reconstructible readout behavior. Verify the width-512 equivalence to
+   the course baseline and reuse supplied source measurements/diagnostics.
+   Keep normalization and clipping fixed as instructed. Run compact LR
+   sweeps at 128/256, including the transferred source LR. Freeze source-
+   only width-1024 predictions before viewing target losses, test those
+   predictions and direct transfer, and bracket local target minima.
+   Run width-512 depth-4/16 sweeps for the three depth prescriptions,
+   reusing identical depth-eight source runs. Keep diagnostics enabled.
+4. Analysis and writing: final validation loss is the final budget
+   evaluation, not the best checkpoint. Distinguish measured minima,
+   interpolated optima, and predicted settings. Do not claim significance
+   from single seeds or label failed/nonfinite runs successful.
+   Use viridis, with the largest ordered quantity yellow; fitted optima
+   are stars, measurements circles, predictions hollow diamonds.
+   Add background where needed, short takeaways per part, figure
+   references, and an NQM prediction/measurement table. Keep the initial
+   draft clear; the user will handle submission-length cuts later.
+5. Final audit: match each required handout deliverable to results and
+   text; verify formulas/configs/actual token counts/source provenance,
+   checkpoint names, frozen predictions, and available GPU budget.
+   Compile and inspect the initial draft. State any unresolved or
+   compute-limited comparison.
+
+User clarification
+Up to 24 hours from this session; prioritize required experiments. Optional
+work only after required parts, leaving about 6 GPU-hours. Final-stage TeX
+compilation is authorized. This is an initial draft: do not cut to 20 pages yet.
+The earlier no-compilation and page-trimming instructions above are superseded.
+
+P3.2(c) collected 12 new runs plus two reused controls. At fixed LR/WD,
+best sampled beta1=.95 (B8) and .9 (B256); improvements over no momentum
+.041240 and .175206. beta1=.99 substantially hurts B256. Updated c/d text,
+NQM comparison and plot. p32c_results.py validates completed budgets.
+
+P4.1 implemented p41_policies.py and explicit selection in p31_student.py.
+Manual CPU checks: policies identical at reference width/depth; all weights
+finite and parameters routed once; block norms including Q/K receive depth
+LR/epsilon corrections; embedding/readout/final norm do not. Tiny five-update
+run completes. p41_launch.py records detached jobs, saves raw diagnostics,
+disables retries and keeps max_containers=2. Fixed alignment probes use one
+validation sequence (all 1024 positions), identical across configurations;
+final tuning evaluates all 64 validation sequences.
+Width2560 muP .003 pilot: loss7.163211,24.16s. Depth100 CompleteP .003
+pilot: loss7.985976,30.50s. Largest width/depth pilots launched afterward.
+
+P4.2 implemented p42_model.py using the supplied initialization draws,
+architecture and WD masks. At width512/reference depth, exact checks pass
+for weights, logits and one AdamW update against the default model. Shared
+Gaussian embedding/readout draws verified at128/256/1024; hidden versus
+readout LR factors checked. No added test files.
+
+Largest P4.1 pilots completed: width5120 muP .003 loss7.242847,87.92s;
+depth1000 CompleteP .003 loss7.956072,281.81s. Submitted 30 initial width
+configurations and 35 unique initial depth configurations, reusing pilots
+and the common depth-two curve. Width minima at lower grid boundaries
+triggered seven lower-LR bracketing measurements; interpolation is withheld
+until each sampled minimum has neighbors on both sides.
+
+Implemented gpu_budget.py: before submission, query billed cost/rates,
+compare with completed-job elapsed times plus startup allowances, and reserve
+ALL unfinished calls' hard timeouts. Required-work ceiling47.5 GPUh gives
+30min safety headroom; optional-work ceiling42 GPUh preserves6h. Current
+queued calls can run at most two per app; the course environment's existing
+two-GPU quota remains unchanged. No automatic training retries.
+
+P4.2 width128 muP .003 pilot completed: final loss3.616190,218.64s.
+Submitted equal five-LR source grids (.00075,.0015,.003,.006,.012) at
+128/256 under baseline/muP, reusing the pilot. All diagnostic hooks enabled.
+Numerical width1024 predictions are not yet frozen and no width1024 runs
+have been submitted. p42_analysis.py will enforce source completeness,
+interior minima, reference-data fingerprints and immutable predictions.
+p42_target_grid.py refuses to proceed without the frozen prediction file.
+
+P4.2 depth grid uses widths512, depths4/16, three prescriptions, initial
+LRs .0015/.003/.006, with depth-eight curves/diagnostics reused. Endpoints
+will be bracketed before interpolating. Plot scripts distinguish local
+log-LR fits, measured best runs, direct transfer and frozen predictions.
+
+Packaging correction: Modal upload raced a changing main.fls before a
+depth-grid submission. No calls had been submitted in that failed attempt.
+Exclude generated report artifacts and results caches from training mounts;
+then successfully submit the depth grid. Do not modify the GPU quota.
+
+Draft main.tex updated with completed3.2(c/d), a prediction/measurement NQM
+table and explanatory4.1/4.2 methods. latexmk succeeded (28-page initial
+draft before the remaining numerical results/plots). User requested no
+page-limit trimming yet. Final conclusions and per-part takeaways remain
+to be written only after the required runs are collected.
+
+P4.2 per-group scheduler check: width128/depth16 policies have the intended
+hidden, within-block norm, embedding, readout and final-norm LR/epsilon/WD
+groups; linear warmup/decay preserves every multiplier. Shared reference
+CPU weight/logit/AdamW-step equivalence remains exact. Auxiliary numerical
+check confirms the local log-LR quadratic optimum and boundary rejection.
+
+Finite-readout interpretation check (not an assignment training run): for
+one CPU Gaussian matrix q4096 by n64, even its top singular-vector input
+has omega=.52737, not1. Exact pooled-RMS bound S<=n*sigma_max(W)/||W||F
+is attained numerically. Added the bound and cited Vershynin's Gaussian
+singular-value result. This prevents interpreting omega near.5 as proof
+of feature independence. Main implementation recipes remain exactly the
+handout's prescriptions, not altered to force the diagnostics toward1.
+
+Required-only monitor p4_monitor.py collects calls, brackets endpoint
+minima, freezes source-only width1024 predictions and then launches targets.
+No failed or uncertain jobs are retried automatically. Corrected a local
+Modal function-name collision by naming width-stress and long-training
+functions distinctly; restarted only the local monitor, not any GPU jobs.
+Ledgers now use atomic JSON publication. Monitor prints compact completion
+counts and does not repeatedly load large diagnostic files to fit minima.
+
+Budget allowance tightened to120sec per queued/new GPU call (including
+an added allowance for older ledger entries), plus full hard timeouts.
+Recovered the first longer-training pilot's W&B identity and exact data
+fingerprints read-only: e34np2k7, with loss checked against the cached
+completed result. No retraining was needed for missing provenance.
+New plots use stacked comparison panels rather than long narrow strips;
+feature and clipping plots are separate to keep labels legible. Stress
+curves with very large high-LR losses show a near-minimum view plus a
+full-range inset, retaining all measurements rather than discarding tails.
+Recompiled the initial draft successfully:29pages, no errors. Page-count
+reduction remains explicitly deferred, as requested by the user.
+
+Added a read-only local run-table exporter, p4_results_table.py, with
+configurations, call IDs, completion status, timings, final loss and W&B
+links in p4_run_inventory.csv. Completed groups separately compare the
+direct reference rate with the best sampled loss; pending groups are
+explicitly incomplete. Added quiz_notes.txt and required_deliverables.txt.
+
+All completed P4.2 runs checked against the supplied source train/validation
+hashes and final2344-step diagnostic checkpoint. Source prediction now refuses
+missing provenance, not merely mismatching provenance. Reloaded only the
+local monitor during its sleep interval; remote calls were not stopped or
+retried. The original timing pilot's recovered provenance has its run ID
+and data hashes, but no captured actual optimizer-group trace; later runs
+capture that trace from their initialized optimizer.
+Added the verified warmup distinction: P4.2 has2344steps and23warmupsteps,
+with LRzero on the first update, unlike P4.1's constant full-rate updates.
+Added the depth2/100 standard-muP normalized-versus-residual example from
+completed best-sampled runs (residual21.80vs2055.20, norm RMS.907vs.910).
+
+Added compact p4_diagnostics.py summaries (descriptive medians/ranges,
+not uncertainty estimates) to the plot analyses. The supplied width512
+reference has median actual-update alpha .746 atstep2,.919 atstep5,
+.624 atstep2344. Omega_move stays near.5 while final-normalized movement
+is1.288 atstep5 and1.335 atcompletion; added this verified stage example
+to4.2(a), pending the full width comparisons and figure references.
+Plots can now publish completed width/source/depth phases separately;
+unfinished grids are rejected before publishing finished comparisons.
+The all-matrix longer-training heatmaps are split by prescription and
+transposed (matrices across columns, checkpoint rows), with block separators
+and a first-five-update boundary. Raw per-matrix values remain unchanged.
+
+Depth-fit refinement (2026-10-06 01:06 PDT): the initial common depth
+grid has a wide .01–.03 gap, and local quadratic minima sit .15–.25
+below the best measured standard-muP losses. Before relying on those
+interpolated rankings, submitted the common LR.02 at every depth/policy
+(seven unique cases, reusing depth2 across prescriptions). This was chosen
+from the already-observed source basin and applied equally, not chosen
+separately to favor a policy. p41_refine_depth.py records all call IDs.
+Budget check:27.9251h billed; worst-case total including ALL pending calls
+and the seven checks34.0972h, below47.5h. Expected added GPU execution
+roughly20min from the measured pilots; hard-timeout reservation1.1833h.
+Only the local monitor was stopped during shared-ledger submission, then
+resumed; no remote jobs were stopped, duplicated or retried.
+
+P4.2 source width grid completed (all20 new configurations, plus the
+three supplied reference measurements). Source-only numerical predictions
+frozen2026-10-06T08:16:49.150730Z BEFORE12width1024 calls were submitted.
+Baseline width law eta=.002349905742*(n/512)^(-.9003429283), predicting
+.001258984011 at1024; muP eta=.002161975774*(n/512)^(-.1851758873),
+predicting .001901548149. Exact floating-point LRs retained in run keys.
+At source128 direct.003 baseline gap.066590 vs muP gap0 to best sampled;
+at256 baseline gap.000634 vs muP gap.006289. MuP therefore improves
+overall width transfer, but not every direct-loss comparison. Best sampled
+muP beats baseline by.011255 at128 and loses by.004088 at256; fitted
+256 minima almost coincide and reverse that tiny ordering. No seed repeats,
+so do not claim a statistically established tuned-loss winner.
+
+Generated/inspected source fits, both all-matrix alignment heatmaps,
+readout-movement alignment and initial normalization. Added actual4.2(a/b)
+tables, figure references, short takeaways and frozen4.2(c) formulas to
+main.tex. Median update alignment at step5 vs final: baseline128 .799/.613,
+baseline256 .905/.611, muP128 .879/.597, muP256 .910/.611, reference512
+.919/.624. Omega remains near.5 with nonzero movement, not absent learning.
+Width-axis ticks now explicitly show sampled widths rather than crowded
+automatic log ticks. Source-only diagnostic JSON retains actual values.
+Draft compiled successfully (34pages) with resolved references and no
+overfull boxes; page-count reduction remains deferred by user instruction.
+Required width1024, remaining stress brackets/refinements, and two depth
+brackets are still running/queued. These are not final P4 completion claims.
+
+Required handout audit2026-10-06 01:26 PDT: reread required Problems1–3
+against current main.tex. All requested analyses, measured target losses,
+prediction comparisons, microbatch/budget qualifications and short takeaways
+are present. Explicitly added actual token totals to3.2(c), including the
+batch256 incomplete-accumulation convention already used in3.2(b).
+For4.2 verified all12target submissions occur AFTER source freeze and both
+exact predicted floating-point rates are included. Immutable source-report
+SHA256=2e8feb843aaa22bed5881704dbf7ad41fe4a3e259e1778e2c4721c1e3e6dd2da.
+Fresh billed usage28h35m54s; remaining19h24m06s. No optional jobs launched.
+Stress depth1000 standard-muP refinement .02 gives7.077079, improving on
+the initial .03 measurement7.192138; remaining equal-rate checks pending.
+
+Actual-budget audit extended to all39completed P4.2 runs: run metadata
+records153600000 training tokens,2344steps and num_micro_batches1.
+All14momentum runs also match the exact token totals printed in3.2(c).
+Long-training feature/alignment probes use the first8fixed validation
+sequences, while full final loss uses1000; stress probes use1sequence.
+Verified current compiled PDF includes these additions and frozen formulas,
+with no undefined-reference or overfull-box warnings (35-page draft).
+No page-limit trimming performed. Target plot prediction outlines now keep
+the same viridis-teal role color across LR/width/loss-gap comparisons;
+fitted width1024 stars remain yellow.
+
+All three depth1000stress sweeps including common.02 are complete.
+At best sampled.02, losses standard/Depth-muP/CompleteP are
+7.077079/6.978636/6.899922; corresponding final residual RMS
+10219.578/8.716/7.954, normalized RMS .9614/.9520/.9418,
+normalized movement1.0468/1.2379/1.2636, omega .5000/.4980/.4994.
+Replaced the preliminary depth2/100.03 example in4.1(d) with this
+completed matched-rate table; remaining small-depth.02checks pending.
+First held-out baseline1024half-prediction run completed: loss3.156626,
+elapsed583.852sec. No target conclusion yet; remaining target grid pending.
+
+All38width-stress configurations complete and minima bracketed. Kaiming
+fitted optima .001023462/.000146127/.000045356 versus muP
+.001268747/.001154762/.001079118 at640/2560/5120. MuP sampled optimum
+.001 at all widths; Kaiming .001/.0001/.00003. Kaiming width640 rate
+transferred to larger widths incurs1.2575/15.2529 loss gap. MuP's best
+measured losses lower by .1594/.5667/.7931. Added full4.1(a/b) results,
+all three associated figure references and concise takeaways to main.tex.
+Best sampled feature movement at update5: Kaiming1.029/.524/.321,
+muP1.038/1.007/.954; normalized RMS near1 in both. Median alpha muP
+.678/.734/.757, with attention output and readout more aligned. Omega
+near .5–.53 is not evidence that feature learning disappeared. Aggregate
+movement does not isolate each parameter group's contribution.
+Inspected all width plots; fixed overlapping muP inset/legend, crowded
+automatic width ticks, and made the normalized-RMS range shared.
+
+All80P4.1 runs completed:38width+42depth. Full p41_analysis.json and
+six figures generated/copied to report. All4.1(a–d) numerical comparisons,
+figure references and supported takeaways now in main.tex. Best sampled
+depth LR .02 at all7unique configurations; fitted LR ranges about7%/5%/8%
+for standard/Depth-muP/CompleteP, NOT evidence of CompleteP LR-transfer
+superiority. CompleteP wins deep1000loss; Depth-muP slightly wins measured
+100loss while fitted minima reverse that tiny ranking. CompleteP residual
+100/1000almost unchanged7.983/7.954; normalized movement1.253/1.264.
+
+Manual actual-record verification, not new test files: all80runs have
+identical train/validation hashes, all five completed updates, finite losses,
+all requested per-matrix measurements, and unique parameter coverage
+(11*depth+3 distinct named parameters). Every recorded layer LR/Adam epsilon
+and every branch/output multiplier matches the handout prescription.
+Precision labels confirm fullyFP32width and BF16-autocast/FP32-residualdepth.
+Updated quiz notes and required_deliverables. Initial draft compiled42pages
+with all cross-references resolved; corrected one long-word overflow in4.1(d).
+No page-limit trimming performed. Remaining work: held-out width1024 grid,
+two long-depth bracketing runs,4.2(c/d/e) results and final full-artifact audit.
+
+Oct6 02:05 PDT: fresh usage estimate29h44m29s,18h15m31sremaining.
+User explicitly confirmed compilation is allowed and the20-page limit
+should NOT constrain this initial draft. No trimming or optional runs.
+All44completed long-training runs manually verified against actual metadata:
+153600000tokens,2344updates,batch64,no accumulation,identical training and
+validation hashes. Actual peak-LR/epsilon/WD group traces match every named
+parameter for43runs; the original pilot's absent group trace remains
+documented, with read-only recovered W&B provenance rather than fabricated
+measurements. Added internal first/midpoint/last normalized-feature movement
+and raw-final-residual plots to the offline diagnostic script, complementing
+the final-feature/logit/alignment and clipping plots. App logs confirm the
+remaining depth job is progressing; the wait was queueing, not a stalled run.
+
+All21long-depth calls finished. Added4.2(d) table, fitted-curve figure,
+transfer versus tuned conclusions and takeaway to main.tex. Atdepth16,
+Depth-muP direct .003 gives3.168644, versus retuned standard3.173940 and
+CompleteP3.171425. Atdepth4, Depth-muP direct gap.022160 worsens transfer.
+Fitted optimum spans1.24x/1.55x/1.22x for standard/Depth/Complete;
+fitted minimum versus best measurement reverses the small16-layer ranking,
+explicitly qualified rather than declaring a robust winner.
+Added4.2(e) depth diagnostics: first/midpoint/last/final normalized movement,
+raw residuals, logit RMS and omega figures with direct/best styles. Depth16
+best-rate median update alignment~.91 early/~.62 late, while omega~.5
+coexists withnonzero movement. LR optimum shifts alone are not a stability
+diagnosis. Fixed time-axis ticks resolve overlap around0/firstupdate;
+fixed decimal LR ticks resolve crowded small log-axis panels.
+Only8held-out-width target calls remain atthis point; source predictions
+remain frozen and unchanged. No new optional configurations submitted.
+
+Compiled46-page initial draft successfully; no unresolved references or
+overfull boxes. Visually inspected4.2(d)'s rendered table/text and allfour
+depth plots. The extra page count is intentionally unconstrained peruser.
+Inventory refreshed:133unique P4configurations,125completed,8targets pending.
+
+First complete held-out direct/predicted comparison: baseline1024 atfrozen
+LR .0012589840108561399 has final loss3.1105270386, direct .003 has
+3.2289204597 (prediction improves .1183934212). Remaining muP rates/local
+target-grid completion still pending, so no final comparative conclusion.
+Manual figure audit: all30figure blocks have explicit references outside
+their captions, all33labels unique, and every source cross-reference exists.
+Earlier required parts and4.0 derivation reread against the handout;
+no additional required toy/optional experiment identified.
+
+Checked trainer/batch slicing, not only metadata: long runs consume2343
+full64-sequence batches plus one48-sequence final batch, exactly150000
+sequences/153600000tokens. Added explicit4.2(e) caution that stage-dependent
+alignment compares warmup with the linear-decay tail, not fixed-LR updates.
+At the pilot's final checkpoint every matrix has defined nonzero action;
+changed-element fractions .9884–.9985, so measurements are not fabricated
+from a zero optimizer update.
+
+Baseline held-out grid complete and bracketed: source prediction isbest
+sampled, loss3.110527; local target interpolation eta*.001017883442,
+fittedloss3.099312. Direct-transfer gap.118393. Global-all-six sensitivity
+eta*.000987160 isalso nearby. Added measured baseline comparison to4.2(c),
+clearly distinguishing interpolated LR from an actual measured recipe.
+CPU depth initialization check through the actual shared build_model path:
+all47named parameters atdepth4 and179atdepth16 arebit-identical across
+standard/Depth-muP/CompleteP BEFORE residual multipliers. Trainer reseeds
+after construction, so replacement decoder construction doesnot consume
+different final initializer draws. This was a manual check, not a new test.
+
+Rechecked4.0's reference table and4.1 width/depth settings against the
+handout; exact layer/reference factors remain correct. Also traced the
+data-order contract: preparedprefix metadata hasdata_seed42, and
+PreprocessedTokenDataset.shuffle(42) returns it unchanged. No accidental
+second shuffle occurs in the shared trainer; the prefix ordering follows
+the instructor's global_shuffle_prefix_indices implementation.
+Added exact depth-initialization control explicitly to4.2(d)'s methods.
+
+Earlier-part numerical audit against saved analyses: P1c gridopt.002152827
+and targetlosses, Hyperball source exponent-.2918505/targetgap.00353861,
+P2product exponent-.5929416/targetWD.09273647/targetgap.00041580,
+P3.2LR exponent.5877771, WD exponent.7011603 and both targetrecipes,
+and momentum gains.0412402/.1752057 agree with main.tex. WD's alternate
+local-fit exponent.9879201 remains disclosed as sensitivity. P3.1 a/b/c/d
+simulation summaries, source-only prediction caches and individual sweep
+records are present underresults/p31_nqm. Re-read3.2(b–d) against the
+handout: required comparisons are complete; no target optimum sweep is
+required there, and the original no-WD NQM limitation is explicitly
+distinguished from a failed WD prediction. No extra required run identified.
+
+Held-out muP direct .003 finished: loss3.1019861698, slightly below frozen
+prediction3.1049070358 (.0029208660 lower). Thus the width-law prediction
+does NOT improve on muP direct transfer, unlike the baseline's .118393
+gain. Two remaining rates arestillpending; do not finalize target minima
+or best-sampled gaps until all target measurements finish.
+
+Extended measured initialization-normalization figure/text towidth1024,
+using completed direct-rate probes (independent of unfinished curve ranking):
+baseline firstnormRMS .291073, muP .519741. Actual gradients atthat width
+initiallyembedding-dominated: baseline norm33.8393/share.99048/clip.02955,
+muP11.8383/.96368/.08447. Added standalone generated normalization JSON.
+Direct muP1024 hasmedian alpha .92088 atupdate5/.64109 atend,
+omega .50120/.50314, and finalnormalized movement1.31496/1.39444.
+Final rawresidual21.2558 versusbaseline direct97.8917; these are measured
+recipe differences, not proof that clipping or WD alone caused the losses.
+
+FINAL REQUIRED-ASSIGNMENT DRAFT — 2026-10-06
+
+All133unique P4calls finished:80five-update stress configurations and53
+long-budget configurations. No failed or pending calls remain, and every
+required fitted optimum has a bracketed measured minimum. No optional GPU
+experiments were launched. All required sections1–4 are now in main.tex.
+
+Held-out width1024, baseline: frozen prediction .0012589840108561399 gives
+loss3.110527038574 and is the best of six sampled rates; direct .003 gives
+3.228920459747. Prediction improves measured loss by .118393421173.
+Local fitted optimum .0010178834416130558 is an interpolation, not a run.
+Held-out muP: direct .003 is best sampled, loss3.101986169815; frozen
+prediction .0019015481489265784 gives3.104907035828, worse by .002920866013.
+Local fitted optimum .00242522716610194. Global-six-point sensitivity
+optima .0009871600531548342 and .002151228187838132 change precise LR
+estimates but not the measured direct-versus-prediction conclusions.
+Width fitting helps baseline transfer here; it does not improve muP's
+already-effective direct transfer. Small muP differences are single-seed
+observations, not evidence of a universal advantage or disadvantage.
+
+Depth16: Depth-muP improves both direct transfer and best measured loss
+versus standard muP, by .005296 to the latter. At depth4 it worsens both.
+CompleteP is nearly tied at depth4 and modestly improves depth16's best
+measured loss. Neither depth correction wins universally. Fitted-minimum
+ranking can differ from best-measured ranking; the report keeps them separate.
+
+Final runtime audit: all53long runs completed2344updates and153600000tokens,
+with matching train/validation fingerprints. Actual optimizer-group traces
+verified for52; the original pilot predates that trace, so its missing field
+is disclosed and its configuration/data/W&B provenance recovered read-only.
+All80stress runs have correct policy multipliers, group LR/epsilon, finite
+five-update histories and matching data hashes. All12held-out submissions
+occurred after the source-only prediction freeze. The canonical source hash
+still matches source_report_sha256:
+2e8feb843aaa22bed5881704dbf7ad41fe4a3e259e1778e2c4721c1e3e6dd2da.
+
+Final billing audit at2026-10-06T09:45:50UTC:31.070174billed GPUh;
+31.473450conservative used GPUh; zero pending reservations. This preserves
+at least16.526550GPUh of the48h allowance. All training apps stopped/0tasks.
+
+Final latexmk compilation succeeded:51-page initial draft, no unresolved
+references, LaTeX warnings/errors or overfull boxes. Remaining underfull
+boxes are harmless narrow-table paragraph spacing. Visually inspected all
+new final pages41–51, including held-out/depth result tables, curves,
+movement/alignment/raw-residual diagnostics, normalization and clipping.
+All35figure blocks have existing images and explicit text references;
+all required subparts have brief evidence-supported takeaways. No margins
+or page-limit cuts made, as requested. Quiz notes and required-deliverable
+audit updated. All code/results remain in the assignment workspace;
+no commits, pushes or destructive cleanup performed.
+
+AUTHORIZED10-GPU-HOUR EXTENSION, initiated2026-10-06T22:26UTC
+The user's six-hour reserve was not a requirement to stop at required
+completion. New authorization: at most10additional GPUh; immutable
+extension baseline31.47345039319conservative hours, totalceiling41.47345039319.
+Separate extension ledger/caches prevent contamination of required fits.
+
+First25runs all completed and recovered,4.360750conservative additionalGPUh:
+4muPwidth1024paired-seed runs,6depth16paired-seed runs,6Muonreferencepilots,
+4cosine1.2288Btargets and5single-normepsilonintervention/control runs.
+Local result-download DNS errors were initially misclassified as failures;
+review proved allseven affected calls had completed. Recovered their original
+results without resubmitting any training. Collector now distinguishes local
+transport errors from remote failures and preserves uncertain reservations.
+
+Paired muPwidthtarget prediction-minus-direct differences:
+seed42+.002920866,43+.004650116,44-.001099348;mean+.002157211,SD.002949824.
+Ranking changes sign; no consistent small-loss winner.
+Depth16fixed-recipe Depth-muP-minus-standard mean-.009329796,SD.003505258,
+improving allthree seeds. CompleteP mean-.001177231,SD.001415335,rankingmixed.
+These robustness results are now in main.tex and quiz_notes.txt.
+
+OptionalP5: onlyfirstblock inputRMSNormepsilon1e-5->1e-8. InitialnormRMS
+.9946 atallseeds instead~.291,3.411–3.420x; changedlogits,identicalstored
+initialization byshared-builder construction check. FrozenanswerkeyA/B/C
+confirmed. Final loss changes+.029995/+.018459/-.021763,notreliablyimproved.
+Methods,three-seed evidence,answerkey andlimitations addedtomain.tex.
+
+Muonreferencepilot besthiddenLR.02/auxiliaryAdamWLR.0015,loss3.107776;
+holdinghiddenLR.02,auxiliary.0003loss3.157971. Useconstant hiddenMuonLR
+acrosswidth,notAdam1/m;reusecourserouting/NSimplementationunchanged.
+Sourceonlyauxiliaryselection andstagedwidthsweeps follow thepilots.
+Cosineinitialtargetbestatupperendpoint.006,soadditional.012targetsubmitted
+beforeclaiminganyfittedoptimum. Sourcepredictioncache remains frozen.
+Audit2026-10-07T01:11:47UTC:billed35.178308h,conservative35.834201h,
+zeroreservationsbeforethenextstage;5.639249additionalhoursavailable.
+
+2026-10-07T01:25UTC extension verification milestone:
+29 finished,13 submitted/queued; no confirmed remote training failures.
+Added independent reconstruction/hash verification of the Muon source fits,
+source-only prediction ordering checks, per-matrix alignment heatmaps,
+fixed-reference-LR feature/readout movement plots and tuned/direct loss plots.
+These diagnostics become available only when their source measurements exist.
+Cosine and normalization prediction timestamps precede their submissions;
+completed cosine target runs share one training fingerprint.
+Required P4.2 source-report canonical SHA remains
+2e8feb843aaa22bed5881704dbf7ad41fe4a3e259e1778e2c4721c1e3e6dd2da.
+Added the focused P5 executable model-change snippet to the draft.
+LaTeX compile succeeded:55pages,36referenced figures,no missing image files,
+no undefined references or overfull boxes. No page trimming or margin changes.
+Fresh Modal app list confirms the cosine and Muon apps are live; the single
+monitor remains active and defers batches exceeding timeout-reserved headroom.
+
+2026-10-07T01:31UTC:30finished,12submitted/queued. Added independent
+reconstruction of P1e source fits and prediction-hash verification, plus
+matched-LR cosine-minus-linear loss comparisons for the final target report.
+Snapshot uniqueness check passed for all42extension keys/call IDs.
+Committed budget before the latest completion:4.542389h consumed plus
+5.1h pending reservations=9.642389h additional, within10h. Rejected batch
+audits include proposed reservations; these are not actual submissions.
+Monitor source now falls back from four-job batches to smaller batches if
+needed. The existing live session68762 was not restarted; this improvement
+will take effect only on a later, safely verified restart if one is needed.
+
+2026-10-07T01:35UTC optional P1(e) complete:
+Allfive new cosine targets finished, including endpointLR.012 withloss
+2.860953093. BestsampledLR.006 loss2.837329149 is now bracketed.
+Local three-point fitLR.004797927; global five-point sensitivityLR.004058633.
+FrozenpredictionLR.003722796 loss2.837759018 givesgap.000429869.
+DirectLR.003 loss2.840015173 givesgap.002686024. Bestcosine-minus-linear
+loss-.000459909 does not establish a winner from single-seed,unequalgrids.
+Added both completed figures, sensitivity, measured comparisons and short
+takeaway to main.tex/quiz_notes.txt; both plots visually checked.
+P1e frozen sourcefits independently reconstructed unchanged; alltargets
+postdate the prediction and sharetrainSHA002878006b52826a71e832243724cd78bb3baedb7fd447b4539ab706aad18123.
+README now documents offline regeneration and single-writer budget handling.
+
+2026-10-07T01:40UTC source-submission milestone:
+35finished,13submitted/queued,48unique extension calls. Allinitial Muon
+source grid points submitted; no held-outMuon calls yet. The last two
+reference endpoints (.005/.08) passed fresh budget checks before submission.
+Audit:conservative36.691093h totalused +4.766667h full pending reservations
+=41.457760h total,9.984310h beyond extensionbaseline,below41.473450h ceiling.
+The monitor now waits for actual source completions before any further
+bracketing or frozen held-out predictions. Source grid and optimizer-specific
+direct-transfer LR choice explicitly described in main.tex.
+P1e-inclusive compilation succeeded:56pages,37referenced figures,all image
+files present,no undefined references or overfull boxes in final log.
+Rendered schedule target page8 visually checked; no trimming/margin changes.
+
+2026-10-07T02:30UTC source completion/recovery and held-out stage:
+The oldmonitor68762 terminated for five purported failures. Inspection
+showed Modal's ConnectionError is not builtinConnectionError, so prior
+exception handling missed transport errors. Patched explicit SDK exception
+handling; recovered allfive ORIGINAL calls without resubmitting training.
+All48initial extensioncalls completed,including28Muonpilot/source calls.
+Allsource minima bracketed; source-only predictions frozen02:30:07UTC,
+sourceSHA2c6259387983d20f0cf9f007b3d46954bba82bc0fe01707b1049cf1e503e49c7.
+Baseline sourcefits.035666/.030139/.023222;muP.032364/.028663/.023222.
+Widthlaws exponents-.309533/-.239461,predictions.019028321/.019964328;
+direct.02. ThemuPprediction/direct difference is only.18%, disclosed.
+Freshbudget37.550628conservative totalused,zero pending beforetargets;
+6.077178additional GPUh consumed. New solemonitor82093 launched after
+terminalproof andsuccessful read-only collection. It safely stagedseven
+heldoutcalls; fallback3 instead4 prevented exceedingextensionceiling.
+Pendingfulltimeout reservations3.733333h; totalcommitted41.283961h,
+9.810511h beyondbaseline. Furthercalls waitforreservationrelease.
+
+2026-10-07T02:36UTC Muon source results in write-up:
+Addedsource fit table,laws,comparisonwithAdamwidthsensitivity,tuned/direct
+performance,all-matrix alphaheatmaps andfeature/readout/raw-residual plots.
+Medianalpha~.5 is explained by orthogonal-update geometry,notclaimed
+statisticalindependence. Readoutomega stays~.5 whilefeatures move;raw
+residuals peak9.80–10.16 atupdate234 thenfallto2.88–3.94. Initialgradient
+norm/clipping/embedding fractions remainconfounders;actualoptimizerrouting
+checks prove56hiddenMuon matrices andmaskedauxiliaryAdamWgroups.
+Sourcepredictions independently reconstructed;allseven heldoutcalls postdate
+the freeze. Source figures visuallyinspected; refreshedquiznotes/deliverables.
+Draftcompilation succeeds:60pages,42referencedfigures,nomissingimages,
+undefinedreferences oroverfullboxes. Heldouttargetlosses stillpending.
+
+2026-10-07T02:56UTC held-out progress/method review:
+Fourbaseline targetresults complete:LR.0095141606 loss2.994891644;
+frozenprediction.0190283212 loss2.974520922;.0380566424 loss2.992365360;
+.01 loss2.992545128. Fullbaseline/muP comparison stillpending,notpublished
+asfinal.52completed+6submitted across58unique calls. Atlastfreshaudit,
+conservativeused38.243746h +3.2h pending=41.443746h total,within41.473450h.
+Both remaining directmuP targets stillwaitforreservationrelease.
+
+Targetfit method clarified BEFORE complete targetgrids/directcontrols:
+use least-squares quadratic over all targetpoints; prediction/direct LRs
+are nearcoincident,so a local interpolant could amplify noise into curvature.
+Retain localfit as sensitivity; measured gaps stilluseactualtestedlosses.
+Manualnear-pair numerical check recovered a knownquadratic optimum;
+no newtest files. Sourcelaws/predictionsremainunchanged. Allfive-point
+source-fit sensitivity yields1024LR.020758/.020809,notnewtestedpredictions.
+Manualsquare-orthogonal identity check atn32/64/128 givesalpha=.5 for
+bothrandom andconstructedinputs,confirminggeometricexplanation.
+All42figures nowcheckedforreferences OUTSIDEfigure/caption blocks.
+Added explicitfixed-probe measurement andcross-optimizer eta*WD caveats.
+
+2026-10-07T03:05UTC final-analysis gate tightened:
+Muon cannot be marked complete until each policy has all six planned
+prediction/direct/half/double target rates, including any deduplicated rates.
+An offline finished-only snapshot correctly remains pending. Completed
+cache validation now also verifies ledger/cache identity, expected update
+count, batch64/micro1, warmup1%, clipping1, WD.1, Adam coefficients and
+the intended linear/cosine schedule. All currently completed caches pass;
+the frozen Muon source SHA remains unchanged. No training was resubmitted.
+
+2026-10-07T03:18UTC held-out submission complete and local checks:
+All12original planned Muon target rates now have unique persisted call IDs;
+8target results complete (56total finished,4submitted,60unique extension
+calls). Fresh conservative used39.003736h plus2.133333h reserved is
+41.137069h, below the41.473450h ceiling. Baseline target curve is bracketed:
+all-point quadratic optimum.0195034774, frozenprediction loss2.974520922
+(best sampled),direct.02 loss2.975117445,gap.000596523.
+The local-three-point sensitivity optimum is.0175848512; full-grid fitting
+avoids overweighting nearly coincident prediction/control LRs.
+
+Monitor82093 exited1 during upload because this completion log was edited
+while being packaged. The traceback is in app.run context entry BEFORE the
+spawn loop; the ledger remained58unique calls. Modal apps for the failed
+build were confirmed stopped/0tasks. Existing training calls were untouched.
+Replacement sole monitor10221 collected those same calls and submitted only
+the two previously missing rates. No GPU training retry or duplicate call.
+Avoid editing mounted result files during future app builds. Best-effort
+call-graph PENDING snapshots were stale; original app logs confirmed real
+update progress, and only returned final results count as completion.
+
+P5 actual-width CPU check: at width1024/depth8/seed43, all91 stored
+parameter tensors are exactly equal between the shared baseline and
+FirstNormLM; the only changed epsilon is model.layers.0.input_layernorm,
+1e-5->1e-8. This strengthens optionC evidence without any GPU consumption.
+Maintext now states the actual-width check and the conditional reference
+Muon-versus-Adam measured loss improvement (.121358, not compute-matched).
+
+2026-10-07T03:27UTC contingent final seed-check setup:
+Prepared p42f_repeat_grid.py for both Muon policies at referenceLR.02,
+auxiliaryLR.0015, modelseeds43/44, data42; four new unique keys,1200sec
+timeouts, total1.466667h reservation. No calls launched yet. The check is
+conditional on a fresh budget audit after the original monitor terminates.
+Analysis isolates these repeats from the already-completed required c/d
+checks and validates actual Muon groups for the new part too. A paired
+mean/sample-spread report will reuse seed42 controls, with no seed-specific
+LR selection. The protocol was recorded before testing the new seeds.
+
+Data-order review: train.py explicitly shuffles by config.data_seed;
+TokenDataset.shuffle returns the existing prefix when seed matches its
+data_seed42, and LazyBatches iterates contiguous slices in fixed order.
+Changing model_seed therefore does not change these training batches.
+All42current figures have references outside captions and existing images.
+Quiz-note overview distinguishes single-seed sweeps from paired repeats.
+
+2026-10-07T03:35UTC held-out diagnostics added:
+Both actual width1024/direct.02 controls completed. At the final update,
+baseline/muP normalized movement is1.330483/1.594491; hidden alpha medians
+.507711/.506458 and readout omega.501327/.501515. Peakrawresidual RMS
+10.595164/10.342572; initialclip coefficients.029552/.084467 become1.
+Added actualtarget controls to both all-matrix heatmaps and the feature/
+readout/raw-residual trajectories, with1024yellow. Common vertical scales
+make policy comparisons fair; removed overlapping checkpoint5/6 ticklabels.
+Plots visually inspected. These finite movements are not an asymptotic
+stability proof; the geometric alpha explanation/source freeze is unchanged.
+Seed42 same-direct-LR muP-minus-baseline loss+.002581358 motivates the
+previously planned paired-seed check, still contingent on available budget.
+
+2026-10-07T03:44UTC primary Muon transfer complete; final repeats submitted:
+Original sole monitor10221 exited0 after all60extension calls completed;
+no missing source or target rates, failures, duplicates or endpoint optima.
+Primary target fits use the predeclared full-grid quadratic. Baseline fitted
+LR.0195034774,muP.0201130151; predictions are both bestsampled,losses
+2.974520922/2.976238489. Directlosses2.975117445/2.977698803 givegaps
+.000596523/.001460314. Localfit sensitivity LRs.0175848512/.0142835700
+demonstrate the near-coincident-point issue,not new training measurements.
+Results/targetplot/source-targetstars/sensitivity/takeaway added to maintext
+andquiznotes. Actualtargetdiagnostics are shown atallfourwidths.
+
+Fresh four-repeat budgetaudit03:43:15UTC:used39.811540458h +1.466666667h
+newreservations=41.278207125h,understrict41.473450393h cap. This is
+9.804756732additional hours including all hardtime outs; original48h
+headroom atworst is6.721792875h. Script89126 exited0 afterpersisting
+allfour newcallIDs in appap-I4E1mEAqL035v5jgcyajag. Newsole monitor4698
+iscollectingthoseoriginalcalls; no overlapwitholdterminalmonitor.
+All64extension keys/call IDs are unique. No additionalexperiments planned.
+
+2026-10-07T03:50UTC rendering/runtime audit:
+All60completed extension caches pass explicit runtime width/depth/head-count,
+parameter-count formula, prescribed model policy, BF16 mixed precision,
+fixed dropout/epochs, data hashes, completed steps/tokens and actual optimizer
+groups. The four final seed calls remain submitted under solemonitor4698.
+All43figures have existing images and explicit references outside captions.
+Current62-page untrimmed draft compiles with resolvedreferences, no missing
+images or overfullboxes; fixed a short new text overflow and crowded LRticks.
+Visually inspected renderedpages59–60, including four-width diagnostics,
+actual target table, six-point fitted curves and measured recipe-loss gaps.
+The seed-check paragraph is explicitly pending until returned losses arrive.
+
+2026-10-07T04:10UTC final extension completion:
+All64unique extensioncalls finished,including the finalfour Muon repeats.
+Solemonitor4698 exited0; no pending/failed calls or active training apps.
+At source-selected fixedMuonLR.02/auxiliary.0015, muP-minus-baseline
+losses for seeds42/43/44 are+.002581358/+.002052784/+.001016617;
+mean+.001883586,sampleSD.000795974. Added actual pairedtable, caveats
+and takeaway to maintext/quiznotes; no seed-specific LR retuning.
+Offlineanalysis verifies all64runtime configurations, actualparameter
+counts, fulltoken/updatebudgets, shareddatahashes andoptimizergroups.
+Allfour extensionsections complete; frozenrequiredsourcepredictionhash
+and optional source-only freezes remain unchanged. All43figures exist
+and have references outside captions; ten extension scripts parse.
+Finalaudit04:06:16UTC:billed40.032435h,conservative40.504527h used,
+zero pending/new reservations. Additional9.031076h from31.473450h
+baseline is below10hcap;7.495473h oforiginal48remain. Modalapps
+stopped with0tasks. No GPUresubmissions,quota changes or newtestfiles.
+Compiled62-page untrimmed draft; resolvedreferences,no missingimages
+or overfullboxes. Finalrenderedtarget/seedtable andpredictionquestion
+checked. Removed a repeatedgeometry sentence from the finalMuon
+takeaway to avoid an orphanedline; fullgeometry explanation retained.
+Requiredparts andauthorizedextensions are complete; no further runs planned.
+
+2026-10-07T05:45UTC user-requested write-up condensation:
+Preserved the previous62-page narrative in full_experiment_report.tex
+(content identical apart from an extra terminalnewline). Removed no
+measurements,code ororiginalplots. Copied theten diagnosticplots omitted
+frommain intoresults/diagnostic_figures/ andverified byte-identical hashes.
+writeup_details.txt indexes supplementary narrative,plots andnumerical records.
+Maintextroughwordcount reduced15,755->about6,650,mostly by removing
+repetition andexhaustiveverification. Retained everyrequiredsubpart,
+both4.0four-casetables,corecomparisonfigures andnumericaltakeaways.
+Related depthprobes andlonger-training width/depthprobes grouped.
+OptionalMuonkeeps source-onlylaws,targetlossgaps andpairedseedresult;
+bonusquestion keeps prediction,code,answerkey andthree-seedevidence.
+Fixed an existing garbledsentence through the concise rewrite.
+FinalPDF33pages,including a separate one-pagebonus;stillabovesubmission
+limit. No font/marginchanges. All30mainfigureenvironments reference
+existingimages andhaveprose refs; no danglinglabels oroverfullboxes.
+Rendering checked for derivationtable,combineddiagnostics andbonuspage.
+No training launched; cachedresults,predictionfreezes,ledgers andGPU
+accounting unchanged. ExistingstagedP40files preserved without worktree edits.

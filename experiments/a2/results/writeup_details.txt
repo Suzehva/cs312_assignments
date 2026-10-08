@@ -1,0 +1,65 @@
+WRITE-UP DETAILS AND VERIFICATION
+
+The main write-up was condensed at the user's request on October 6/7.
+No experiment, result cache, prediction file, plot or code was deleted.
+No training was launched, and GPU usage is unchanged by this editing task.
+
+Full pre-condensation narrative:
+  full_experiment_report.tex
+This is the exact 62-page draft's source, including detailed derivations,
+per-layer diagnostics, sensitivity checks and all43 figure captions.
+It is supplementary evidence, not an additional part of the short PDF.
+
+Numerical records:
+  p41_analysis.json, p41_width_analysis.json; p41/ individual run records
+  p42_analysis.json, p42_source_analysis.json, p42_depth_analysis.json
+  p42/ individual run records; p42_predictions.json frozen source forecast
+  extension_analysis.json; extension/ individual optional/repeat records
+  extension_jobs.json, p41_jobs.json, p42_jobs.json: unique call ledgers
+  assignment_completion_log.txt: runtime checks and recovery history
+  gpu_budget_audits.jsonl, extension_budget.json: compute-accounting records
+  quiz_notes.txt: conceptual explanations for revision
+
+Detailed figures moved out of the main narrative:
+  p1e_schedule_source.png
+  p42_source_readout_alignment.png
+  p42_width_features_hidden.png
+  p42_depth_features_hidden.png
+  p42_initial_normalization.png
+  p42_width_features_clipping.png
+  p42f_muon_source_performance.png
+  p42f_muon_alignment_baseline.png
+  p42f_muon_alignment_mup.png
+  p42f_muon_diagnostics.png
+These figures are preserved in diagnostic_figures/ here and also in the
+write-up's original figures/ directory; no original images were removed.
+Main keeps required loss/LR comparisons and representative diagnostics.
+Related depth and longer-training width/depth probes are grouped into
+single figures. The bonus prediction question begins on its own page.
+
+Content edits:
+- 4.0: retain each derivation constraint and both four-case tables; remove
+  repeated substitutions and extended finite-geometry discussion.
+- 4.1: retain all(a)--(d), sweep/transfer and movement/alignment evidence;
+  remove duplicative complete numeric tables when already plotted.
+- 4.2: retain(a)--(e), source and held-out fits, depth results, seed-check
+  summaries, normalization/clipping/WD interpretation. Move redundant
+  per-layer/raw-stream/initialization/clipping grids to supplementary detail.
+- OptionalMuon: retain method/routing, source-only laws, target measured
+  gaps and fixed-recipe seed check; archive exhaustive diagnostic grids.
+- Earlierparts: remove repeated prose/captions; preserve exact fit formula,
+  important tables, explicit noise interventions and NQM comparisons.
+- OptionalP5: retain question/options, frozen reasoning, focused code diff,
+  empirical answer and three-seed evidence without duplicate loss table.
+
+All required subparts and short takeaways remain. Figure numbers are
+recomputed; refer to labels/current PDF, not old draft figure numbers.
+Margins and font size have not been changed to force a page count.
+
+Final compiled draft:33pages total, including a separate one-page bonus
+question. Previous draft:62pages. Rough TeX word count fell from15,755
+to about6,650. Main now has30figure environments; related images share
+figures. All mainfigures have explicit prose references and existing
+images. Crossreferences resolve; no overfullboxes or missingimages.
+This remains a draft above the eventual20-page limit, not a final
+submission. All numerical result files and GPU accounting are unchanged.

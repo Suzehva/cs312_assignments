@@ -27,6 +27,10 @@ def main(argv=None):
     p.add_argument('--precision', choices=('fp32', 'mp'), default='fp32')
     p.add_argument('--microbatch', type=int, default=8)
     p.add_argument('--seed', type=int, default=42)
+    p.add_argument('--policy', choices=('kaiming','mup','depth_mup','completep'), default='mup')
+    p.add_argument('--reference-width',type=int)
+    p.add_argument('--reference-depth',type=int,default=2)
+    p.add_argument('--probe-sequences',type=int,default=1)
     p.add_argument('--no-wandb', action='store_true', help='Save diagnostics locally without W&B')
     p.add_argument('--output', required=True, help='Unique JSON filename inside your private volume')
     a = p.parse_args(argv)
@@ -41,13 +45,16 @@ def main(argv=None):
     data = MODAL_SHARED_DATASETS_DIR / DEFAULT_DATASET_DIR_NAME
     arguments = ['--train-path', str(data / 'train'), '--val-path', str(data / 'val'),
                  '--output', '/root/data/a2-stress/' + a.output]
-    for key in ('lr', 'width', 'depth', 'head_dim', 'precision', 'microbatch', 'seed'):
+    if a.reference_width is None:
+        a.reference_width=64 if a.precision=='mp' else 512
+    for key in ('lr', 'width', 'depth', 'head_dim', 'precision', 'microbatch', 'seed',
+                'policy','reference_width','reference_depth','probe_sequences'):
         arguments += ['--' + key.replace('_', '-'), str(getattr(a, key))]
     if a.no_wandb:
         arguments.append('--no-wandb')
     import modal
     with modal.enable_output():
-        with app.run(name=timestamped_modal_app_name('a2-stress'), environment_name=MODAL_ENVIRONMENT):
+        with app.run(name=timestamped_modal_app_name('a2-p41c' if a.precision=='mp' else 'a2-p41a'), environment_name=MODAL_ENVIRONMENT):
             _run.with_options(secrets=secrets(include_wandb=not a.no_wandb)).remote(arguments)
     print('Saved to your Modal volume: /a2-stress/' + a.output)
 

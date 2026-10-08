@@ -1,0 +1,27 @@
+{
+  "recorded_at_utc": "2026-10-06T22:34:59.928310+00:00",
+  "question": "At width1024 baseline, change ONLY first input RMSNorm epsilon from1e-5 to1e-8. Which statements hold?",
+  "select": "all that apply",
+  "options": {
+    "A": "Initial first-normalized feature RMS is in [.95,1.05].",
+    "B": "Its RMS is between3.1x and3.7x the original value.",
+    "C": "All stored initialization weights remain identical for a fixed seed.",
+    "D": "Initial logits remain numerically unchanged despite the intervention."
+  },
+  "predicted_answers": [
+    "A",
+    "B",
+    "C"
+  ],
+  "reasoning": "For embedding RMSs, normalized RMS is s/sqrt(s^2+epsilon). Withs~1/1024, reducingepsilon removes strong attenuation; the first forward branch changes, not its stored weights.",
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "width": 1024,
+  "depth": 8,
+  "tokens": 153600000,
+  "lr": 0.003,
+  "final_loss_prediction": "No guaranteed improvement: this is not a jointly retuned LR/WD comparison."
+}

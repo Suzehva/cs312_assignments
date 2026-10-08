@@ -89,6 +89,7 @@ IGNORED_SOURCE_PARTS = {
     "ckpts",
     "data",
     "plots",
+    "results",
     "slurmjobs",
     "temp_scripts",
     "wandb",
@@ -117,7 +118,10 @@ def ignore_source_path(path: Path) -> bool:
         return True
     if any(part in IGNORED_SOURCE_PARTS for part in path.parts):
         return True
-    return path.suffix in {".pyc", ".pyo"}
+    # Reports are not training dependencies and may be regenerated while a
+    # detached experiment is being packaged. Never upload changing TeX output.
+    return path.suffix in {".pyc", ".pyo", ".tex", ".pdf", ".png", ".aux", ".fls",
+                           ".fdb_latexmk", ".log", ".out"} or path.name.endswith('.synctex.gz')
 
 
 def build_image(*, include_tests: bool = False) -> modal.Image:

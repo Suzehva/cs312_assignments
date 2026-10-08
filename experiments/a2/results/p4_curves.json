@@ -1,0 +1,212 @@
+{
+  "p41": {
+    "mup-2560-2-fp32": {
+      "status": "needs_bracketing",
+      "best_sampled": {
+        "key": "mup-w2560-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 6.746387988328934
+      },
+      "suggested_lr": 0.0005,
+      "runs": [
+        {
+          "key": "mup-w2560-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 6.746387988328934
+        },
+        {
+          "key": "mup-w2560-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.163210511207581
+        },
+        {
+          "key": "mup-w2560-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.542382299900055
+        },
+        {
+          "key": "mup-w2560-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 18.799710631370544
+        },
+        {
+          "key": "mup-w2560-d2-lr0.1-fp32",
+          "lr": 0.1,
+          "loss": 29.190784335136414
+        }
+      ]
+    },
+    "completep-64-100-mp": {
+      "status": "incomplete",
+      "runs": [
+        {
+          "key": "completep-w64-d100-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.985976159572601
+        }
+      ]
+    },
+    "mup-5120-2-fp32": {
+      "status": "incomplete",
+      "runs": [
+        {
+          "key": "mup-w5120-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.2428465485572815
+        }
+      ]
+    },
+    "completep-64-1000-mp": {
+      "status": "incomplete",
+      "runs": [
+        {
+          "key": "completep-w64-d1000-lr0.003-mp",
+          "lr": 0.003,
+          "loss": 7.956071853637695
+        }
+      ]
+    },
+    "kaiming-640-2-fp32": {
+      "status": "bracketed",
+      "coefficients": [
+        0.207947489567409,
+        0.645262978747269,
+        7.569154202938081
+      ],
+      "optimal_lr": 0.001023462248143522,
+      "fitted_minimum_loss": 7.068589958801307,
+      "fitted_domain": [
+        0.0003,
+        0.003
+      ],
+      "local_run_keys": [
+        "kaiming-w640-d2-lr0.0003-fp32",
+        "kaiming-w640-d2-lr0.001-fp32",
+        "kaiming-w640-d2-lr0.003-fp32"
+      ],
+      "best_sampled": {
+        "key": "kaiming-w640-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 7.068822741508484
+      },
+      "runs": [
+        {
+          "key": "kaiming-w640-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.720380425453186
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 7.068822741508484
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.56915420293808
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.844190120697021
+        },
+        {
+          "key": "kaiming-w640-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 16.324169516563416
+        }
+      ],
+      "global_fit_sensitivity": {
+        "coefficients": [
+          0.44046050587797686,
+          1.1273667008522306,
+          7.039766807314421
+        ],
+        "optimal_lr": 0.0012355928077943407
+      }
+    },
+    "kaiming-2560-2-fp32": {
+      "status": "needs_bracketing",
+      "best_sampled": {
+        "key": "kaiming-w2560-d2-lr0.0003-fp32",
+        "lr": 0.0003,
+        "loss": 7.425021171569824
+      },
+      "suggested_lr": 0.00015,
+      "runs": [
+        {
+          "key": "kaiming-w2560-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 7.425021171569824
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 8.57054591178894
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 9.810385465621948
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 18.860877871513367
+        },
+        {
+          "key": "kaiming-w2560-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 33.86644959449768
+        }
+      ]
+    },
+    "kaiming-5120-2-fp32": {
+      "status": "incomplete",
+      "runs": [
+        {
+          "key": "kaiming-w5120-d2-lr0.0003-fp32",
+          "lr": 0.0003,
+          "loss": 13.469678670167923
+        }
+      ]
+    },
+    "mup-640-2-fp32": {
+      "status": "needs_bracketing",
+      "best_sampled": {
+        "key": "mup-w640-d2-lr0.001-fp32",
+        "lr": 0.001,
+        "loss": 6.909419059753418
+      },
+      "suggested_lr": 0.0005,
+      "runs": [
+        {
+          "key": "mup-w640-d2-lr0.001-fp32",
+          "lr": 0.001,
+          "loss": 6.909419059753418
+        },
+        {
+          "key": "mup-w640-d2-lr0.003-fp32",
+          "lr": 0.003,
+          "loss": 7.237392783164978
+        },
+        {
+          "key": "mup-w640-d2-lr0.01-fp32",
+          "lr": 0.01,
+          "loss": 8.327460289001465
+        },
+        {
+          "key": "mup-w640-d2-lr0.03-fp32",
+          "lr": 0.03,
+          "loss": 12.084709644317627
+        },
+        {
+          "key": "mup-w640-d2-lr0.1-fp32",
+          "lr": 0.1,
+          "loss": 23.865065813064575
+        }
+      ]
+    }
+  },
+  "p42": {}
+}

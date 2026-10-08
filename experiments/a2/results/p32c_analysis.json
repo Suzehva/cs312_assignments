@@ -1,0 +1,20 @@
+[
+  {
+    "batch_size": 8,
+    "best_sampled_beta1": 0.95,
+    "best_sampled_loss": 2.9295148849487305,
+    "loss_without_momentum": 2.970755100250244,
+    "improvement_over_no_momentum": 0.04124021530151367,
+    "learning_rate": 0.001,
+    "weight_decay": 0.1
+  },
+  {
+    "batch_size": 256,
+    "best_sampled_beta1": 0.9,
+    "best_sampled_loss": 2.996901035308838,
+    "loss_without_momentum": 3.1721067428588867,
+    "improvement_over_no_momentum": 0.17520570755004883,
+    "learning_rate": 0.0015,
+    "weight_decay": 0.6903083049528113
+  }
+]

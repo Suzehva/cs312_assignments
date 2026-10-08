@@ -1,0 +1,2407 @@
+{
+  "jobs": [
+    {
+      "key": "mup-w2560-d2-lr0.003-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "call_id": "fc-01M47W8FHJ3CFW97PMRCFNDA59",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:51:21.742616+00:00",
+      "maximum_reserved_gpu_hours": 1.0,
+      "elapsed_seconds": 24.161026805,
+      "final_val_loss": 7.163210511207581
+    },
+    {
+      "key": "completep-w64-d100-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "call_id": "fc-01M47W9PP27QBVQQ6P1P83N3CH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:52:01.807439+00:00",
+      "maximum_reserved_gpu_hours": 1.0,
+      "elapsed_seconds": 30.503053299,
+      "final_val_loss": 7.985976159572601
+    },
+    {
+      "key": "mup-w5120-d2-lr0.003-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "call_id": "fc-01M47WDKH3XJSEBS3JPK80S1G1",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:54:09.686051+00:00",
+      "maximum_reserved_gpu_hours": 1.0,
+      "elapsed_seconds": 87.924020487,
+      "final_val_loss": 7.2428465485572815
+    },
+    {
+      "key": "completep-w64-d1000-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "call_id": "fc-01M47WE6NGQNXC126XBCMP5Z2H",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:54:29.261648+00:00",
+      "maximum_reserved_gpu_hours": 1.0,
+      "elapsed_seconds": 281.811007024,
+      "final_val_loss": 7.956071853637695
+    },
+    {
+      "key": "kaiming-w640-d2-lr0.0003-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP845VCE9K2WRKGK9DA23",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:52.895227+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 4.865785254,
+      "final_val_loss": 7.720380425453186
+    },
+    {
+      "key": "kaiming-w640-d2-lr0.001-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP88BMEKDQQHXF4NMK2E9",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.018878+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.5463022360000007,
+      "final_val_loss": 7.068822741508484
+    },
+    {
+      "key": "kaiming-w640-d2-lr0.003-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP8C7K03YMS5EZ6E5CKGS",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.145244+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.5311320140000007,
+      "final_val_loss": 7.56915420293808
+    },
+    {
+      "key": "kaiming-w640-d2-lr0.01-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP8G4JKT5PQFHTMDDQAH3",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.267821+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.533396646,
+      "final_val_loss": 8.844190120697021
+    },
+    {
+      "key": "kaiming-w640-d2-lr0.03-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP8M2KDBP79WZP34DQBCC",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.397009+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.5152730650000024,
+      "final_val_loss": 16.324169516563416
+    },
+    {
+      "key": "kaiming-w2560-d2-lr0.0003-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP8QZC1SB1XDY2NBDDN39",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.530089+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.668579604,
+      "final_val_loss": 7.425021171569824
+    },
+    {
+      "key": "kaiming-w2560-d2-lr0.001-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP8WAR88E6REB843V4V4S",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.655758+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.648828497000004,
+      "final_val_loss": 8.57054591178894
+    },
+    {
+      "key": "kaiming-w2560-d2-lr0.003-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP908RCHGHQHKKV0V1AZR",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.788129+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.16147615700001,
+      "final_val_loss": 9.810385465621948
+    },
+    {
+      "key": "kaiming-w2560-d2-lr0.01-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP946NGKY5QZSRF99RCH4",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:53.907856+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.484656610000002,
+      "final_val_loss": 18.860877871513367
+    },
+    {
+      "key": "kaiming-w2560-d2-lr0.03-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WP97ZDP0TX38ZWH7J7RCV",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:54.029469+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.378046764999993,
+      "final_val_loss": 33.86644959449768
+    },
+    {
+      "key": "kaiming-w5120-d2-lr0.0003-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0003,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WP9M2D6PQH31KMM8Q7WZJ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:54.435846+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 150.129386049,
+      "final_val_loss": 13.469678670167923
+    },
+    {
+      "key": "kaiming-w5120-d2-lr0.001-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WP9RF7C1C0FGZ51TK8XTR",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:54.807023+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 167.2368967,
+      "final_val_loss": 22.790476143360138
+    },
+    {
+      "key": "kaiming-w5120-d2-lr0.003-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPA4X1FS2XMNEEB3KNWK0",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:54.947424+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 157.598443708,
+      "final_val_loss": 13.045358657836914
+    },
+    {
+      "key": "kaiming-w5120-d2-lr0.01-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPA8H3FP5CQV9Y0BYTNSQ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.076825+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 155.20710456900002,
+      "final_val_loss": 25.47777485847473
+    },
+    {
+      "key": "kaiming-w5120-d2-lr0.03-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPACF50M3K6FK7BW39012",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.190701+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 158.96443707000003,
+      "final_val_loss": 64.47594785690308
+    },
+    {
+      "key": "mup-w640-d2-lr0.001-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPAG6A5NN24B5RZR8NJD9",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.324003+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.506430347999995,
+      "final_val_loss": 6.909419059753418
+    },
+    {
+      "key": "mup-w640-d2-lr0.003-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPAM8P9ECNP5CPVV52098",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.443317+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.5193703399999947,
+      "final_val_loss": 7.237392783164978
+    },
+    {
+      "key": "mup-w640-d2-lr0.01-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPAR0BTEPFZTR4SYRY99Q",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.569981+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.597258049000004,
+      "final_val_loss": 8.327460289001465
+    },
+    {
+      "key": "mup-w640-d2-lr0.03-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPAW1F2J9B52Y2QZN41T2",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.705290+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.5249713930000155,
+      "final_val_loss": 12.084709644317627
+    },
+    {
+      "key": "mup-w640-d2-lr0.1-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPB06WH2ATKHPWCRD6F05",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.826860+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.5291092120000087,
+      "final_val_loss": 23.865065813064575
+    },
+    {
+      "key": "mup-w2560-d2-lr0.001-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPB431J2FFP9APB0YHGFC",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:55.951371+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.721441411,
+      "final_val_loss": 6.746387988328934
+    },
+    {
+      "key": "mup-w2560-d2-lr0.01-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPB7V0PFQE6PYT77B8NP1",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.080131+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.73639583299999,
+      "final_val_loss": 8.542382299900055
+    },
+    {
+      "key": "mup-w2560-d2-lr0.03-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPBBW33DTT258C71YRDZ5",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.220311+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.716705509000008,
+      "final_val_loss": 18.799710631370544
+    },
+    {
+      "key": "mup-w2560-d2-lr0.1-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WPBGAPWH25K2KXN7C0PAH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.346206+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.51425136399999,
+      "final_val_loss": 29.190784335136414
+    },
+    {
+      "key": "mup-w5120-d2-lr0.001-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPBM6VGRBSGFHFE242FHP",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.464792+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 164.82079648599995,
+      "final_val_loss": 6.744479015469551
+    },
+    {
+      "key": "mup-w5120-d2-lr0.01-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPBQWK690Y8ZJ49QHBNHZ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.587736+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 158.88227817099994,
+      "final_val_loss": 8.260032057762146
+    },
+    {
+      "key": "mup-w5120-d2-lr0.03-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPBVPWEA00WP4S4BJE5NJ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.702938+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 159.63623517600013,
+      "final_val_loss": 15.293313831090927
+    },
+    {
+      "key": "mup-w5120-d2-lr0.1-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47WPBZGK428XB9JT142XVTB",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T05:58:56.827635+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 156.354543809,
+      "final_val_loss": 27.261655628681183
+    },
+    {
+      "key": "mup-w64-d2-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX5CSM90N24EK26ZQ0WS2",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:39.460176+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 6.039389682000001,
+      "final_val_loss": 8.583088755607605
+    },
+    {
+      "key": "mup-w64-d2-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX5GPJ9H917NY6QQ5Q9RZ",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:39.595163+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 0.9026876109999993,
+      "final_val_loss": 8.041925072669983
+    },
+    {
+      "key": "mup-w64-d2-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX5MRFY0P68HTKBZDXZ5F",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:39.713549+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 0.841501371999998,
+      "final_val_loss": 7.053823351860046
+    },
+    {
+      "key": "mup-w64-d2-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX5RCXWCV8EM5J1TQR9WW",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:39.831099+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 0.8290694420000015,
+      "final_val_loss": 7.048192620277405
+    },
+    {
+      "key": "mup-w64-d2-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX5W3AWDM5JW946E84QSG",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:39.948296+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 0.7841134089999997,
+      "final_val_loss": 8.463725090026855
+    },
+    {
+      "key": "mup-w64-d100-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX5ZSD5T3SF00XHEWQZZ9",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.074983+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 30.043883364,
+      "final_val_loss": 8.211307048797607
+    },
+    {
+      "key": "mup-w64-d100-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX63S7M38K3Y08RXJ2QJ2",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.199507+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.456833152,
+      "final_val_loss": 7.879690051078796
+    },
+    {
+      "key": "mup-w64-d100-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX67PBZRD6ZPEYN9CG2M0",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.320620+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.359486491,
+      "final_val_loss": 7.156367659568787
+    },
+    {
+      "key": "mup-w64-d100-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX6BNYPDH5PC8YK5P0D1A",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.460068+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.644107110000007,
+      "final_val_loss": 7.122885584831238
+    },
+    {
+      "key": "mup-w64-d100-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX6FX08RJB10SX0Y6JK51",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.603487+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.158826360999996,
+      "final_val_loss": 8.884083986282349
+    },
+    {
+      "key": "depth_mup-w64-d100-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX6MBCD2CPWR55ZRRYPM6",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.728307+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 27.599142545999996,
+      "final_val_loss": 8.575170040130615
+    },
+    {
+      "key": "depth_mup-w64-d100-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX6RAAF0EXATCDA6JPZ65",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.867320+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.67491688300001,
+      "final_val_loss": 8.059053659439087
+    },
+    {
+      "key": "depth_mup-w64-d100-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX6WFT46WQG156HK9N8JE",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:40.991309+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 30.254045098000006,
+      "final_val_loss": 7.092437148094177
+    },
+    {
+      "key": "depth_mup-w64-d100-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX70GW6A4W51VCPSREVN3",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:41.118029+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 29.97349415100001,
+      "final_val_loss": 7.009001314640045
+    },
+    {
+      "key": "depth_mup-w64-d100-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX74D38DB14R5AFQFX0YA",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:41.240023+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 29.200640789000033,
+      "final_val_loss": 8.454458951950073
+    },
+    {
+      "key": "completep-w64-d100-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX785HBE4CP2ECC67SV66",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:41.358763+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.472588137999992,
+      "final_val_loss": 8.580942153930664
+    },
+    {
+      "key": "completep-w64-d100-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX7BW0GZRHREP4BHCP4S5",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:41.517855+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 29.10069931199996,
+      "final_val_loss": 7.020694077014923
+    },
+    {
+      "key": "completep-w64-d100-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX7H80DM64SZTEKBGR4WY",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:41.775636+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.66756873899999,
+      "final_val_loss": 7.0722960233688354
+    },
+    {
+      "key": "completep-w64-d100-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47WX7TNG6AWTHKD5WY8EFFB",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:41.961075+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 28.909342166999977,
+      "final_val_loss": 8.46100378036499
+    },
+    {
+      "key": "mup-w64-d1000-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX85T9A2XT0JEKXCJPS9V",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:42.313672+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 276.774522015,
+      "final_val_loss": 8.168549299240112
+    },
+    {
+      "key": "mup-w64-d1000-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX89Q2DBWWAYAW3KAX5X3",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:42.433778+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 271.533120384,
+      "final_val_loss": 7.85512387752533
+    },
+    {
+      "key": "mup-w64-d1000-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX8DJ1KGJ9NHN2B7WXPNT",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:42.561574+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 276.03963249900005,
+      "final_val_loss": 7.1998414397239685
+    },
+    {
+      "key": "mup-w64-d1000-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX8HJY4CXHW1RH43Z9SZY",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:42.696602+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 274.0733619,
+      "final_val_loss": 7.192137658596039
+    },
+    {
+      "key": "mup-w64-d1000-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX8NSX8SV7G7J6CM6HBJ8",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:42.826237+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 276.98456275700005,
+      "final_val_loss": 9.478217601776123
+    },
+    {
+      "key": "depth_mup-w64-d1000-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX8SQJ4XM1P4S66GQ769D",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:42.948420+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 288.20893944,
+      "final_val_loss": 8.490589261054993
+    },
+    {
+      "key": "depth_mup-w64-d1000-lr0.003-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.003,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX8XKC39CG7G3SKTA0D2W",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.087908+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 305.7924744499999,
+      "final_val_loss": 7.9016634821891785
+    },
+    {
+      "key": "depth_mup-w64-d1000-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX91YK7VJB4E5G25AYT9B",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.235419+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 299.29628359799995,
+      "final_val_loss": 7.030048429965973
+    },
+    {
+      "key": "depth_mup-w64-d1000-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX96GEJ4KKSWBK7B02AZS",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.355846+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 287.05429157399976,
+      "final_val_loss": 7.024816334247589
+    },
+    {
+      "key": "depth_mup-w64-d1000-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX9AENFM9JD7HB19PV6SE",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.494309+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 287.55962152899974,
+      "final_val_loss": 8.38684093952179
+    },
+    {
+      "key": "completep-w64-d1000-lr0.001-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.001,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX9ER7AKCSJYFFE4D5E90",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.620838+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 299.61648615900003,
+      "final_val_loss": 8.575573325157166
+    },
+    {
+      "key": "completep-w64-d1000-lr0.01-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.01,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX9MH8JS4JMKPY0EGVB4W",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.808369+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 291.76296833000015,
+      "final_val_loss": 7.066848576068878
+    },
+    {
+      "key": "completep-w64-d1000-lr0.03-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.03,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX9REG4M6EZ6Y9NZXETZH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:43.939848+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 281.12612052999975,
+      "final_val_loss": 7.226408302783966
+    },
+    {
+      "key": "completep-w64-d1000-lr0.1-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.1,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M47WX9WGZ87GCRMJ3BZHR1QG",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:02:44.067146+00:00",
+      "maximum_reserved_gpu_hours": 0.25833333333333336,
+      "elapsed_seconds": 280.82475124099983,
+      "final_val_loss": 8.272397637367249
+    },
+    {
+      "key": "kaiming-w2560-d2-lr0.0001-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0001,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47X6V5M6KA5W5Q75T5R5DN5",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:56.694545+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 22.630232701,
+      "final_val_loss": 7.313084691762924
+    },
+    {
+      "key": "kaiming-w2560-d2-lr3e-05-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 3e-05,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47X6VAQ980Z50RJ8PM2PKTS",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:56.838166+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 20.413676423,
+      "final_val_loss": 8.021174907684326
+    },
+    {
+      "key": "kaiming-w5120-d2-lr0.0001-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0001,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47X6VMWNG7G2BVZJ1H6B1RD",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:57.155842+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 75.860892995,
+      "final_val_loss": 7.668752893805504
+    },
+    {
+      "key": "kaiming-w5120-d2-lr3e-05-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 3e-05,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47X6VRM6CHZG0Q6VGFRPTFF",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:57.277209+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 72.797693537,
+      "final_val_loss": 7.537532866001129
+    },
+    {
+      "key": "mup-w640-d2-lr0.0003-fp32",
+      "config": {
+        "width": 640,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47X6VWFG2MZJ7ZQXXJ1088A",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:57.415677+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 2.509323164999998,
+      "final_val_loss": 7.879376292228699
+    },
+    {
+      "key": "mup-w2560-d2-lr0.0003-fp32",
+      "config": {
+        "width": 2560,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 4,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0003,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M47X6W0RK02DABR6T3KGVE75",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:57.543896+00:00",
+      "maximum_reserved_gpu_hours": 0.058333333333333334,
+      "elapsed_seconds": 19.924114441,
+      "final_val_loss": 7.586808383464813
+    },
+    {
+      "key": "mup-w5120-d2-lr0.0003-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 0.0003,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47X6W4Y06RPDSW3E6QWC7BG",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:07:57.705755+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 74.03422664799999,
+      "final_val_loss": 7.527232840657234
+    },
+    {
+      "key": "kaiming-w5120-d2-lr1.5e-05-fp32",
+      "config": {
+        "width": 5120,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 2,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "fp32"
+      },
+      "policy": {
+        "name": "kaiming",
+        "reference_width": 512,
+        "reference_depth": 2
+      },
+      "lr": 1.5e-05,
+      "timeout_seconds": 600,
+      "call_id": "fc-01M47Y5WXNZFAZ160D70B7QDS0",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T06:24:54.261649+00:00",
+      "maximum_reserved_gpu_hours": 0.175,
+      "elapsed_seconds": 75.01925211599999,
+      "final_val_loss": 7.8418498784303665
+    },
+    {
+      "key": "mup-w64-d2-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 2,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M483ZVPWTHVR96HCJBVB664Z",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:27.885443+00:00",
+      "maximum_reserved_gpu_hours": 0.08333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 3.5003716349999996,
+      "final_val_loss": 6.846164524555206
+    },
+    {
+      "key": "mup-w64-d100-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M483ZVVDNN1W5E95RKCM4BJH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:28.035564+00:00",
+      "maximum_reserved_gpu_hours": 0.08333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 36.342334256,
+      "final_val_loss": 7.0774436593055725
+    },
+    {
+      "key": "depth_mup-w64-d100-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M483ZW0A4AW3XMWEGKZC25NH",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:28.201543+00:00",
+      "maximum_reserved_gpu_hours": 0.08333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 35.579431027000005,
+      "final_val_loss": 6.822455644607544
+    },
+    {
+      "key": "completep-w64-d100-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 100,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 180,
+      "call_id": "fc-01M483ZW5B7RR4S2KPZ236FYM1",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:28.338421+00:00",
+      "maximum_reserved_gpu_hours": 0.08333333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 35.628019325,
+      "final_val_loss": 6.827925622463226
+    },
+    {
+      "key": "mup-w64-d1000-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M483ZWFV8TH9V7XBMSYRX8BC",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:28.676482+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 387.76513127000004,
+      "final_val_loss": 7.077078640460968
+    },
+    {
+      "key": "depth_mup-w64-d1000-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "depth_mup",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M483ZWM39VDTH7722HC8DW9J",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:28.816522+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 365.843697027,
+      "final_val_loss": 6.978635549545288
+    },
+    {
+      "key": "completep-w64-d1000-lr0.02-mp",
+      "config": {
+        "width": 64,
+        "depth": 1000,
+        "head_dim": 64,
+        "vocab": 4096,
+        "context": 1024,
+        "batch": 64,
+        "steps": 5,
+        "microbatch": 8,
+        "probe_sequences": 1,
+        "checkpoint_blocks": 16,
+        "seed": 42,
+        "precision": "mp"
+      },
+      "policy": {
+        "name": "completep",
+        "reference_width": 64,
+        "reference_depth": 2
+      },
+      "lr": 0.02,
+      "timeout_seconds": 900,
+      "call_id": "fc-01M483ZWR8VXEDXFPTHXVG7MKR",
+      "status": "finished",
+      "submitted_at_utc": "2026-10-06T08:06:28.946522+00:00",
+      "maximum_reserved_gpu_hours": 0.2833333333333333,
+      "startup_shutdown_allowance_seconds": 120,
+      "elapsed_seconds": 366.09185174799984,
+      "final_val_loss": 6.899921953678131
+    }
+  ]
+}

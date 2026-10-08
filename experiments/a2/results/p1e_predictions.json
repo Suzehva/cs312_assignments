@@ -1,0 +1,323 @@
+{
+  "recorded_at_utc": "2026-10-06T22:27:52.997505+00:00",
+  "tokens": 1228800000,
+  "source": {
+    "linear": {
+      "fits": {
+        "153600000": {
+          "status": "bracketed",
+          "coefficients": [
+            0.045784473419188135,
+            0.03071975708007859,
+            3.2291338443756104
+          ],
+          "optimal_lr": 0.0023775575165277158,
+          "fitted_minimum_loss": 3.223980877635015,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "yp9czu6i",
+            "jysl6iqh",
+            "dd6phh49"
+          ],
+          "best_sampled": {
+            "key": "jysl6iqh",
+            "lr": 0.003,
+            "loss": 3.2291338443756104
+          },
+          "runs": [
+            {
+              "key": "yp9czu6i",
+              "lr": 0.0015,
+              "loss": 3.2441985607147217
+            },
+            {
+              "key": "jysl6iqh",
+              "lr": 0.003,
+              "loss": 3.2291338443756104
+            },
+            {
+              "key": "dd6phh49",
+              "lr": 0.006,
+              "loss": 3.305638074874878
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.045784473419188135,
+              0.03071975708007859,
+              3.2291338443756104
+            ],
+            "optimal_lr": 0.0023775575165277158
+          }
+        },
+        "307200000": {
+          "status": "bracketed",
+          "coefficients": [
+            0.014958620071409771,
+            0.00031042098999079827,
+            3.056223392486572
+          ],
+          "optimal_lr": 0.002978501138506281,
+          "fitted_minimum_loss": 3.0562217820239996,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "tsgminno",
+            "5nzpiq0t",
+            "k49b4wq6"
+          ],
+          "best_sampled": {
+            "key": "5nzpiq0t",
+            "lr": 0.003,
+            "loss": 3.0562233924865723
+          },
+          "runs": [
+            {
+              "key": "tsgminno",
+              "lr": 0.0015,
+              "loss": 3.070871591567993
+            },
+            {
+              "key": "5nzpiq0t",
+              "lr": 0.003,
+              "loss": 3.0562233924865723
+            },
+            {
+              "key": "k49b4wq6",
+              "lr": 0.006,
+              "loss": 3.0714924335479736
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.014958620071409771,
+              0.00031042098999079827,
+              3.056223392486572
+            ],
+            "optimal_lr": 0.002978501138506281
+          }
+        },
+        "614400000": {
+          "status": "bracketed",
+          "coefficients": [
+            0.018412232398986785,
+            -0.0032969713211060507,
+            2.9256360530853267
+          ],
+          "optimal_lr": 0.003192075093631191,
+          "fitted_minimum_loss": 2.9254884607177005,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "kcq9lagx",
+            "wk9oi7wk",
+            "qpkoqrqe"
+          ],
+          "best_sampled": {
+            "key": "wk9oi7wk",
+            "lr": 0.003,
+            "loss": 2.925636053085327
+          },
+          "runs": [
+            {
+              "key": "kcq9lagx",
+              "lr": 0.0015,
+              "loss": 2.94734525680542
+            },
+            {
+              "key": "wk9oi7wk",
+              "lr": 0.003,
+              "loss": 2.925636053085327
+            },
+            {
+              "key": "qpkoqrqe",
+              "lr": 0.006,
+              "loss": 2.940751314163208
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.018412232398986785,
+              -0.0032969713211060507,
+              2.9256360530853267
+            ],
+            "optimal_lr": 0.003192075093631191
+          }
+        }
+      },
+      "law": {
+        "reference": 614400000,
+        "eta_ref": 0.0032762095188946802,
+        "exponent": 0.21250717450922932,
+        "doubling_multiplier": 1.158700071652797
+      },
+      "predicted_lr": 0.0037961442042928418
+    },
+    "cos": {
+      "fits": {
+        "153600000": {
+          "status": "bracketed",
+          "coefficients": [
+            0.04574036598205463,
+            0.03760647773742721,
+            3.248783588409424
+          ],
+          "optimal_lr": 0.0022561706259504087,
+          "fitted_minimum_loss": 3.2410538340805535,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "84jetuep",
+            "pe6srb4f",
+            "whd0klvw"
+          ],
+          "best_sampled": {
+            "key": "pe6srb4f",
+            "lr": 0.003,
+            "loss": 3.248783588409424
+          },
+          "runs": [
+            {
+              "key": "84jetuep",
+              "lr": 0.0015,
+              "loss": 3.2569174766540527
+            },
+            {
+              "key": "pe6srb4f",
+              "lr": 0.003,
+              "loss": 3.248783588409424
+            },
+            {
+              "key": "whd0klvw",
+              "lr": 0.006,
+              "loss": 3.3321304321289062
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.04574036598205463,
+              0.03760647773742721,
+              3.248783588409424
+            ],
+            "optimal_lr": 0.0022561706259504087
+          }
+        },
+        "307200000": {
+          "status": "bracketed",
+          "coefficients": [
+            0.02085375785827565,
+            0.010156869888305687,
+            3.0655829906463623
+          ],
+          "optimal_lr": 0.002534034859128931,
+          "fitted_minimum_loss": 3.064346259038694,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "zvvvnrwt",
+            "iii5dwhp",
+            "f84m3298"
+          ],
+          "best_sampled": {
+            "key": "iii5dwhp",
+            "lr": 0.003,
+            "loss": 3.0655829906463623
+          },
+          "runs": [
+            {
+              "key": "zvvvnrwt",
+              "lr": 0.0015,
+              "loss": 3.076279878616333
+            },
+            {
+              "key": "iii5dwhp",
+              "lr": 0.003,
+              "loss": 3.0655829906463623
+            },
+            {
+              "key": "f84m3298",
+              "lr": 0.006,
+              "loss": 3.0965936183929443
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.02085375785827565,
+              0.010156869888305687,
+              3.0655829906463623
+            ],
+            "optimal_lr": 0.002534034859128931
+          }
+        },
+        "614400000": {
+          "status": "bracketed",
+          "coefficients": [
+            0.018055081367492024,
+            -0.003210425376891815,
+            2.933251142501831
+          ],
+          "optimal_lr": 0.0031906910537607136,
+          "fitted_minimum_loss": 2.933108428784695,
+          "fitted_domain": [
+            0.0015,
+            0.006
+          ],
+          "local_run_keys": [
+            "555ob2qh",
+            "ap4nh6ap",
+            "fk3lnbwn"
+          ],
+          "best_sampled": {
+            "key": "ap4nh6ap",
+            "lr": 0.003,
+            "loss": 2.933251142501831
+          },
+          "runs": [
+            {
+              "key": "555ob2qh",
+              "lr": 0.0015,
+              "loss": 2.954516649246216
+            },
+            {
+              "key": "ap4nh6ap",
+              "lr": 0.003,
+              "loss": 2.933251142501831
+            },
+            {
+              "key": "fk3lnbwn",
+              "lr": 0.006,
+              "loss": 2.9480957984924316
+            }
+          ],
+          "global_fit_sensitivity": {
+            "coefficients": [
+              0.018055081367492024,
+              -0.003210425376891815,
+              2.933251142501831
+            ],
+            "optimal_lr": 0.0031906910537607136
+          }
+        }
+      },
+      "law": {
+        "reference": 614400000,
+        "eta_ref": 0.003130493697115331,
+        "exponent": 0.2499963726913687,
+        "doubling_multiplier": 1.1892041250320844
+      },
+      "predicted_lr": 0.0037227960179964923
+    }
+  },
+  "status": "Frozen before optional cosine target submission"
+}

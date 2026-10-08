@@ -1,0 +1,99 @@
+REQUIRED DELIVERABLE AUDIT — INITIAL DRAFT
+
+Completed in text and evidence:
+P1a: three small-budget LR curves, optima, token-budget power law and trend.
+P1b: held-out larger-budget predictions versus provided fitted optima.
+P1c: two source laws, frozen predictions, target grid and prediction losses.
+P1d: Hyperball source fits, AdamW comparison, prediction and target results.
+P2a: joint LR/WD surfaces and optimal-coordinate trends.
+P2b: LR/WD compensation, product scaling versus coordinate scaling.
+P2c: four target recipes, measured losses and effective-product conclusion.
+P3.1a: NQM SGD batch scaling and held-out comparison.
+P3.1b: adaptive optimizers, source exponents and held-out accuracy.
+P3.1c: explicit noise, scalar-loss and initialization changes; scaling curves.
+P3.1d: momentum with LR retuning, mechanisms and cautious LM predictions.
+P3.2a: fixed-WD LM source LR sweeps and fitted batch scaling.
+P3.2b: fixed-LR WD source sweeps and both target recipe comparisons.
+P3.2c: fixed-recipe LM momentum sweeps at small/large batch; completed losses.
+P3.2d: NQM/LM agreement and discrepancies; original toy model has no WD.
+P4.0a: derive all four hidden/readout/input abc cases, not just state them.
+P4.0b: multiplier/variance/LR table, reference match, bounded interaction.
+P4.1a: all38width configurations completed and bracketed; loss/LR fits,
+       measured/fitted minima, transfer gaps, figure reference and takeaway.
+P4.1b: five-update features, every matrix's update alignment, omega;
+       finite-width caveats, figure references and movement takeaway.
+P4.1c: all42depth configurations complete; local fits, transfer versus
+       measured/fitted loss, initial prediction assessment, figures/takeaway.
+P4.1d: residual/unscaled branches, matched-position movement, omega;
+       numerical example, all figure references and signal-control takeaway.
+P4.2a: direct source transfer, all-matrix alignment throughout training,
+       omega, explicit figure references and stage-dependent takeaway.
+P4.2b: source LR/loss fits, direct versus tuned comparison, measured/fitted
+       ranking caveat, explicit figure reference and transfer takeaway.
+
+P4.2c: all12held-out runs completed; frozen source predictions compared
+       with bracketed target optima and best-sampled measured loss gaps.
+       Both plots, results table, sensitivity and takeaway in main.tex.
+P4.2d: all21new depth calls complete and bracketed; depth4/8/16 fits,
+       direct-transfer versus retuned performance, table, figure and takeaway.
+P4.2e: first-five/end diagnostics at direct/best sampled LRs for ALLfour
+       widths including1024 and ALLdepths. Feature/logit/omega trajectories,
+       internal normalized movements, raw residuals and clipping documented;
+       alignment assumptions and normalization/WD confounders interpreted.
+
+Verified numerical/runtime evidence:
+All133unique P4calls finished:80five-update+53long-budget, no failures.
+Each curve minimum bracketed; no missing/pending measurement substitutes.
+All53long-budget data fingerprints and completed2344-step budgets match.
+Actual optimizer traces verified for52runs; the original pilot's missing
+trace is documented, with recovered configuration/data/W&B provenance.
+All80stress policies/groups/multipliers and five-update budgets verified.
+All12held-out submissions follow the source-only frozen prediction timestamp;
+source_report_sha256 remains unchanged.
+All35figures exist and have explicit references outside captions.
+Every required subpart has a short evidence-supported takeaway.
+All23completion scripts parsed without syntax errors; no new test files.
+Final GPU audit: billed31.070h, conservative31.473h used,0pending reservations.
+Alltraining apps stopped with0tasks; at least~16.5h conservative headroom.
+
+Final rendering check complete: latexmk succeeded with all references
+resolved and no overfull boxes. Visually inspected final pages41–51.
+The initial draft is51pages; no page-limit trimming or margin changes made.
+Numerical results and required text are complete.
+
+At required completion, optional work had not been launched. The user then
+authorized up to10additional GPUh. Current separate extension:
+P4.2c/d robustness:10new runs complete; three-seed results added to text.
+P5 normalization question:5new paired-seed/control runs complete; frozen
+prediction, executable62-line intervention, answer key and evidence in text.
+P1e schedules: supplied-source analysis and allfive target runs complete;
+bracketed localfit, prediction/direct-transfer losses, sensitivity, both
+figures and cautious single-seed takeaway added to text and quiz notes.
+P4.2f Muon:all28source/pilot runs complete; auxiliaryLR selected source-only;
+allsource curves bracketed, source comparisons/alignment/movement documented.
+Width predictions frozen before all12held-out submissions. Both target
+curves complete/bracketed; all-grid quadratic fits, actual prediction/direct
+gaps, target comparison figure and takeaway are now in main.tex/quiz notes.
+Allfourwidths' direct-control alignment and feature diagnostics are plotted.
+Allfour fixed-reference-LR paired-seed policy checks complete. Baseline has
+slightlylowerloss in allthree tested seeds; mean muP-minus-baseline+.001884,
+sampleSD.000796. These are conditional fixed recipes,not jointlyretuned optima.
+All64unique extensioncalls completed with no missing or failed measurement.
+See extension_jobs.json, extension_analysis.json and extension_plan.txt for
+current status. The required ledgers/predictions remain unchanged.
+
+Extension completion audit (2026-10-07T04:06:16UTC): billed40.032435h,
+conservative40.504527h used,0pending/new reservations. Relative to the
+frozen31.473450h baseline, additional usage9.031076h is below the10h cap.
+Original48h remaining7.495473h. Alltraining apps stopped with0tasks.
+All43figures have existing images and references outside captions.
+The complete initial draft compiles to62pages with resolvedreferences,
+no missingimages or overfullboxes. No page-limit trimming was attempted.
+
+Subsequent user-requested condensation (October7UTC): main.tex/main.pdf
+now33pages,including a standaloneone-pagebonus. Requiredsubparts,
+four-case4.0tables,core fits/targetcomparisons andtakeaways retained.
+Fullprevioussource anddetailed diagnostics preserved in
+full_experiment_report.tex,diagnostic_figures/ andwriteup_details.txt.
+30mainfigure environments referenced inprose; finalcompile resolvesrefs
+without overfullboxes. Margins/fonts unchanged; no further GPUruns.
